@@ -2311,7 +2311,7 @@ select:disabled {
 
 .auth-hero-logo-wrap img {
   /* This turns a dark/black image completely pure white */
-  filter: brightness(0) invert(1);
+  filter: brightness(1) invert(0);
 }
 
 .auth-hero-logo {
