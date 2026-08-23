@@ -1,0 +1,210 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+
+    // True until the owner's users/{uid}.profileComplete flips to true.
+    // Lets the owner set locked fields (name, dob, department, etc.) for the
+    // first time during onboarding — after that, only admins can.
+    function isOnboardingInProgress(uid) {
+      return get(/databases/$(database)/documents/users/$(uid)).data.profileComplete == false;
+    }
+
+    // --- Free-tier replacement for the recalcProfileComplete Cloud Function ---
+    // No Cloud Functions (Blaze plan) required: instead of trusting the client's
+    // claim, we recompute completeness ourselves from the *actual* profiles/{uid}
+    // doc already committed, so a user still can't spoof profileComplete from
+    // devtools — they can only set it to the value this function independently
+    // derives. Keep this in sync with isStepValid() in app/onboarding/page.jsx.
+    function isAddressFilled(a) {
+      return a != null && a.divisionId != null && a.districtId != null && a.upazilaId != null;
+    }
+
+    function isEmploymentFilled(e) {
+      return e != null && e.status != null && (
+        e.status == "studying" ||
+        (
+          e.jobType != null && (
+            (e.jobType == "non-govt" && e.officeName != null && e.officeLocation != null) ||
+            (e.jobType == "govt" && e.govtOrg != null && e.officeName != null)
+          )
+        )
+      );
+    }
+
+    function computedProfileComplete(uid) {
+      let p = get(/databases/$(database)/documents/profiles/$(uid)).data;
+      return p.name != null && p.dob != null && p.bloodGroup != null && p.gender != null &&
+        p.maritalStatus != null && p.phone != null &&
+        p.department != null && p.session != null && p.passingYear != null &&
+        isAddressFilled(p.permanentAddress) && isAddressFilled(p.currentAddress) &&
+        isEmploymentFilled(p.employment);
+    }
+
+    // Fields a regular user is allowed to change on their own profile.
+    // Everything else (name, dob, bloodGroup, gender, maritalStatus, department,
+    // session, passingYear, finalYearRoll, permanentAddress) is admin-only.
+    // Note: lastDonationDate/donationCount are deliberately NOT in this list —
+    // recalcDonationStats (Cloud Function, Admin SDK) is the sole writer of
+    // those, so a user editing their own doc client-side can't spoof a
+    // donation count. Admin SDK writes bypass these rules entirely, so the
+    // function doesn't need to be listed as "allowed" here.
+    function onlyUserEditableFieldsChanged() {
+      let allowed = ['currentAddress', 'phone', 'employment', 'visibility', 'photo', 'updatedAt'];
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(allowed);
+    }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      // Can't self-assign the admin role at signup.
+      allow create: if isOwner(uid) && request.resource.data.role == "user";
+      // profileComplete: the owner may set it themselves right after finishing
+      // onboarding, but ONLY to the value computedProfileComplete() derives
+      // from their actual (already-committed) profiles/{uid} doc — so they
+      // still can't hand-edit this to `true` in devtools with an empty profile.
+      // Admins are restricted to 'role'/'profileComplete'/'updatedAt' so they
+      // can't quietly rewrite someone's email from here.
+      allow update: if
+        (isOwner(uid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['updatedAt'])) ||
+        (
+          isOwner(uid) &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['profileComplete', 'updatedAt']) &&
+          request.resource.data.profileComplete == computedProfileComplete(uid)
+        ) ||
+        (isAdmin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role', 'profileComplete', 'updatedAt']));
+      allow delete: if isAdmin();
+    }
+
+    match /profiles/{uid} {
+      // Directory browsing needs read access to other users' profiles too —
+      // visibility of individual fields (phone/email/etc.) is enforced client-side
+      // via the `visibility` map, since Firestore rules can't redact fields.
+      // Anonymous visitors (the public /info page) may additionally read a
+      // profile that has a committeeRoleId set — that's the only case where
+      // profile data is shown to someone who isn't signed in at all, and the
+      // /info page only ever displays name/role/photo from it regardless.
+      allow read: if isSignedIn() || resource.data.committeeRoleId != null;
+      allow create: if isOwner(uid); // initial onboarding write
+      allow update: if isAdmin()
+        || (isOwner(uid) && isOnboardingInProgress(uid))
+        || (isOwner(uid) && onlyUserEditableFieldsChanged());
+      allow delete: if isAdmin();
+
+      match /bloodDonations/{donationId} {
+        allow read: if isSignedIn();
+        allow write: if isOwner(uid) || isAdmin();
+      }
+    }
+
+    match /users/{uid}/favorites/{favUid} {
+      allow read, write: if isOwner(uid);
+    }
+
+    match /auditLogs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false; // logs are immutable
+    }
+
+    match /config/{docId} {
+      // committeeSettings (just the list of role titles) is safe to expose to
+      // the public /info page too; everything else in this collection
+      // (directory settings, fund account numbers, etc.) stays sign-in-only.
+      allow read: if isSignedIn() || docId == "committeeSettings";
+      allow write: if isAdmin();
+    }
+
+    // --- Fund donations (money contributions; separate from bloodDonations) ---
+    // A submission is created by its owner as "pending" and can only ever be
+    // moved to approved/rejected by an admin. The owner may still edit their
+    // own submission's factual fields while it's pending (fix a typo'd trxId,
+    // etc.) but cannot touch status/adminNote/reviewedAt/reviewedBy themselves.
+    function isPending() {
+      return resource.data.status == "pending";
+    }
+
+    match /fundContributions/{id} {
+      allow read: if isSignedIn() && (isOwner(resource.data.uid) || isAdmin());
+
+      allow create: if isSignedIn() &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.status == "pending" &&
+        request.resource.data.amount is number &&
+        request.resource.data.amount > 0;
+
+      allow update: if
+        (isAdmin() &&
+          request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['status', 'adminNote', 'reviewedAt', 'reviewedBy'])) ||
+        (isOwner(resource.data.uid) && isPending() &&
+          request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['accountId', 'accountLabel', 'amount', 'trxId', 'comment']));
+
+      allow delete: if isAdmin() || (isOwner(resource.data.uid) && isPending());
+    }
+
+    // Admin-recorded spend against the fund. Members can read (transparency
+    // — "see where the fund went") but never write.
+    match /fundExpenses/{id} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Member -> admin feedback. A member creates their own "open" item and
+    // can never edit status/adminRemark themselves; only an admin moves it
+    // to "reviewed" and sets a remark.
+    match /feedback/{id} {
+      allow read: if isSignedIn() && (isOwner(resource.data.uid) || isAdmin());
+
+      allow create: if isSignedIn() &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.status == "open";
+
+      allow update: if isAdmin() &&
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['status', 'adminRemark', 'reviewedAt', 'reviewedBy']);
+
+      allow delete: if isAdmin();
+    }
+
+    // Official memos (স্মারক নং). Admin-authored; members can only read the
+    // ones an admin has published (visible == true).
+    match /memos/{id} {
+      // Published memos are meant to be public notices — readable by anyone,
+      // signed in or not (the public /info page and the /memo/[id] print
+      // page both rely on this). Drafts stay admin-only.
+      allow read: if isAdmin() || resource.data.visible == true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // --- Events & calendar ---
+    // Same visible-flag pattern as memos: draft events are admin-only,
+    // published ones are readable by any signed-in member. (Unlike memos,
+    // events aren't exposed to anonymous visitors — RSVP requires an account
+    // anyway.)
+    match /events/{id} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.visible == true);
+      allow create, update, delete: if isAdmin();
+
+      // A member's own RSVP, keyed by their uid as the doc id.
+      match /rsvps/{uid} {
+        allow read: if isAdmin() || isOwner(uid);
+        allow write: if isOwner(uid) &&
+          request.resource.data.keys().hasOnly(['status', 'updatedAt']);
+      }
+    }
+  }
+}
