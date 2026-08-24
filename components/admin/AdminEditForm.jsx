@@ -12,6 +12,7 @@ import { getLastDonation, sortDonations } from "../../lib/donationUtils";
 import { BD_DIVISIONS, getDistrictsByDivision, getUpazilasByDistrict } from "../../lib/bdData";
 import { HOSPITALS } from "../../lib/hospitalData";
 import { useCommitteeRoles } from "../../lib/committee";
+import { useMyContributions } from "../../lib/fundContributions";
 import AuditHistory from "./AuditHistory";
 
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
@@ -304,6 +305,10 @@ export default function AdminEditForm({ profile }) {
   const [saving, setSaving] = useState(false);
   const [savedMsg, setSavedMsg] = useState("");
   const { roles: committeeRoles, loaded: committeeRolesLoaded } = useCommitteeRoles();
+  const { items: fundContributions } = useMyContributions(profile.id);
+  const totalDonated = fundContributions
+    .filter((c) => c.status === "approved")
+    .reduce((sum, c) => sum + (c.amount || 0), 0);
   const [assigningId, setAssigningId] = useState(false);
 
   const handleAssignMemberId = async () => {
@@ -541,7 +546,7 @@ export default function AdminEditForm({ profile }) {
 
       <h3 className="admin-form-section-title">Blood donation stats</h3>
 
-      <div className="field-row">
+      <div className="field-row-3">
         <div className="field">
           <label>Total donations</label>
           <div className="readonly-value">{donations.length}</div>
@@ -549,6 +554,10 @@ export default function AdminEditForm({ profile }) {
         <div className="field">
           <label>Last donation date</label>
           <div className="readonly-value">{lastDonation ? lastDonation.date.toLocaleDateString() : "—"}</div>
+        </div>
+        <div className="field">
+          <label>Total fund contribution (approved)</label>
+          <div className="readonly-value">৳{totalDonated.toLocaleString()}</div>
         </div>
       </div>
       <p className="helper-text">

@@ -1,16 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash2, GripVertical } from "lucide-react";
-import { useCommitteeRoles, saveCommitteeRoles, newRoleDraft } from "../../lib/committee";
+import { Plus, Trash2, GripVertical, Sparkles } from "lucide-react";
+import { useCommitteeRoles, saveCommitteeRoles, newRoleDraft, seedOfficialRoles } from "../../lib/committee";
 
 export default function CommitteeRolesPanel() {
   const { roles, loaded } = useCommitteeRoles();
   const [draft, setDraft] = useState(null);
   const [saving, setSaving] = useState(false);
   const [savedMsg, setSavedMsg] = useState("");
+  const [seeding, setSeeding] = useState(false);
 
   const list = draft ?? roles;
+
+  const handleSeed = async () => {
+    setSeeding(true);
+    setSavedMsg("");
+    try {
+      const added = await seedOfficialRoles(roles);
+      setDraft(null);
+      setSavedMsg(added > 0 ? `Added ${added} official role(s).` : "Already up to date — nothing new to add.");
+    } finally {
+      setSeeding(false);
+      setTimeout(() => setSavedMsg(""), 3500);
+    }
+  };
 
   const updateTitle = (id, title) => {
     setDraft(list.map((r) => (r.id === id ? { ...r, title } : r)));
@@ -81,10 +95,14 @@ export default function CommitteeRolesPanel() {
         {list.length === 0 && <p className="helper-text">No roles yet — add one below.</p>}
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 14, flexWrap: "wrap" }}>
         <button type="button" className="btn-ghost btn" style={{ width: "auto" }} onClick={addRole}>
           <Plus size={14} style={{ verticalAlign: "-2px", marginRight: 6 }} />
           Add role
+        </button>
+        <button type="button" className="btn-ghost btn" style={{ width: "auto" }} onClick={handleSeed} disabled={seeding || !!draft}>
+          <Sparkles size={14} style={{ verticalAlign: "-2px", marginRight: 6 }} />
+          {seeding ? "Loading…" : "Load official TSPP structure (৬৭ পদ)"}
         </button>
         <button type="button" className="btn" style={{ width: "auto" }} onClick={save} disabled={saving || !draft}>
           {saving ? "Saving…" : "Save changes"}

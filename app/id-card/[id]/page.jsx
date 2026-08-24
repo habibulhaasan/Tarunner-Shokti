@@ -135,7 +135,7 @@ export default function IdCardPage() {
       <div className="id-card-stage">
         <div className="id-card" ref={cardRef}>
           <div className="id-card-header">
-            <img src="/logo.png" alt="" className="id-card-logo" />
+            <img src="/iht-rangpur-logo.png" alt="" className="id-card-logo" />
             <span>তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ</span>
           </div>
 

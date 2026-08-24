@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Plus, Trash2, Printer, Pencil, X } from "lucide-react";
+import { Plus, Trash2, Printer, Pencil, X, Search } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useAllMemos, createMemo, updateMemo, deleteMemo, toggleMemoVisibility } from "../../lib/memos";
+import { useCommitteeMembers } from "../../lib/committee";
+import { defaultAvatarFor } from "../../lib/photoUtils";
+
+const DEFAULT_SIGNATORY_TITLES = ["সভাপতি (বা প্রধান সমন্বয়কারী)", "সাংগঠনিক সম্পাদক", "মহাসচিব"];
 
 function fmtDate(d) {
   try {
@@ -14,26 +18,64 @@ function fmtDate(d) {
   }
 }
 
+function avatarFor(profile) {
+  return profile.photo?.useDefault === false && profile.photo?.base64
+    ? profile.photo.base64
+    : defaultAvatarFor(profile.gender);
+}
+
 function emptyForm() {
-  return { memoNo: "", title: "", content: "", date: new Date().toISOString().slice(0, 10), visible: false };
+  return { memoNo: "", title: "", content: "", date: new Date().toISOString().slice(0, 10), visible: false, signatories: [] };
 }
 
 export default function MemosPanel() {
   const { user: adminUser } = useAuth();
   const { items, ready } = useAllMemos();
+  const { members: committeeMembers } = useCommitteeMembers();
   const [editingId, setEditingId] = useState(null); // null = not open, "new" = creating
   const [form, setForm] = useState(emptyForm());
   const [saving, setSaving] = useState(false);
   const [busyId, setBusyId] = useState(null);
+  const [signatorySearch, setSignatorySearch] = useState("");
 
-  const openNew = () => { setForm(emptyForm()); setEditingId("new"); };
+  const openNew = () => {
+    // Default-suggest whoever currently holds these three roles — still
+    // fully editable/removable before saving.
+    const defaults = DEFAULT_SIGNATORY_TITLES
+      .map((title) => committeeMembers.find((m) => m.committeeRole.title === title))
+      .filter(Boolean)
+      .map((m) => ({ profileUid: m.id, name: m.name, roleTitle: m.committeeRole.title }));
+    setForm({ ...emptyForm(), signatories: defaults });
+    setEditingId("new");
+  };
+
   const openEdit = (m) => {
-    setForm({ memoNo: m.memoNo, title: m.title, content: m.content, date: m.date, visible: m.visible });
+    setForm({
+      memoNo: m.memoNo, title: m.title, content: m.content, date: m.date,
+      visible: m.visible, signatories: m.signatories || [],
+    });
     setEditingId(m.id);
   };
-  const closeForm = () => setEditingId(null);
+  const closeForm = () => { setEditingId(null); setSignatorySearch(""); };
 
   const canSave = form.memoNo.trim() && form.title.trim() && form.content.trim() && !saving;
+
+  const availableSignatories = useMemo(() => {
+    const chosenUids = new Set(form.signatories.map((s) => s.profileUid));
+    const pool = committeeMembers.filter((m) => !chosenUids.has(m.id));
+    const q = signatorySearch.trim().toLowerCase();
+    if (!q) return pool.slice(0, 8);
+    return pool.filter((m) => m.name?.toLowerCase().includes(q) || m.committeeRole.title.toLowerCase().includes(q)).slice(0, 8);
+  }, [committeeMembers, form.signatories, signatorySearch]);
+
+  const addSignatory = (m) => {
+    setForm((f) => ({ ...f, signatories: [...f.signatories, { profileUid: m.id, name: m.name, roleTitle: m.committeeRole.title }] }));
+    setSignatorySearch("");
+  };
+
+  const removeSignatory = (uid) => {
+    setForm((f) => ({ ...f, signatories: f.signatories.filter((s) => s.profileUid !== uid) }));
+  };
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -105,6 +147,44 @@ export default function MemosPanel() {
             <label>বিস্তারিত (Content)</label>
             <textarea rows={8} value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} placeholder="Full memo text — line breaks are preserved as written." />
           </div>
+
+          <div className="field">
+            <label>স্বাক্ষরকারী (Signatories)</label>
+            {form.signatories.length > 0 && (
+              <div className="notify-selected-chips">
+                {form.signatories.map((s) => (
+                  <span key={s.profileUid} className="notify-selected-chip">
+                    {s.name} — {s.roleTitle}
+                    <button type="button" onClick={() => removeSignatory(s.profileUid)} aria-label={`Remove ${s.name}`}>×</button>
+                  </span>
+                ))}
+              </div>
+            )}
+            <div className="committee-search-box" style={{ marginBottom: 0 }}>
+              <Search size={15} />
+              <input
+                type="text"
+                placeholder="কমিটি সদস্য খুঁজুন…"
+                value={signatorySearch}
+                onChange={(e) => setSignatorySearch(e.target.value)}
+              />
+            </div>
+            {signatorySearch && (
+              <div className="notify-member-results">
+                {availableSignatories.map((m) => (
+                  <button key={m.id} type="button" className="notify-member-result" onClick={() => addSignatory(m)}>
+                    <img src={avatarFor(m)} alt={m.name} className="notify-member-avatar" />
+                    <div className="notify-member-result-text">
+                      <span className="notify-selected-name">{m.name}</span>
+                      <span className="notify-selected-sub">{m.committeeRole.title}</span>
+                    </div>
+                  </button>
+                ))}
+                {availableSignatories.length === 0 && <p className="helper-text">No matches.</p>}
+              </div>
+            )}
+          </div>
+
           <div className="fund-account-card-footer">
             <label className="toggle-switch toggle-switch-sm">
               <input type="checkbox" checked={form.visible} onChange={(e) => setForm({ ...form, visible: e.target.checked })} />

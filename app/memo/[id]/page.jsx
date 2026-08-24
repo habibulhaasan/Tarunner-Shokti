@@ -57,6 +57,18 @@ export default function MemoPrintPage() {
         </div>
 
         <div className="memo-body">{memo.content}</div>
+
+        {memo.signatories?.length > 0 && (
+          <div className="memo-signature-row">
+            {memo.signatories.map((s) => (
+              <div key={s.profileUid} className="memo-signature">
+                <div className="memo-signature-line" />
+                <div className="memo-signature-name">{s.name}</div>
+                <div className="memo-signature-role">{s.roleTitle}</div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

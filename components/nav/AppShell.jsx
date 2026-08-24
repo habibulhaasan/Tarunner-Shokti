@@ -9,6 +9,7 @@ import { clearSessionCookie } from "../../lib/sessionCookie";
 import { useAuth } from "../../context/AuthContext";
 import { useNotifications } from "../../lib/notifications";
 import { useFundSettings } from "../../lib/fundContributions";
+import { useTabVisibility } from "../../lib/tabVisibility";
 import DesktopSidebar from "./DesktopSidebar";
 import MobileTopBar from "./MobileTopBar";
 import MobileNav from "./MobileNav";
@@ -43,6 +44,7 @@ export default function AppShell({ children }) {
   const isAdmin = userDoc?.role === "admin";
   const { unreadCount } = useNotifications(user?.uid);
   const { settings: fundSettings } = useFundSettings();
+  const { hidden: hiddenTabs } = useTabVisibility();
   const [moreOpen, setMoreOpen] = useState(false);
 
   const activeKey = pathname === "/admin" ? "admin" : searchParams.get("tab") || "profile";
@@ -51,9 +53,13 @@ export default function AppShell({ children }) {
   // an admin flips fundSettings.visible on. Admins always see it themselves
   // so they can preview it before publishing.
   const showFundTab = isAdmin || fundSettings.visible;
-  const tabs = showFundTab
+  const baseTabs = showFundTab
     ? [...DASHBOARD_TABS, { key: "contribute", label: "Donate", icon: HeartHandshake }]
     : DASHBOARD_TABS;
+
+  // Same admin-always-sees-everything pattern as the fund tab above, just
+  // generalized to any tab via Admin → Tab visibility.
+  const tabs = isAdmin ? baseTabs : baseTabs.filter((t) => !hiddenTabs.includes(t.key));
 
   const navItems = [
     ...tabs.map((t) => ({

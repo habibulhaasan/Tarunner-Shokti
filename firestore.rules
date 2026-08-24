@@ -13,14 +13,20 @@ service cloud.firestore {
 
     function isAdmin() {
       return isSignedIn() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
     }
 
     // True until the owner's users/{uid}.profileComplete flips to true.
     // Lets the owner set locked fields (name, dob, department, etc.) for the
     // first time during onboarding — after that, only admins can.
+    // A missing users/{uid} doc (e.g. the /register write never landed, or
+    // a legacy/manually-created account) counts as "still onboarding" too —
+    // otherwise get().data would throw on the missing doc, which denies the
+    // *whole* rule and permanently locks that account out of onboarding.
     function isOnboardingInProgress(uid) {
-      return get(/databases/$(database)/documents/users/$(uid)).data.profileComplete == false;
+      let path = /databases/$(database)/documents/users/$(uid);
+      return !exists(path) || get(path).data.profileComplete == false;
     }
 
     // --- Free-tier replacement for the recalcProfileComplete Cloud Function ---
@@ -35,7 +41,7 @@ service cloud.firestore {
 
     function isEmploymentFilled(e) {
       return e != null && e.status != null && (
-        (e.status == "studying" && e.instituteName != null) ||
+        e.status == "studying" ||
         (
           e.jobType != null && (
             (e.jobType == "non-govt" && e.officeName != null && e.officeLocation != null) ||
@@ -45,25 +51,33 @@ service cloud.firestore {
       );
     }
 
+    // Guards against a missing profiles/{uid} doc the same way as above —
+    // without exists(), get().data on a doc that isn't there throws and the
+    // caller (users/{uid}'s update rule) is denied outright.
     function computedProfileComplete(uid) {
-      let p = get(/databases/$(database)/documents/profiles/$(uid)).data;
-      return p.name != null && p.dob != null && p.bloodGroup != null && p.gender != null &&
+      let path = /databases/$(database)/documents/profiles/$(uid);
+      let p = exists(path) ? get(path).data : null;
+      return p != null &&
+        p.name != null && p.dob != null && p.bloodGroup != null && p.gender != null &&
         p.maritalStatus != null && p.phone != null &&
         p.department != null && p.session != null && p.passingYear != null &&
         isAddressFilled(p.permanentAddress) && isAddressFilled(p.currentAddress) &&
         isEmploymentFilled(p.employment);
     }
 
+
     // Fields a regular user is allowed to change on their own profile.
     // Everything else (name, dob, bloodGroup, gender, maritalStatus, department,
     // session, passingYear, finalYearRoll, permanentAddress) is admin-only.
-    // Note: lastDonationDate/donationCount are deliberately NOT in this list —
-    // recalcDonationStats (Cloud Function, Admin SDK) is the sole writer of
-    // those, so a user editing their own doc client-side can't spoof a
-    // donation count. Admin SDK writes bypass these rules entirely, so the
-    // function doesn't need to be listed as "allowed" here.
+    // donationCount/lastDonationDate: computed client-side by
+    // lib/donationStats.js's recalcDonationStats() from the member's own
+    // bloodDonations subcollection (which they already fully own per the
+    // rule below) — not a Cloud Function, since this project may not be on
+    // a Blaze plan. Low spoofing risk even so: these fields don't gate any
+    // feature, unlike profileComplete, and a member already controls the
+    // underlying donation records these are derived from.
     function onlyUserEditableFieldsChanged() {
-      let allowed = ['currentAddress', 'phone', 'employment', 'visibility', 'photo', 'updatedAt'];
+      let allowed = ['currentAddress', 'phone', 'employment', 'visibility', 'photo', 'donationCount', 'lastDonationDate', 'updatedAt'];
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly(allowed);
     }
 
@@ -92,11 +106,7 @@ service cloud.firestore {
       // Directory browsing needs read access to other users' profiles too —
       // visibility of individual fields (phone/email/etc.) is enforced client-side
       // via the `visibility` map, since Firestore rules can't redact fields.
-      // Anonymous visitors (the public /info page) may additionally read a
-      // profile that has a committeeRoleId set — that's the only case where
-      // profile data is shown to someone who isn't signed in at all, and the
-      // /info page only ever displays name/role/photo from it regardless.
-      allow read: if isSignedIn() || resource.data.committeeRoleId != null;
+      allow read: if isSignedIn();
       allow create: if isOwner(uid); // initial onboarding write
       allow update: if isAdmin()
         || (isOwner(uid) && isOnboardingInProgress(uid))
@@ -120,108 +130,29 @@ service cloud.firestore {
     }
 
     match /config/{docId} {
-      // committeeSettings (just the list of role titles) is safe to expose to
-      // the public /info page too; everything else in this collection
-      // (directory settings, fund account numbers, etc.) stays sign-in-only.
-      allow read: if isSignedIn() || docId == "committeeSettings";
+      allow read: if isSignedIn();
       allow write: if isAdmin();
     }
+    match /settings/{docId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
 
-    // In-app notifications: broadcasts ("all") readable by every signed-in
-    // member, direct ones only by their targetUid. Only admins send them —
-    // every call site (broadcast compose, donation approve/reject, feedback
-    // remarks) already runs as an admin action, and this is what actually
-    // enforces that server-side.
-    match /notifications/{id} {
+    // A notification is either a broadcast (audience == "all", visible to
+    // everyone signed in) or targeted at one member (audience == "user",
+    // targetUid == that member's uid). Only admins can create/edit/delete
+    // them. "Read" state is per-member, so it can't live on this shared doc —
+    // see users/{uid}/notificationReads below instead.
+    match /notifications/{notifId} {
       allow read: if isSignedIn() &&
-        (resource.data.audience == "all" || resource.data.targetUid == request.auth.uid);
-      allow create, update, delete: if isAdmin();
+        (resource.data.audience == "all" || resource.data.targetUid == request.auth.uid || isAdmin());
+      allow create: if isAdmin() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isAdmin();
     }
 
-    // Per-member read receipts for the above — own subcollection under
-    // users/{uid}, same standalone-match style as users/{uid}/favorites below.
-    match /users/{uid}/notificationReads/{notificationId} {
-      allow read, write: if isOwner(uid);
-    }
-
-    // --- Fund donations (money contributions; separate from bloodDonations) ---
-    // A submission is created by its owner as "pending" and can only ever be
-    // moved to approved/rejected by an admin. The owner may still edit their
-    // own submission's factual fields while it's pending (fix a typo'd trxId,
-    // etc.) but cannot touch status/adminNote/reviewedAt/reviewedBy themselves.
-    function isPending() {
-      return resource.data.status == "pending";
-    }
-
-    match /fundContributions/{id} {
-      allow read: if isSignedIn() && (isOwner(resource.data.uid) || isAdmin());
-
-      allow create: if isSignedIn() &&
-        request.resource.data.uid == request.auth.uid &&
-        request.resource.data.status == "pending" &&
-        request.resource.data.amount is number &&
-        request.resource.data.amount > 0;
-
-      allow update: if
-        (isAdmin() &&
-          request.resource.data.diff(resource.data).affectedKeys()
-            .hasOnly(['status', 'adminNote', 'reviewedAt', 'reviewedBy'])) ||
-        (isOwner(resource.data.uid) && isPending() &&
-          request.resource.data.diff(resource.data).affectedKeys()
-            .hasOnly(['accountId', 'accountLabel', 'amount', 'trxId', 'comment']));
-
-      allow delete: if isAdmin() || (isOwner(resource.data.uid) && isPending());
-    }
-
-    // Admin-recorded spend against the fund. Members can read (transparency
-    // — "see where the fund went") but never write.
-    match /fundExpenses/{id} {
-      allow read: if isSignedIn();
-      allow create, update, delete: if isAdmin();
-    }
-
-    // Member -> admin feedback. A member creates their own "open" item and
-    // can never edit status/adminRemark themselves; only an admin moves it
-    // to "reviewed" and sets a remark.
-    match /feedback/{id} {
-      allow read: if isSignedIn() && (isOwner(resource.data.uid) || isAdmin());
-
-      allow create: if isSignedIn() &&
-        request.resource.data.uid == request.auth.uid &&
-        request.resource.data.status == "open";
-
-      allow update: if isAdmin() &&
-        request.resource.data.diff(resource.data).affectedKeys()
-          .hasOnly(['status', 'adminRemark', 'reviewedAt', 'reviewedBy']);
-
-      allow delete: if isAdmin();
-    }
-
-    // Official memos (স্মারক নং). Admin-authored; members can only read the
-    // ones an admin has published (visible == true).
-    match /memos/{id} {
-      // Published memos are meant to be public notices — readable by anyone,
-      // signed in or not (the public /info page and the /memo/[id] print
-      // page both rely on this). Drafts stay admin-only.
-      allow read: if isAdmin() || resource.data.visible == true;
-      allow create, update, delete: if isAdmin();
-    }
-
-    // --- Events & calendar ---
-    // Same visible-flag pattern as memos: draft events are admin-only,
-    // published ones are readable by any signed-in member. (Unlike memos,
-    // events aren't exposed to anonymous visitors — RSVP requires an account
-    // anyway.)
-    match /events/{id} {
-      allow read: if isAdmin() || (isSignedIn() && resource.data.visible == true);
-      allow create, update, delete: if isAdmin();
-
-      // A member's own RSVP, keyed by their uid as the doc id.
-      match /rsvps/{uid} {
-        allow read: if isAdmin() || isOwner(uid);
-        allow write: if isOwner(uid) &&
-          request.resource.data.keys().hasOnly(['status', 'updatedAt']);
-      }
+    match /users/{uid}/notificationReads/{notifId} {
+      allow read, write: if isOwner(uid) || isAdmin();
     }
   }
 }

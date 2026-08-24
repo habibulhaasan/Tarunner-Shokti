@@ -16,6 +16,7 @@ import FeedbackReviewPanel from "../../components/admin/FeedbackReviewPanel";
 import CommitteeRolesPanel from "../../components/admin/CommitteeRolesPanel";
 import MemosPanel from "../../components/admin/MemosPanel";
 import EventsPanel from "../../components/admin/EventsPanel";
+import TabVisibilityPanel from "../../components/admin/TabVisibilityPanel";
 
 const PAGE_SIZE = 30;
 const EMPTY_FILTERS = { department: "", session: "", status: "", completeness: "" };
@@ -36,7 +37,7 @@ export default function AdminPage() {
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [selectedUid, setSelectedUid] = useState(null);
   const [page, setPage] = useState(1);
-  const [view, setView] = useState("members"); // "members" | "settings" | "notifications" | "donations" | "committee" | "memos" | "events"
+  const [view, setView] = useState("members"); // "members" | "settings" | "notifications" | "donations" | "committee" | "memos" | "events" | "tabs"
   const [fundView, setFundView] = useState("review"); // "review" | "expenses" | "ledger" | "accounts"
   const [notifyView, setNotifyView] = useState("compose"); // "compose" | "feedback"
 
@@ -158,11 +159,22 @@ export default function AdminPage() {
           >
             Events
           </button>
+          <button
+            type="button"
+            className={`admin-toplevel-tab ${view === "tabs" ? "active" : ""}`}
+            onClick={() => setView("tabs")}
+          >
+            Tab visibility
+          </button>
         </div>
 
         {view === "settings" ? (
           <div className="admin-settings-view">
             <DirectorySettingsPanel />
+          </div>
+        ) : view === "tabs" ? (
+          <div className="admin-settings-view">
+            <TabVisibilityPanel />
           </div>
         ) : view === "committee" ? (
           <div className="admin-settings-view">

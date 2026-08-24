@@ -14,7 +14,7 @@ export const ORG_INFO = {
   website: "",
 };
 
-export default function Letterhead({ compact = false }) {
+export default function Letterhead({ compact = false, align = "center" }) {
   return (
     <div className={`letterhead ${compact ? "letterhead-compact" : ""}`}>
       <div className="letterhead-row">
@@ -22,7 +22,7 @@ export default function Letterhead({ compact = false }) {
           // eslint-disable-next-line @next/next/no-img-element
           <img src={ORG_INFO.logoSrc} alt="" className="letterhead-logo" />
         )}
-        <div className="letterhead-text">
+        <div className="letterhead-text" style={{ textAlign: align }}>
           <div className="letterhead-name-bn">{ORG_INFO.nameBn}</div>
           <div className="letterhead-name-en">{ORG_INFO.nameEn}</div>
           {(ORG_INFO.addressBn || ORG_INFO.phone || ORG_INFO.email || ORG_INFO.website) && (

@@ -2875,18 +2875,23 @@ select:disabled {
 .letterhead-compact .letterhead-name-bn { font-size: 16px; }
 
 /* ---------- Memos (স্মারক নং) ---------- */
+/* Locked to A4 portrait (210mm x 297mm) so it always prints as one proper
+   page-sized document instead of stretching with the browser window. */
 
-.memo-print-wrap { min-height: 100vh; background: var(--ivory); padding: 24px; }
+.memo-print-wrap { min-height: 100vh; background: var(--ivory); padding: 24px; overflow-x: auto; }
 
-.memo-print-toolbar { display: flex; justify-content: flex-end; max-width: 800px; margin: 0 auto 14px; }
+.memo-print-toolbar { display: flex; justify-content: flex-end; width: 210mm; margin: 0 auto 14px; }
 
 .memo-print-page {
-  max-width: 800px;
+  width: 210mm;
+  min-height: 297mm;
   margin: 0 auto;
   background: var(--white);
   border: 1px solid var(--border, var(--line));
   border-radius: var(--radius);
-  padding: 36px 44px;
+  padding: 20mm 18mm;
+  box-sizing: border-box;
+  font-family: var(--font-body);
 }
 
 .memo-meta-row {
@@ -2914,6 +2919,29 @@ select:disabled {
   color: var(--ink);
 }
 
+.memo-signature-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 60px;
+}
+
+.memo-signature {
+  font-size: 13.5px;
+  text-align: center;
+  min-width: 140px;
+}
+
+.memo-signature-line {
+  width: 150px;
+  border-top: 1.5px solid var(--ink);
+  margin: 0 auto 8px;
+}
+
+.memo-signature-name { font-weight: 700; color: var(--forest); }
+.memo-signature-role { color: var(--muted); margin-top: 2px; }
+
 @media print {
   .dashboard-sidebar-desktop,
   .dashboard-topbar-mobile,
@@ -2927,11 +2955,14 @@ select:disabled {
 
   .memo-print-wrap { background: var(--white) !important; padding: 0 !important; }
 
+  @page { size: A4 portrait; margin: 0; }
+
   .memo-print-page {
+    width: 210mm !important;
+    min-height: 297mm !important;
     border: none !important;
     box-shadow: none !important;
-    max-width: none !important;
-    padding: 0 !important;
+    margin: 0 !important;
   }
 }
 
@@ -3216,19 +3247,47 @@ select:disabled {
 }
 
 /* ---------- Donation certificate ---------- */
+/* Locked to A4 landscape (297mm x 210mm), logo watermark behind the content,
+   left-aligned letterhead header (via <Letterhead align="left" />). */
 
 .certificate-page {
-  max-width: 800px;
+  width: 297mm;
+  height: 210mm;
   margin: 0 auto;
   background: var(--white);
   border: 2px solid var(--forest);
   border-radius: var(--radius);
-  padding: 44px 52px;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-body);
+}
+
+.certificate-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 55%;
+  max-width: 420px;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.certificate-content {
+  position: relative;
+  z-index: 1;
+  padding: 14mm 20mm;
   text-align: center;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .certificate-title {
-  margin-top: 30px;
+  margin-top: 20px;
   font-size: 26px;
   font-weight: 800;
   color: var(--forest);
@@ -3243,9 +3302,9 @@ select:disabled {
 }
 
 .certificate-body {
-  margin-top: 24px;
-  font-size: 15px;
-  line-height: 2;
+  margin-top: 18px;
+  font-size: 14.5px;
+  line-height: 1.85;
   color: var(--ink);
   text-align: justify;
 }
@@ -3256,7 +3315,7 @@ select:disabled {
 }
 
 .certificate-meta-row {
-  margin-top: 26px;
+  margin-top: 16px;
   font-size: 13.5px;
   color: var(--muted);
 }
@@ -3264,26 +3323,80 @@ select:disabled {
 .certificate-signature-row {
   display: flex;
   justify-content: space-between;
-  margin-top: 60px;
-  padding: 0 20px;
+  gap: 20px;
+  margin-top: auto;
+  padding: 0 10px;
 }
 
 .certificate-signature {
-  font-size: 13.5px;
+  font-size: 13px;
   color: var(--forest);
   font-weight: 600;
   text-align: center;
+  flex: 1;
 }
 
 .certificate-signature-line {
-  width: 160px;
+  width: 150px;
   border-top: 1.5px solid var(--ink);
-  margin-bottom: 8px;
+  margin: 0 auto 8px;
+}
+
+.certificate-signature-name {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.certificate-esigned {
+  margin-top: 4px;
+  font-size: 10.5px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--muted);
 }
 
 @media print {
+  @page { size: A4 landscape; margin: 0; }
+
   .certificate-page {
-    max-width: none;
-    box-shadow: none;
+    width: 297mm !important;
+    height: 210mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
   }
+}
+
+/* ---------- Committee filters ---------- */
+
+.committee-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.committee-search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 200px;
+  padding: 0 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--muted);
+}
+
+.committee-search-box input {
+  border: none;
+  padding: 10px 0;
+  flex: 1;
+  background: none;
+}
+
+.committee-search-box input:focus { outline: none; }
+
+.committee-filter-row select {
+  min-width: 180px;
 }
