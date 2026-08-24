@@ -35,7 +35,7 @@ service cloud.firestore {
 
     function isEmploymentFilled(e) {
       return e != null && e.status != null && (
-        e.status == "studying" ||
+        (e.status == "studying" && e.instituteName != null) ||
         (
           e.jobType != null && (
             (e.jobType == "non-govt" && e.officeName != null && e.officeLocation != null) ||
@@ -125,6 +125,23 @@ service cloud.firestore {
       // (directory settings, fund account numbers, etc.) stays sign-in-only.
       allow read: if isSignedIn() || docId == "committeeSettings";
       allow write: if isAdmin();
+    }
+
+    // In-app notifications: broadcasts ("all") readable by every signed-in
+    // member, direct ones only by their targetUid. Only admins send them —
+    // every call site (broadcast compose, donation approve/reject, feedback
+    // remarks) already runs as an admin action, and this is what actually
+    // enforces that server-side.
+    match /notifications/{id} {
+      allow read: if isSignedIn() &&
+        (resource.data.audience == "all" || resource.data.targetUid == request.auth.uid);
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Per-member read receipts for the above — own subcollection under
+    // users/{uid}, same standalone-match style as users/{uid}/favorites below.
+    match /users/{uid}/notificationReads/{notificationId} {
+      allow read, write: if isOwner(uid);
     }
 
     // --- Fund donations (money contributions; separate from bloodDonations) ---

@@ -26,7 +26,7 @@ function isAddressFilled(a) {
 
 function isEmploymentFilled(e) {
   if (!e?.status) return false;
-  if (e.status === "studying") return true;
+  if (e.status === "studying") return !!e.instituteName;
   if (!e.jobType) return false;
   if (e.jobType === "non-govt") return !!e.officeName && !!e.officeLocation;
   if (e.jobType === "govt") {

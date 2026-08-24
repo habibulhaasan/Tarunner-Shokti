@@ -30,7 +30,7 @@ export default function PublicInfoPage() {
       <nav className="landing-nav">
         <div className="landing-nav-brand">
           <div className="landing-nav-logo-wrap">
-            <Image src="/logo.png" alt="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ" fill className="landing-nav-logo" />
+            <Image src="/logo.png" alt="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ" fill className="landing-nav-logo" sizes="32px" />
           </div>
           তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ
         </div>

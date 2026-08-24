@@ -100,6 +100,7 @@ export default function FundReviewPanel() {
               <div className="fund-review-details">
                 <div><span className="fund-review-detail-label">Amount</span>৳{Number(c.amount).toLocaleString()}</div>
                 <div><span className="fund-review-detail-label">Account</span>{c.accountLabel}</div>
+                {c.accountNumber && <div><span className="fund-review-detail-label">A/C Number</span>{c.accountNumber}</div>}
                 <div><span className="fund-review-detail-label">Trxn ID</span>{c.trxId}</div>
                 {c.comment && <div><span className="fund-review-detail-label">Comment</span>{c.comment}</div>}
                 {c.adminNote && <div><span className="fund-review-detail-label">Admin note</span>{c.adminNote}</div>}

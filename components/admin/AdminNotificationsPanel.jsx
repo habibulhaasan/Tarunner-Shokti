@@ -30,7 +30,7 @@ export default function AdminNotificationsPanel() {
   const { user: adminUser } = useAuth();
   const [profiles, setProfiles] = useState([]);
   const [audience, setAudience] = useState("all"); // "all" | "user"
-  const [targetUid, setTargetUid] = useState("");
+  const [targetUids, setTargetUids] = useState([]);
   const [memberSearch, setMemberSearch] = useState("");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -53,31 +53,46 @@ export default function AdminNotificationsPanel() {
 
   const filteredMembers = useMemo(() => {
     const q = memberSearch.trim().toLowerCase();
-    if (!q) return profiles.slice(0, 8);
-    return profiles
+    const pool = profiles.filter((p) => !targetUids.includes(p.id));
+    if (!q) return pool.slice(0, 8);
+    return pool
       .filter((p) => p.name?.toLowerCase().includes(q) || p.email?.toLowerCase().includes(q))
       .slice(0, 8);
-  }, [profiles, memberSearch]);
+  }, [profiles, memberSearch, targetUids]);
 
-  const targetProfile = profiles.find((p) => p.id === targetUid);
-  const canSend = title.trim() && body.trim() && (audience === "all" || targetUid);
+  const selectedProfiles = targetUids.map((uid) => profiles.find((p) => p.id === uid)).filter(Boolean);
+  const canSend = title.trim() && body.trim() && (audience === "all" || targetUids.length > 0);
+
+  const addTarget = (uid) => {
+    setTargetUids((ids) => (ids.includes(uid) ? ids : [...ids, uid]));
+    setMemberSearch("");
+  };
+
+  const removeTarget = (uid) => setTargetUids((ids) => ids.filter((id) => id !== uid));
 
   const handleSend = async () => {
     if (!canSend) return;
     setSending(true);
     setSentMsg("");
     try {
-      await sendNotification({
-        title,
-        body,
-        audience,
-        targetUid: audience === "user" ? targetUid : null,
-        createdBy: adminUser.uid,
-      });
-      setSentMsg(audience === "all" ? "Sent to all members." : `Sent to ${targetProfile?.name || "member"}.`);
+      if (audience === "all") {
+        await sendNotification({ title, body, audience: "all", targetUid: null, createdBy: adminUser.uid });
+        setSentMsg("Sent to all members.");
+      } else {
+        // One doc per recipient — the read side already queries per-targetUid,
+        // so this needs no schema or rules changes to support multiple people.
+        await Promise.all(
+          targetUids.map((uid) => sendNotification({ title, body, audience: "user", targetUid: uid, createdBy: adminUser.uid }))
+        );
+        setSentMsg(
+          targetUids.length === 1
+            ? `Sent to ${selectedProfiles[0]?.name || "member"}.`
+            : `Sent to ${targetUids.length} members.`
+        );
+      }
       setTitle("");
       setBody("");
-      setTargetUid("");
+      setTargetUids([]);
       setMemberSearch("");
     } finally {
       setSending(false);
@@ -100,51 +115,46 @@ export default function AdminNotificationsPanel() {
             </button>
             <button type="button" className={`pill ${audience === "user" ? "active" : ""}`} onClick={() => setAudience("user")}>
               <UserIcon size={13} style={{ verticalAlign: "-2px", marginRight: 5 }} />
-              Specific member
+              Specific member(s)
             </button>
           </div>
         </div>
 
         {audience === "user" && (
           <div className="field">
-            <label>Member</label>
-            {targetProfile ? (
-              <div className="notify-selected-member">
-                <img src={memberPhoto(targetProfile)} alt={targetProfile.name} className="notify-member-avatar" />
-                <div className="notify-selected-member-text">
-                  <span className="notify-selected-name">{targetProfile.name || "(no name)"}</span>
-                  <span className="notify-selected-sub">{memberSubline(targetProfile)}</span>
-                </div>
-                <button type="button" className="link-button" onClick={() => setTargetUid("")}>Change</button>
+            <label>Members</label>
+
+            {selectedProfiles.length > 0 && (
+              <div className="notify-selected-chips">
+                {selectedProfiles.map((p) => (
+                  <span key={p.id} className="notify-selected-chip">
+                    <img src={memberPhoto(p)} alt="" className="notify-chip-avatar" />
+                    {p.name || "(no name)"}
+                    <button type="button" onClick={() => removeTarget(p.id)} aria-label={`Remove ${p.name}`}>×</button>
+                  </span>
+                ))}
               </div>
-            ) : (
-              <>
-                <input
-                  type="text"
-                  placeholder="Search name or email…"
-                  value={memberSearch}
-                  onChange={(e) => setMemberSearch(e.target.value)}
-                />
-                {memberSearch && (
-                  <div className="notify-member-results">
-                    {filteredMembers.map((p) => (
-                      <button
-                        key={p.id}
-                        type="button"
-                        className="notify-member-result"
-                        onClick={() => { setTargetUid(p.id); setMemberSearch(""); }}
-                      >
-                        <img src={memberPhoto(p)} alt={p.name} className="notify-member-avatar" />
-                        <div className="notify-member-result-text">
-                          <span className="notify-selected-name">{p.name || "(no name)"}</span>
-                          <span className="notify-selected-sub">{memberSubline(p)}</span>
-                        </div>
-                      </button>
-                    ))}
-                    {filteredMembers.length === 0 && <p className="helper-text">No matches.</p>}
-                  </div>
-                )}
-              </>
+            )}
+
+            <input
+              type="text"
+              placeholder="Search name or email to add…"
+              value={memberSearch}
+              onChange={(e) => setMemberSearch(e.target.value)}
+            />
+            {memberSearch && (
+              <div className="notify-member-results">
+                {filteredMembers.map((p) => (
+                  <button key={p.id} type="button" className="notify-member-result" onClick={() => addTarget(p.id)}>
+                    <img src={memberPhoto(p)} alt={p.name} className="notify-member-avatar" />
+                    <div className="notify-member-result-text">
+                      <span className="notify-selected-name">{p.name || "(no name)"}</span>
+                      <span className="notify-selected-sub">{memberSubline(p)}</span>
+                    </div>
+                  </button>
+                ))}
+                {filteredMembers.length === 0 && <p className="helper-text">No matches.</p>}
+              </div>
             )}
           </div>
         )}

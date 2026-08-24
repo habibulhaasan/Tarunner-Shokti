@@ -5,6 +5,7 @@ import Link from "next/link";
 import { collection, doc, onSnapshot, updateDoc, serverTimestamp } from "firebase/firestore";
 import { CreditCard as IdCardIcon, Award } from "lucide-react";
 import { db } from "../../lib/firebase";
+import { assignNextMemberId } from "../../lib/memberId";
 import { useAuth } from "../../context/AuthContext";
 import { logProfileEdits } from "../../lib/auditLog";
 import { getLastDonation, sortDonations } from "../../lib/donationUtils";
@@ -303,6 +304,19 @@ export default function AdminEditForm({ profile }) {
   const [saving, setSaving] = useState(false);
   const [savedMsg, setSavedMsg] = useState("");
   const { roles: committeeRoles, loaded: committeeRolesLoaded } = useCommitteeRoles();
+  const [assigningId, setAssigningId] = useState(false);
+
+  const handleAssignMemberId = async () => {
+    setAssigningId(true);
+    try {
+      const memberId = await assignNextMemberId(profile.id);
+      setDraft((d) => ({ ...d, memberId }));
+    } catch (err) {
+      console.error("assignNextMemberId failed:", err);
+    } finally {
+      setAssigningId(false);
+    }
+  };
 
   // profile.donationCount / profile.lastDonationDate are meant to be kept in
   // sync by recalcDonationStats, a Cloud Function — which needs the Blaze
@@ -392,15 +406,28 @@ export default function AdminEditForm({ profile }) {
 
       <div className="field">
         <label>Member ID (for the printable ID card)</label>
-        <input
-          type="text"
-          value={draft.memberId || ""}
-          onChange={field("memberId")}
-          placeholder="e.g. TSPP-2026-001 — leave blank to fall back to a short account code"
-        />
+        <div style={{ display: "flex", gap: 8 }}>
+          <input
+            type="text"
+            value={draft.memberId || ""}
+            onChange={field("memberId")}
+            placeholder="e.g. 0001 — or click Assign for the next sequential number"
+            style={{ flex: 1 }}
+          />
+          <button
+            type="button"
+            className="btn-ghost btn"
+            style={{ width: "auto", flexShrink: 0 }}
+            disabled={assigningId}
+            onClick={handleAssignMemberId}
+          >
+            {assigningId ? "…" : "Assign next"}
+          </button>
+        </div>
+        <p className="helper-text">Assigns the next sequential number (0001, 0002, …) and saves it immediately.</p>
       </div>
 
-      <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
         <Link href={`/id-card/${profile.id}`} target="_blank" className="btn-ghost btn" style={{ width: "auto" }}>
           <IdCardIcon size={14} style={{ verticalAlign: "-2px", marginRight: 6 }} />
           View / Print ID card

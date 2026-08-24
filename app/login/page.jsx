@@ -27,7 +27,7 @@ export default function LoginPage() {
       // client Router Cache serving a stale pre-auth redirect.
       window.location.href = "/dashboard"; // RouteGuard sends to /onboarding if incomplete
     } catch (err) {
-      setError(friendlyError(err.code));
+      setError(err.code ? friendlyError(err.code) : err.message);
       setBusy(false);
     }
   };
@@ -37,7 +37,7 @@ export default function LoginPage() {
       <div className="auth-hero">
         <div className="auth-hero-mark">
         <div className="auth-hero-logo-wrap">
-          <Image src="/logo.png" alt="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ" width={180} height={180} className="auth-hero-logo" />
+          <Image src="/logo.png" alt="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ" fill className="auth-hero-logo" sizes="180px" priority />
         </div>          
         তারুণ্যের শক্তি
         </div>

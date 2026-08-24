@@ -1,7 +1,7 @@
 "use client";
 
 import { BD_DIVISIONS, getDistrictsByDivision, getUpazilasByDistrict } from "../../lib/bdData";
-import { HOSPITALS } from "../../lib/hospitalData";
+import { HOSPITALS, INSTITUTES } from "../../lib/hospitalData";
 
 // Office is chosen via Division -> District -> Upazila -> facility, filtered
 // by agency (DGHS/DGFP), from the real facility directory in
@@ -73,6 +73,19 @@ export default function EmploymentStep({ data, setData }) {
       officeName: "",
     });
 
+  const selectInstitute = (e) => {
+    const instituteId = e.target.value;
+    const institute = INSTITUTES.find((h) => h.id === instituteId);
+    setEmployment({ instituteId, instituteName: institute?.nameBn || institute?.name || "" });
+  };
+
+  const toggleInstituteManualEntry = () =>
+    setEmployment({
+      instituteManualEntry: !employment.instituteManualEntry,
+      instituteId: "",
+      instituteName: "",
+    });
+
   return (
     <div>
       <h2>Current status</h2>
@@ -88,6 +101,42 @@ export default function EmploymentStep({ data, setData }) {
           </button>
         </div>
       </div>
+
+      {employment.status === "studying" && (
+        <div className="field">
+          <label>Institute</label>
+          {!employment.instituteManualEntry ? (
+            <>
+              <select value={employment.instituteId || ""} onChange={selectInstitute} required>
+                <option value="">Select your institute</option>
+                {INSTITUTES.map((h) => (
+                  <option key={h.id} value={h.id}>{h.nameBn}</option>
+                ))}
+              </select>
+              <p className="helper-text">
+                <button type="button" className="link-button" onClick={toggleInstituteManualEntry}>
+                  Can't find your institute? Enter it manually.
+                </button>
+              </p>
+            </>
+          ) : (
+            <>
+              <input
+                type="text"
+                value={employment.instituteName || ""}
+                onChange={(e) => setEmployment({ instituteName: e.target.value })}
+                placeholder="Type your institute's name"
+                required
+              />
+              <p className="helper-text">
+                <button type="button" className="link-button" onClick={toggleInstituteManualEntry}>
+                  Pick from the list instead
+                </button>
+              </p>
+            </>
+          )}
+        </div>
+      )}
 
       {employment.status === "job" && (
         <>

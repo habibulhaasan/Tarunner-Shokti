@@ -40,7 +40,7 @@ export default function LandingPage() {
       <nav className="landing-nav">
         <div className="landing-nav-brand">
           <div className="landing-nav-logo-wrap">
-            <Image src="/logo.png" alt="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ" fill className="landing-nav-logo" />
+            <Image src="/logo.png" alt="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ" fill className="landing-nav-logo" sizes="32px" />
           </div>
           তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ
         </div>
@@ -55,7 +55,7 @@ export default function LandingPage() {
 
       <section className="landing-hero">
         <div className="landing-hero-logo-wrap">
-          <Image src="/logo.png" alt="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ" fill className="landing-hero-logo" />
+          <Image src="/logo.png" alt="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ" fill className="landing-hero-logo" sizes="84px" />
         </div>
         <h1 className="landing-hero-title">
           তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ

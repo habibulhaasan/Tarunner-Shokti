@@ -1,6 +1,6 @@
 "use client";
 
-import { Layers, ShieldCheck, Link2, Mail, Target, Eye, Rocket } from "lucide-react";
+import { Layers, ShieldCheck, Link2, Mail, Target, Eye, Rocket, MessageCircle } from "lucide-react";
 
 const APP_VERSION = "1.0.0"; // TODO: রিলিজ অনুযায়ী আপডেট করুন
 
@@ -80,6 +80,9 @@ export default function AboutTab() {
           </a>
           <a href="mailto:hasanthp@gmail.com" className="about-dev-link">
             <Mail size={15} /> hasanthp@gmail.com
+          </a>
+          <a href="https://wa.me/8801601767234" target="_blank" rel="noopener noreferrer" className="about-dev-link">
+            <MessageCircle size={15} /> 01601767234 (WhatsApp)
           </a>
         </div>
       </div>

@@ -10,10 +10,10 @@ const DEPARTMENTS = [
   "SIT",
 ];
 
-// Helper function to dynamically generate sessions from 2009 to the current year
+// Helper function to dynamically generate sessions from 1971 to the current year
 const generateSessions = () => {
   const currentYear = new Date().getFullYear();
-  const startYear = 2009;
+  const startYear = 1971;
   const sessions = [];
 
   for (let i = startYear; i <= currentYear; i++) {

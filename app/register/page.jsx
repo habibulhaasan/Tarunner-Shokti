@@ -56,7 +56,7 @@ export default function RegisterPage() {
       // Hard navigation, not router.replace — see app/login/page.jsx.
       window.location.href = "/onboarding";
     } catch (err) {
-      setError(friendlyError(err.code));
+      setError(err.code ? friendlyError(err.code) : err.message);
     } finally {
       setBusy(false);
     }
@@ -67,7 +67,7 @@ export default function RegisterPage() {
       <div className="auth-hero">
         <div className="auth-hero-mark">
         <div className="auth-hero-logo-wrap">
-          <Image src="/logo.png" alt="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ" fill className="auth-hero-logo" />
+          <Image src="/logo.png" alt="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ" fill className="auth-hero-logo" sizes="180px" />
         </div>          তারুণ্যের শক্তি
         </div>
         <div>
@@ -86,7 +86,7 @@ export default function RegisterPage() {
       <div className="auth-form-wrap">
         <div className="auth-card">
           <div className="auth-card-logo-wrap">
-          <Image src="/logo.png" alt="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ" fill className="auth-card-logo" />
+          <Image src="/logo.png" alt="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ" fill className="auth-card-logo" sizes="64px" />
         </div>
           <h1 className="auth-card-text">অ্যাকাউন্ট তৈরি করুন</h1>
           <p className="subtitle">প্রাথমিক তথ্য দিয়ে শুরু করুন — পরে সম্পূর্ণ প্রোফাইল করবেন।</p>

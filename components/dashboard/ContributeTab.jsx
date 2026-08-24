@@ -55,6 +55,7 @@ export default function ContributeTab() {
         uid: user.uid,
         accountId,
         accountLabel: account ? `${account.label} (${account.provider})` : "",
+        accountNumber: account?.accountNumber || "",
         amount,
         trxId,
         comment,
