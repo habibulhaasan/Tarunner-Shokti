@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
-import { getAdminAuth } from "../../../lib/firebaseAdmin";
+import { verifyIdToken, createSessionCookie } from "../../../lib/firebaseAdmin";
 
 const SESSION_COOKIE_NAME = "session";
 const SESSION_MAX_AGE_MS = 5 * 24 * 60 * 60 * 1000; // 5 days
 
+// Called right after a successful client-side login/register. Exchanges the
+// short-lived Firebase ID token for a longer-lived session cookie that
+// middleware.js can check for on every request — this is what lets us
+// redirect unauthenticated visitors away from /dashboard, /onboarding, and
+// /admin before any page JS even runs.
 export async function POST(request) {
   const { idToken } = await request.json();
   if (!idToken) {
@@ -11,13 +16,10 @@ export async function POST(request) {
   }
 
   try {
-    const adminAuth = getAdminAuth();
+    // Verifies the token is genuine before minting a cookie for it.
+    await verifyIdToken(idToken);
 
-    await adminAuth.verifyIdToken(idToken);
-
-    const sessionCookie = await adminAuth.createSessionCookie(idToken, {
-      expiresIn: SESSION_MAX_AGE_MS,
-    });
+    const sessionCookie = await createSessionCookie(idToken, SESSION_MAX_AGE_MS);
 
     const response = NextResponse.json({ ok: true });
     response.cookies.set(SESSION_COOKIE_NAME, sessionCookie, {
@@ -29,11 +31,16 @@ export async function POST(request) {
     });
     return response;
   } catch (err) {
-    console.error("[/api/session] createSessionCookie failed:", err);
+    // Log the real reason server-side — the client only ever sees a generic
+    // 401, but this is what tells you whether it's env vars missing/invalid
+    // vs. an actually expired/invalid token.
+    console.error("[/api/session] failed:", err);
     return NextResponse.json({ error: "Invalid ID token" }, { status: 401 });
   }
 }
 
+// Called on logout to clear the cookie server-side (in addition to the
+// client-side firebase signOut()).
 export async function DELETE() {
   const response = NextResponse.json({ ok: true });
   response.cookies.set("session", "", { maxAge: 0, path: "/" });
