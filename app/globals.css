@@ -1204,6 +1204,8 @@ select:disabled {
     overflow-y: visible;
     padding-top: 56px;   /* clears the fixed top bar */
     padding-bottom: 72px; /* clears the fixed bottom nav */
+    padding-left: 16px;
+    padding-right: 16px;
   }
 }
 
@@ -2010,6 +2012,32 @@ select:disabled {
 .admin-toplevel-tab.active {
   color: var(--forest, #0f172a);
   border-bottom-color: var(--coral, #2563eb);
+}
+
+/* ---------- Admin tabs: mobile dropdown instead of a scrolling tab row ----------
+   8 top-level sections is too many for horizontal-scroll tabs to be a good
+   mobile experience — a native <select> is a much clearer, one-glance way
+   to jump between them on a small screen. Desktop keeps the tab row. */
+
+.admin-tabs-mobile-select {
+  display: none;
+  margin-bottom: 16px;
+}
+
+.admin-tabs-mobile-select select {
+  width: 100%;
+  padding: 12px 36px 12px 14px;
+  border: 1.5px solid var(--line, #e2e8f0);
+  border-radius: 10px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--forest, #0f172a);
+  background: var(--white, #ffffff);
+}
+
+@media (max-width: 768px) {
+  .admin-tabs-mobile-select { display: block; }
+  .admin-toplevel-tabs { display: none; }
 }
 
 .admin-settings-view {
@@ -3132,6 +3160,26 @@ select:disabled {
   flex-direction: column;
   overflow: hidden;
   font-family: var(--font-body);
+  position: relative;
+}
+
+.id-card-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32mm;
+  height: 32mm;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.id-card-header,
+.id-card-body,
+.id-card-footer {
+  position: relative;
+  z-index: 1;
 }
 
 .id-card-header {
@@ -3185,6 +3233,17 @@ select:disabled {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.id-card-designation {
+  font-size: 1.9mm;
+  font-weight: 600;
+  color: var(--white);
+  background: var(--coral);
+  display: inline-block;
+  padding: 0.3mm 1.4mm;
+  border-radius: 999px;
+  margin-top: 0.6mm;
 }
 
 .id-card-status {
@@ -3247,20 +3306,30 @@ select:disabled {
 }
 
 /* ---------- Donation certificate ---------- */
-/* Locked to A4 landscape (297mm x 210mm), logo watermark behind the content,
-   left-aligned letterhead header (via <Letterhead align="left" />). */
+/* Locked to A4 landscape (297mm x 210mm). .certificate-page is the bleed
+   area (blank margin, no border) around .certificate-frame, which carries
+   the visible border line and holds everything else — the classic
+   "certificate frame with a bit of breathing room to the page edge" look,
+   rather than a border running flush to the paper's cut edge. */
 
 .certificate-page {
   width: 297mm;
   height: 210mm;
   margin: 0 auto;
   background: var(--white);
+  box-sizing: border-box;
+  padding: 8mm;
+  font-family: var(--font-body);
+}
+
+.certificate-frame {
+  width: 100%;
+  height: 100%;
   border: 2px solid var(--forest);
-  border-radius: var(--radius);
+  border-radius: 4px;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
-  font-family: var(--font-body);
 }
 
 .certificate-watermark {
@@ -3278,7 +3347,7 @@ select:disabled {
 .certificate-content {
   position: relative;
   z-index: 1;
-  padding: 14mm 20mm;
+  padding: 18mm 28mm;
   text-align: center;
   height: 100%;
   box-sizing: border-box;
@@ -3302,9 +3371,9 @@ select:disabled {
 }
 
 .certificate-body {
-  margin-top: 18px;
-  font-size: 14.5px;
-  line-height: 1.85;
+  margin-top: 22px;
+  font-size: 15px;
+  line-height: 2;
   color: var(--ink);
   text-align: justify;
 }
@@ -3315,7 +3384,7 @@ select:disabled {
 }
 
 .certificate-meta-row {
-  margin-top: 16px;
+  margin-top: 20px;
   font-size: 13.5px;
   color: var(--muted);
 }
@@ -3323,9 +3392,9 @@ select:disabled {
 .certificate-signature-row {
   display: flex;
   justify-content: space-between;
-  gap: 20px;
+  gap: 24px;
   margin-top: auto;
-  padding: 0 10px;
+  padding: 0 14px;
 }
 
 .certificate-signature {
@@ -3399,4 +3468,135 @@ select:disabled {
 
 .committee-filter-row select {
   min-width: 180px;
+}
+
+/* ---------- Dashboard overview ---------- */
+
+.dashboard-overview h1 { margin-bottom: 2px; }
+
+.dashboard-quicklinks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.dashboard-quicklink {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 8px;
+  background: var(--white);
+  border: 1px solid var(--border, var(--line));
+  border-radius: var(--radius);
+  color: var(--forest);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+}
+
+.dashboard-quicklink:hover { border-color: var(--coral); color: var(--coral-dark); }
+
+.dashboard-stat-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.dashboard-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--white);
+  border: 1px solid var(--border, var(--line));
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  color: var(--coral);
+}
+
+.dashboard-stat-value { font-size: 18px; font-weight: 700; color: var(--forest); font-family: var(--font-display); }
+.dashboard-stat-label { font-size: 12px; color: var(--muted); margin-top: 1px; }
+
+.dashboard-alert-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: var(--ivory-dim);
+  border: 1px solid var(--border, var(--line));
+  border-radius: var(--radius);
+  color: var(--coral-dark);
+  font-size: 13.5px;
+  font-weight: 500;
+  flex-wrap: wrap;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+@media (min-width: 860px) {
+  .dashboard-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.dashboard-section-card { margin: 0; }
+
+.dashboard-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.dashboard-section-header h3 { margin: 0; font-size: 14.5px; }
+
+.dashboard-section-seeall {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.dashboard-mini-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dashboard-mini-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border, var(--line));
+}
+
+.dashboard-mini-list li:last-child { border-bottom: none; padding-bottom: 0; }
+
+.dashboard-mini-title {
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-mini-unread .dashboard-mini-title { font-weight: 700; color: var(--forest); }
+
+.dashboard-mini-meta {
+  color: var(--muted);
+  font-size: 11.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
