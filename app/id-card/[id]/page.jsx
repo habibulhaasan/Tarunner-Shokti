@@ -10,6 +10,7 @@ import { db } from "../../../lib/firebase";
 import { useAuth } from "../../../context/AuthContext";
 import { defaultAvatarFor } from "../../../lib/photoUtils";
 import { getAddressLabel } from "../../../lib/bdData";
+import { useCommitteeRoles } from "../../../lib/committee";
 
 function fallbackMemberId(uid) {
   // Deliberately plain digits/letters only — no locale-based number
@@ -43,6 +44,7 @@ export default function IdCardPage() {
   const [qrDataUrl, setQrDataUrl] = useState("");
   const [downloading, setDownloading] = useState(false);
   const cardRef = useRef(null);
+  const { rolesById } = useCommitteeRoles();
 
   const isAdmin = userDoc?.role === "admin";
   const isSelf = user?.uid === targetUid;
@@ -74,7 +76,7 @@ export default function IdCardPage() {
       // though the on-screen element itself is deliberately tiny (true
       // physical card size) — the file keeps the exact card proportions,
       // just rendered at higher DPI.
-      const dataUrl = await toPng(cardRef.current, { pixelRatio: 4, cacheBust: true, backgroundColor: "#ffffff" });
+      const dataUrl = await toPng(cardRef.current, { pixelRatio: 4, backgroundColor: "#ffffff" });
       const link = document.createElement("a");
       const memberId = profile.memberId || fallbackMemberId(profile.id);
       link.download = `id-card-${memberId}.png`;
@@ -118,6 +120,9 @@ export default function IdCardPage() {
   const isStudent = profile.employment?.status === "studying";
   const instituteLine = isStudent ? getInstituteLine(profile) : "";
   const addressLine = getAddressLabel(profile.currentAddress, "bn");
+  // Every member's default designation is "সদস্য" (Member) unless they hold
+  // a committee role, in which case that role title is shown instead.
+  const designation = (profile.committeeRoleId && rolesById[profile.committeeRoleId]?.title) || "সদস্য";
 
   return (
     <div className="memo-print-wrap">
@@ -134,15 +139,28 @@ export default function IdCardPage() {
 
       <div className="id-card-stage">
         <div className="id-card" ref={cardRef}>
-          <div className="id-card-header">
-            <img src="/iht-rangpur-logo.png" alt="" className="id-card-logo" />
-            <span>তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ</span>
+          <img
+            src="/iht-rangpur-logo.png"
+            alt=""
+            className="id-card-watermark"
+            style={{ opacity: 0.12 }}
+          />
+
+          <div className="id-card-header" style={{ textAlign: "left" }}>
+            <img
+              src="/iht-rangpur-logo.png"
+              alt=""
+              className="id-card-logo"
+              style={{ width: "5mm", height: "5mm", maxWidth: "5mm", maxHeight: "5mm", objectFit: "contain" }}
+            />
+            <span style={{ textAlign: "left" }}>তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ</span>
           </div>
 
           <div className="id-card-body">
             <img src={avatar} alt="" className="id-card-photo" />
             <div className="id-card-info">
               <div className="id-card-name">{profile.name}</div>
+              <div className="id-card-designation">{designation}</div>
               {statusLine && <div className="id-card-status">{statusLine}</div>}
               {isStudent && instituteLine && <div className="id-card-row"><span>ইনস্টিটিউট</span>{instituteLine}</div>}
               <div className="id-card-row"><span>সদস্য নং</span>{memberId}</div>
