@@ -89,42 +89,42 @@ export default function CertificatePage() {
       </div>
 
       <div className="certificate-page">
-        {ORG_INFO.logoSrc && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={ORG_INFO.logoSrc} alt="" className="certificate-watermark" />
-        )}
+        <div className="certificate-frame">
+          {ORG_INFO.logoSrc && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={ORG_INFO.logoSrc} alt="" className="certificate-watermark" />
+          )}
 
-        <div className="certificate-content">
-          <Letterhead align="left" />
+          <div className="certificate-content">
+            <Letterhead align="left" />
 
-          <div className="certificate-title">অনুদান সনদপত্র</div>
-          <div className="certificate-subtitle">Certificate of Donation</div>
+            <div className="certificate-title">অনুদান সনদপত্র</div>
+            <div className="certificate-subtitle">Certificate of Donation</div>
 
-          <p className="certificate-body">
-            এই মর্মে প্রত্যয়ন করা যাচ্ছে যে,{" "}
-            <span className="certificate-highlight">{profile.name}</span>
-            {profile.department ? ` (${profile.department}${profile.session ? `, ${profile.session}` : ""})` : ""}{" "}
-            তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ-এর কল্যাণ তহবিলে সর্বমোট{" "}
-            <span className="certificate-highlight">৳{total.toLocaleString()}</span> টাকা অনুদান প্রদান করেছেন।
-          </p>
+            <p className="certificate-body">
+              এই মর্মে প্রত্যয়ন করা যাচ্ছে যে,{" "}
+              <span className="certificate-highlight">{profile.name}</span>
+              {profile.department ? ` (${profile.department}${profile.session ? `, ${profile.session}` : ""})` : ""}{" "}
+              তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ-এর কল্যাণ তহবিলে সর্বমোট{" "}
+              <span className="certificate-highlight">৳{total.toLocaleString()}</span> টাকা অনুদান প্রদান করেছেন। পরিষদের
+              পক্ষ থেকে তাঁর এই মহতী অবদানের জন্য আন্তরিক কৃতজ্ঞতা ও ধন্যবাদ জ্ঞাপন করা হচ্ছে। ভবিষ্যতেও তাঁর এই সহযোগিতা
+              অব্যাহত থাকবে বলে আমরা আশাবাদী।
+            </p>
 
-          <p className="certificate-body">
-            পরিষদের পক্ষ থেকে তাঁর এই মহতী অবদানের জন্য আন্তরিক কৃতজ্ঞতা ও ধন্যবাদ জ্ঞাপন করা হচ্ছে।
-          </p>
+            <div className="certificate-meta-row">
+              <div>তারিখ: {today}</div>
+            </div>
 
-          <div className="certificate-meta-row">
-            <div>তারিখ: {today}</div>
-          </div>
-
-          <div className="certificate-signature-row">
-            {signatories.map((s) => (
-              <div key={s.title} className="certificate-signature">
-                <div className="certificate-signature-line" />
-                {s.name && <div className="certificate-signature-name">{s.name}</div>}
-                <div>{s.title}</div>
-                <div className="certificate-esigned">ইলেকট্রনিকভাবে স্বাক্ষরিত</div>
-              </div>
-            ))}
+            <div className="certificate-signature-row">
+              {signatories.map((s) => (
+                <div key={s.title} className="certificate-signature">
+                  <div className="certificate-signature-line" />
+                  {s.name && <div className="certificate-signature-name">{s.name}</div>}
+                  <div>{s.title}</div>
+                  <div className="certificate-esigned">ইলেকট্রনিকভাবে স্বাক্ষরিত</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
