@@ -17,6 +17,18 @@ import CommitteeRolesPanel from "../../components/admin/CommitteeRolesPanel";
 import MemosPanel from "../../components/admin/MemosPanel";
 import EventsPanel from "../../components/admin/EventsPanel";
 import TabVisibilityPanel from "../../components/admin/TabVisibilityPanel";
+import { Users, Settings, Bell, HeartHandshake, Landmark, FileText, Calendar, Eye } from "lucide-react";
+
+const ADMIN_VIEWS = [
+  { key: "members", label: "Members", icon: Users },
+  { key: "settings", label: "Directory settings", icon: Settings },
+  { key: "notifications", label: "Notifications", icon: Bell },
+  { key: "donations", label: "Donations", icon: HeartHandshake },
+  { key: "committee", label: "Committee", icon: Landmark },
+  { key: "memos", label: "Memos", icon: FileText },
+  { key: "events", label: "Events", icon: Calendar },
+  { key: "tabs", label: "Tab visibility", icon: Eye },
+];
 
 const PAGE_SIZE = 30;
 const EMPTY_FILTERS = { department: "", session: "", status: "", completeness: "" };
@@ -109,63 +121,26 @@ export default function AdminPage() {
   return (
     <AdminGuard>
       <div className="admin-shell">
+        <div className="admin-tabs-mobile-select no-print">
+          <select value={view} onChange={(e) => setView(e.target.value)}>
+            {ADMIN_VIEWS.map((v) => (
+              <option key={v.key} value={v.key}>{v.label}</option>
+            ))}
+          </select>
+        </div>
+
         <div className="admin-toplevel-tabs">
-          <button
-            type="button"
-            className={`admin-toplevel-tab ${view === "members" ? "active" : ""}`}
-            onClick={() => setView("members")}
-          >
-            Members
-          </button>
-          <button
-            type="button"
-            className={`admin-toplevel-tab ${view === "settings" ? "active" : ""}`}
-            onClick={() => setView("settings")}
-          >
-            Directory settings
-          </button>
-          <button
-            type="button"
-            className={`admin-toplevel-tab ${view === "notifications" ? "active" : ""}`}
-            onClick={() => setView("notifications")}
-          >
-            Notifications
-          </button>
-          <button
-            type="button"
-            className={`admin-toplevel-tab ${view === "donations" ? "active" : ""}`}
-            onClick={() => setView("donations")}
-          >
-            Donations
-          </button>
-          <button
-            type="button"
-            className={`admin-toplevel-tab ${view === "committee" ? "active" : ""}`}
-            onClick={() => setView("committee")}
-          >
-            Committee
-          </button>
-          <button
-            type="button"
-            className={`admin-toplevel-tab ${view === "memos" ? "active" : ""}`}
-            onClick={() => setView("memos")}
-          >
-            Memos
-          </button>
-          <button
-            type="button"
-            className={`admin-toplevel-tab ${view === "events" ? "active" : ""}`}
-            onClick={() => setView("events")}
-          >
-            Events
-          </button>
-          <button
-            type="button"
-            className={`admin-toplevel-tab ${view === "tabs" ? "active" : ""}`}
-            onClick={() => setView("tabs")}
-          >
-            Tab visibility
-          </button>
+          {ADMIN_VIEWS.map((v) => (
+            <button
+              key={v.key}
+              type="button"
+              className={`admin-toplevel-tab ${view === v.key ? "active" : ""}`}
+              onClick={() => setView(v.key)}
+            >
+              <v.icon size={14} style={{ verticalAlign: "-2px", marginRight: 5 }} />
+              {v.label}
+            </button>
+          ))}
         </div>
 
         {view === "settings" ? (
