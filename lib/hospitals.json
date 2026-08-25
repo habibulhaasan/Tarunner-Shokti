@@ -49664,5 +49664,214 @@
       "paurasava": null,
       "union": null
     }
+  },
+  {
+    "id": "40047",
+    "code": "",
+    "name": "Dhaka Institute of Health Technology",
+    "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, ঢাকা",
+    "email": "",
+    "agency": "DGHS",
+    "facilityTypeId": "15",
+    "facilityType": "Institute of Health Technology",
+    "location": {
+      "divisionId": "3",
+      "districtId": "1",
+      "upazilaId": "0106",
+      "cityCorporation": "Dhaka North City Corporation",
+      "cityCorporationBn": "ঢাকা উত্তর সিটি কর্পোরেশন",
+      "paurasava": null,
+      "union": null
+    }
+  },
+  {
+    "id": "40048",
+    "code": "",
+    "name": "Rajshahi Institute of Health Technology",
+    "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, রাজশাহী",
+    "email": "",
+    "agency": "DGHS",
+    "facilityTypeId": "15",
+    "facilityType": "Institute of Health Technology",
+    "location": {
+      "divisionId": "5",
+      "districtId": "24",
+      "upazilaId": "2410",
+      "cityCorporation": "Rajshahi City Corporation",
+      "cityCorporationBn": "রাজশাহী সিটি কর্পোরেশন",
+      "paurasava": null,
+      "union": null
+    }
+  },
+  {
+    "id": "40049",
+    "code": "",
+    "name": "Bogura Institute of Health Technology",
+    "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, বগুড়া",
+    "email": "",
+    "agency": "DGHS",
+    "facilityTypeId": "15",
+    "facilityType": "Institute of Health Technology",
+    "location": {
+      "divisionId": "5",
+      "districtId": "18",
+      "upazilaId": "1802",
+      "cityCorporation": "Bogura N/A",
+      "cityCorporationBn": "বগুড়া এন/এ",
+      "paurasava": null,
+      "union": null
+    }
+  },
+  {
+    "id": "40050",
+    "code": "",
+    "name": "Chattogram Institute of Health Technology",
+    "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, চট্টগ্রাম",
+    "email": "",
+    "agency": "DGHS",
+    "facilityTypeId": "15",
+    "facilityType": "Institute of Health Technology",
+    "location": {
+      "divisionId": "2",
+      "districtId": "43",
+      "upazilaId": "4305",
+      "cityCorporation": "Chattogram City Corporation",
+      "cityCorporationBn": "চট্টগ্রাম সিটি কর্পোরেশন",
+      "paurasava": null,
+      "union": null
+    }
+  },
+  {
+    "id": "40051",
+    "code": "",
+    "name": "Rangpur Institute of Health Technology",
+    "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, রংপুর",
+    "email": "",
+    "agency": "DGHS",
+    "facilityTypeId": "15",
+    "facilityType": "Institute of Health Technology",
+    "location": {
+      "divisionId": "6",
+      "districtId": "32",
+      "upazilaId": "3209",
+      "cityCorporation": "Rangpur City Corporation",
+      "cityCorporationBn": "রংপুর সিটি কর্পোরেশন",
+      "paurasava": null,
+      "union": null
+    }
+  },
+  {
+    "id": "40052",
+    "code": "",
+    "name": "Jhenaidah Institute of Health Technology",
+    "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, ঝিনাইদহ",
+    "email": "",
+    "agency": "DGHS",
+    "facilityTypeId": "15",
+    "facilityType": "Institute of Health Technology",
+    "location": {
+      "divisionId": "4",
+      "districtId": "58",
+      "upazilaId": "5802",
+      "cityCorporation": "Jhenaidah N/A",
+      "cityCorporationBn": "ঝিনাইদহ এন/এ",
+      "paurasava": null,
+      "union": null
+    }
+  },
+  {
+    "id": "40053",
+    "code": "",
+    "name": "Sylhet Institute of Health Technology",
+    "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, সিলেট",
+    "email": "",
+    "agency": "DGHS",
+    "facilityTypeId": "15",
+    "facilityType": "Institute of Health Technology",
+    "location": {
+      "divisionId": "7",
+      "districtId": "54",
+      "upazilaId": "5410",
+      "cityCorporation": "Sylhet City Corporation",
+      "cityCorporationBn": "সিলেট সিটি কর্পোরেশন",
+      "paurasava": null,
+      "union": null
+    }
+  },
+  {
+    "id": "40054",
+    "code": "",
+    "name": "Sirajganj Institute of Health Technology",
+    "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, সিরাজগঞ্জ",
+    "email": "",
+    "agency": "DGHS",
+    "facilityTypeId": "15",
+    "facilityType": "Institute of Health Technology",
+    "location": {
+      "divisionId": "5",
+      "districtId": "25",
+      "upazilaId": "2507",
+      "cityCorporation": "Sirajganj N/A",
+      "cityCorporationBn": "সিরাজগঞ্জ এন/এ",
+      "paurasava": null,
+      "union": null
+    }
+  },
+  {
+    "id": "40055",
+    "code": "",
+    "name": "Gazipur Institute of Health Technology",
+    "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, গাজীপুর",
+    "email": "",
+    "agency": "DGHS",
+    "facilityTypeId": "15",
+    "facilityType": "Institute of Health Technology",
+    "location": {
+      "divisionId": "3",
+      "districtId": "3",
+      "upazilaId": "0301",
+      "cityCorporation": "Gazipur City Corporation",
+      "cityCorporationBn": "গাজীপুর সিটি কর্পোরেশন",
+      "paurasava": null,
+      "union": null
+    }
+  },
+  {
+    "id": "40056",
+    "code": "",
+    "name": "Kurigram Institute of Health Technology",
+    "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, কুড়িগ্রাম",
+    "email": "",
+    "agency": "DGHS",
+    "facilityTypeId": "15",
+    "facilityType": "Institute of Health Technology",
+    "location": {
+      "divisionId": "6",
+      "districtId": "28",
+      "upazilaId": "2804",
+      "cityCorporation": "Kurigram N/A",
+      "cityCorporationBn": "কুড়িগ্রাম এন/এ",
+      "paurasava": null,
+      "union": null
+    }
+  },
+  {
+    "id": "40057",
+    "code": "",
+    "name": "Shibchar Institute of Health Technology, Madaripur",
+    "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, শিবচর, মাদারিপুর",
+    "email": "",
+    "agency": "DGHS",
+    "facilityTypeId": "15",
+    "facilityType": "Institute of Health Technology",
+    "location": {
+      "divisionId": "3",
+      "districtId": "7",
+      "upazilaId": "0704",
+      "cityCorporation": "Madaripur N/A",
+      "cityCorporationBn": "মাদারীপুর এন/এ",
+      "paurasava": null,
+      "union": null
+    }
   }
 ]
