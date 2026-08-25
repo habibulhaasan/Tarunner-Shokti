@@ -416,7 +416,7 @@ export default function AdminEditForm({ profile }) {
             type="text"
             value={draft.memberId || ""}
             onChange={field("memberId")}
-            placeholder="e.g. 0001 — or click Assign for the next sequential number"
+            placeholder="e.g. TSPP-0001 — or click Assign for the next sequential number"
             style={{ flex: 1 }}
           />
           <button
