@@ -19,21 +19,25 @@ function fallbackMemberId(uid) {
   return `TSPP-${uid.slice(0, 6).toUpperCase()}`;
 }
 
-// "শিক্ষার্থী" (student) or a job title/employer line — whatever's on file.
-function getStatusLine(profile) {
+// "শিক্ষার্থী" (Student) or "চাকুরীজীবী (সরকারি/বেসরকারি)" (Service Holder, Govt/Non-Govt).
+function getStatusLabel(profile) {
   const emp = profile.employment;
-  if (!emp) return "";
-  if (emp.status === "studying") return "শিক্ষার্থী";
-  if (emp.jobType === "govt") return emp.officeName || emp.govtOrg || "কর্মরত";
-  if (emp.jobType === "non-govt") return emp.officeName || "কর্মরত";
+  if (!emp?.status) return "";
+  if (emp.status === "studying") return "শিক্ষার্থী (Student)";
+  if (emp.jobType === "govt") return "চাকুরীজীবী (সরকারি)";
+  if (emp.jobType === "non-govt") return "চাকুরীজীবী (বেসরকারি)";
   return "";
 }
 
-// Not collected at registration yet (to be added there separately) — reads
-// from employment.instituteName so the card picks it up automatically the
-// moment that field exists, with zero further changes needed here.
-function getInstituteLine(profile) {
-  return profile.employment?.instituteName || profile.employment?.institute || "";
+// Institute name for a student, office name for a service holder — shown
+// under the status label. instituteName isn't collected at registration yet
+// (separate follow-up); reads it here so the card picks it up automatically
+// the moment that field exists, with zero further changes needed.
+function getPlaceLine(profile) {
+  const emp = profile.employment;
+  if (!emp?.status) return "";
+  if (emp.status === "studying") return emp.instituteName || emp.institute || "";
+  return emp.officeName || emp.govtOrg || "";
 }
 
 export default function IdCardPage() {
@@ -43,6 +47,7 @@ export default function IdCardPage() {
   const [notFound, setNotFound] = useState(false);
   const [qrDataUrl, setQrDataUrl] = useState("");
   const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
   const cardRef = useRef(null);
   const { rolesById } = useCommitteeRoles();
 
@@ -71,12 +76,19 @@ export default function IdCardPage() {
   const handleDownload = async () => {
     if (!cardRef.current) return;
     setDownloading(true);
+    setDownloadError("");
     try {
-      // pixelRatio pushes the exported PNG to print-quality resolution even
-      // though the on-screen element itself is deliberately tiny (true
-      // physical card size) — the file keeps the exact card proportions,
-      // just rendered at higher DPI.
-      const dataUrl = await toPng(cardRef.current, { pixelRatio: 4, backgroundColor: "#ffffff" });
+      // skipFonts: true is the key fix — without it, html-to-image tries to
+      // fetch and inline the Google Fonts (Noto Sans Bengali) stylesheet to
+      // embed in the exported image, which fails under CORS and silently
+      // rejects the whole export. The font is already rendered on-screen by
+      // the browser regardless, so skipping re-embedding doesn't change how
+      // the exported PNG looks — it just avoids the network call that breaks.
+      const dataUrl = await toPng(cardRef.current, {
+        pixelRatio: 4,
+        backgroundColor: "#ffffff",
+        skipFonts: true,
+      });
       const link = document.createElement("a");
       const memberId = profile.memberId || fallbackMemberId(profile.id);
       link.download = `id-card-${memberId}.png`;
@@ -84,6 +96,7 @@ export default function IdCardPage() {
       link.click();
     } catch (err) {
       console.error("ID card image export failed:", err);
+      setDownloadError("ছবি তৈরি করা যায়নি। আবার চেষ্টা করুন, অথবা প্রিন্ট অপশন ব্যবহার করুন।");
     } finally {
       setDownloading(false);
     }
@@ -116,9 +129,9 @@ export default function IdCardPage() {
   const memberId = profile.memberId || fallbackMemberId(profile.id);
   const avatar = profile.photo?.useDefault === false && profile.photo?.base64 ? profile.photo.base64 : defaultAvatarFor(profile.gender);
   const issued = new Date().toLocaleDateString("en-GB"); // en-GB -> plain numerals, dd/mm/yyyy
-  const statusLine = getStatusLine(profile);
+  const statusLabel = getStatusLabel(profile);
   const isStudent = profile.employment?.status === "studying";
-  const instituteLine = isStudent ? getInstituteLine(profile) : "";
+  const placeLine = getPlaceLine(profile);
   const addressLine = getAddressLabel(profile.currentAddress, "bn");
   // Every member's default designation is "সদস্য" (Member) unless they hold
   // a committee role, in which case that role title is shown instead.
@@ -136,35 +149,35 @@ export default function IdCardPage() {
           {downloading ? "তৈরি হচ্ছে…" : "ছবি ডাউনলোড"}
         </button>
       </div>
+      {downloadError && <p className="helper-text no-print" style={{ textAlign: "center", color: "var(--danger)", marginBottom: 10 }}>{downloadError}</p>}
 
       <div className="id-card-stage">
         <div className="id-card" ref={cardRef}>
-          <img
-            src="/iht-rangpur-logo.png"
-            alt=""
-            className="id-card-watermark"
-            style={{ opacity: 0.12 }}
-          />
+          <img src="/logo.png" alt="" className="id-card-watermark" style={{ opacity: 0.12 }} />
 
           <div className="id-card-header" style={{ textAlign: "left" }}>
             <img
-              src="/iht-rangpur-logo.png"
+              src="/logo.png"
               alt=""
               className="id-card-logo"
               style={{ width: "5mm", height: "5mm", maxWidth: "5mm", maxHeight: "5mm", objectFit: "contain" }}
             />
-            <span style={{ textAlign: "left" }}>তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ</span>
+            <div className="id-card-header-text">
+              <span className="id-card-org-name">তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ</span>
+              <span className="id-card-motto">একটা অরাজনৈতিক পেশাজীবি সংগঠন</span>
+            </div>
           </div>
 
           <div className="id-card-body">
             <img src={avatar} alt="" className="id-card-photo" />
             <div className="id-card-info">
-              <div className="id-card-name">{profile.name}</div>
+              <div className="id-card-name">{profile.name}{profile.department ? ` (${profile.department})` : ""}</div>
               <div className="id-card-designation">{designation}</div>
-              {statusLine && <div className="id-card-status">{statusLine}</div>}
-              {isStudent && instituteLine && <div className="id-card-row"><span>ইনস্টিটিউট</span>{instituteLine}</div>}
+              {statusLabel && <div className="id-card-status">{statusLabel}</div>}
+              {placeLine && <div className="id-card-row"><span>{isStudent ? "ইনস্টিটিউট" : "কর্মস্থল"}</span>{placeLine}</div>}
               <div className="id-card-row"><span>সদস্য নং</span>{memberId}</div>
               {profile.bloodGroup && <div className="id-card-row"><span>রক্তের গ্রুপ</span>{profile.bloodGroup}</div>}
+              {profile.phone && <div className="id-card-row"><span>মোবাইল</span>{profile.phone}</div>}
               {addressLine && <div className="id-card-row id-card-address"><span>ঠিকানা</span><span className="id-card-address-value">{addressLine}</span></div>}
             </div>
           </div>

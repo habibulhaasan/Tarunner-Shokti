@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { Printer } from "lucide-react";
-import Letterhead from "../../../components/common/Letterhead";
+import Letterhead, { ORG_INFO } from "../../../components/common/Letterhead";
 import { useMemoDoc } from "../../../lib/memos";
 
 function fmtDate(d) {
@@ -45,30 +45,38 @@ export default function MemoPrintPage() {
       </div>
 
       <div className="memo-print-page">
-        <Letterhead />
+        <img src="/logo.png" alt="" className="memo-watermark" />
 
-        <div className="memo-meta-row">
-          <div>স্মারক নং: {memo.memoNo}</div>
-          <div>তারিখ: {fmtDate(memo.date)}</div>
-        </div>
+        <div className="memo-print-inner">
+          <Letterhead align="left" />
 
-        <div className="memo-subject">
-          <span className="memo-subject-label">বিষয়:</span> {memo.title}
-        </div>
-
-        <div className="memo-body">{memo.content}</div>
-
-        {memo.signatories?.length > 0 && (
-          <div className="memo-signature-row">
-            {memo.signatories.map((s) => (
-              <div key={s.profileUid} className="memo-signature">
-                <div className="memo-signature-line" />
-                <div className="memo-signature-name">{s.name}</div>
-                <div className="memo-signature-role">{s.roleTitle}</div>
-              </div>
-            ))}
+          <div className="memo-meta-row">
+            <div>স্মারক নং: {memo.memoNo}</div>
+            <div>তারিখ: {fmtDate(memo.date)}</div>
           </div>
-        )}
+
+          <div className="memo-subject">
+            <span className="memo-subject-label">বিষয়:</span> {memo.title}
+          </div>
+
+          <div className="memo-body">{memo.content}</div>
+
+          {memo.signatories?.length > 0 && (
+            <div className="memo-signature-row">
+              {memo.signatories.map((s) => (
+                <div key={s.profileUid} className="memo-signature">
+                  <div className="memo-signature-line" />
+                  <div className="memo-signature-name">{s.name}</div>
+                  <div className="memo-signature-role">{s.roleTitle}</div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="memo-footer">
+            অস্থায়ী কার্যালয়: মাতৃ সদন ও শিশু স্বাস্থ্য প্রশিক্ষণ প্রতিষ্ঠান, আজিমপুর, ঢাকা | {ORG_INFO.email || "info.tarunnershokti@gmail.com"} | ০১৭৩৪২২৮৮৩০
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -3,7 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { signOut } from "firebase/auth";
-import { User, Droplet, Users, Star, Shield, Bell, Info, HeartHandshake, Landmark, FileText, Calendar } from "lucide-react";
+import { User, Droplet, Users, Star, Shield, Bell, Info, HeartHandshake, Landmark, FileText, Calendar, LayoutDashboard } from "lucide-react";
 import { auth } from "../../lib/firebase";
 import { clearSessionCookie } from "../../lib/sessionCookie";
 import { useAuth } from "../../context/AuthContext";
@@ -20,6 +20,7 @@ import MobileMoreSheet from "./MobileMoreSheet";
 // "overflow" (behind the More sheet) using MOBILE_PRIMARY_KEYS below —
 // desktop is unaffected and just renders everything flat.
 const DASHBOARD_TABS = [
+  { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { key: "profile", label: "My Profile", icon: User },
   { key: "donations", label: "Blood Donations", icon: Droplet },
   { key: "directory", label: "Directory", icon: Users },
@@ -34,7 +35,7 @@ const DASHBOARD_TABS = [
 // Anything NOT in this list automatically falls into the mobile "More"
 // sheet — so future tabs need zero nav-restructuring work, they just show
 // up under More by default until explicitly promoted to primary here.
-const MOBILE_PRIMARY_KEYS = ["profile", "directory", "notifications", "about"];
+const MOBILE_PRIMARY_KEYS = ["dashboard", "directory", "notifications", "profile"];
 
 export default function AppShell({ children }) {
   const { user, userDoc } = useAuth();
@@ -47,7 +48,7 @@ export default function AppShell({ children }) {
   const { hidden: hiddenTabs } = useTabVisibility();
   const [moreOpen, setMoreOpen] = useState(false);
 
-  const activeKey = pathname === "/admin" ? "admin" : searchParams.get("tab") || "profile";
+  const activeKey = pathname === "/admin" ? "admin" : searchParams.get("tab") || "dashboard";
 
   // The "Donate" tab is admin-controlled: hidden from regular members until
   // an admin flips fundSettings.visible on. Admins always see it themselves

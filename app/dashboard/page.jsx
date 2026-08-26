@@ -1,6 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import DashboardOverviewTab from "../../components/dashboard/DashboardOverviewTab";
 import MyProfileTab from "../../components/dashboard/MyProfileTab";
 import DonationsTab from "../../components/dashboard/DonationsTab";
 import DirectoryTab from "../../components/dashboard/DirectoryTab";
@@ -13,6 +14,7 @@ import MemosTab from "../../components/dashboard/MemosTab";
 import EventsTab from "../../components/dashboard/EventsTab";
 
 const TAB_COMPONENTS = {
+  dashboard: DashboardOverviewTab,
   profile: MyProfileTab,
   donations: DonationsTab,
   directory: DirectoryTab,
@@ -27,8 +29,8 @@ const TAB_COMPONENTS = {
 
 export default function DashboardPage() {
   const searchParams = useSearchParams();
-  const tab = searchParams.get("tab") || "profile";
-  const Active = TAB_COMPONENTS[tab] || MyProfileTab;
+  const tab = searchParams.get("tab") || "dashboard";
+  const Active = TAB_COMPONENTS[tab] || DashboardOverviewTab;
 
   return <Active />;
 }

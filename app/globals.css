@@ -2920,6 +2920,36 @@ select:disabled {
   padding: 20mm 18mm;
   box-sizing: border-box;
   font-family: var(--font-body);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.memo-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 130mm;
+  max-width: 60%;
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* flex:1 fills whatever height .memo-print-page has (at least one A4 page,
+   more if content is long) — that's what lets .memo-footer's margin-top:auto
+   push all the way to the true bottom of the page regardless of how much or
+   little content the memo has, while the signature block stays right where
+   it belongs: directly after the letter body, not artificially pinned down. */
+.memo-print-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
 }
 
 .memo-meta-row {
@@ -2969,6 +2999,16 @@ select:disabled {
 
 .memo-signature-name { font-weight: 700; color: var(--forest); }
 .memo-signature-role { color: var(--muted); margin-top: 2px; }
+
+.memo-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border, var(--line));
+  font-size: 10.5px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.6;
+}
 
 @media print {
   .dashboard-sidebar-desktop,
@@ -3185,8 +3225,8 @@ select:disabled {
 .id-card-header {
   display: flex;
   align-items: center;
-  gap: 1.5mm;
-  padding-bottom: 1.5mm;
+  gap: 1.3mm;
+  padding-bottom: 1mm;
   border-bottom: 0.4mm solid var(--forest);
   flex-shrink: 0;
 }
@@ -3198,25 +3238,45 @@ select:disabled {
   flex-shrink: 0;
 }
 
-.id-card-header span {
-  font-size: 2.1mm;
+.id-card-header-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  min-width: 0;
+}
+
+.id-card-org-name {
+  font-size: 1.9mm;
   font-weight: 700;
   color: var(--forest);
-  line-height: 1.2;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.id-card-motto {
+  font-size: 1.3mm;
+  font-weight: 400;
+  color: var(--muted);
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .id-card-body {
   display: flex;
   align-items: flex-start;
-  gap: 2.2mm;
-  margin-top: 2mm;
+  gap: 2mm;
+  margin-top: 1.3mm;
   flex: 1;
   min-height: 0;
 }
 
 .id-card-photo {
-  width: 15mm;
-  height: 18mm;
+  width: 14mm;
+  height: 17mm;
   border-radius: 1mm;
   object-fit: cover;
   flex-shrink: 0;
@@ -3226,47 +3286,47 @@ select:disabled {
 .id-card-info { flex: 1; min-width: 0; }
 
 .id-card-name {
-  font-size: 3mm;
+  font-size: 2.6mm;
   font-weight: 700;
   color: var(--forest);
-  line-height: 1.2;
+  line-height: 1.15;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .id-card-designation {
-  font-size: 1.9mm;
+  font-size: 1.7mm;
   font-weight: 600;
   color: var(--white);
   background: var(--coral);
   display: inline-block;
-  padding: 0.3mm 1.4mm;
+  padding: 0.25mm 1.3mm;
   border-radius: 999px;
-  margin-top: 0.6mm;
+  margin-top: 0.4mm;
 }
 
 .id-card-status {
-  font-size: 2.1mm;
+  font-size: 1.8mm;
   color: var(--coral-dark);
   font-weight: 600;
-  margin-top: 0.4mm;
+  margin-top: 0.35mm;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .id-card-row {
-  font-size: 1.9mm;
-  margin-top: 1mm;
+  font-size: 1.7mm;
+  margin-top: 0.7mm;
   display: flex;
   gap: 1mm;
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 .id-card-row span {
   color: var(--muted);
-  min-width: 12mm;
+  min-width: 11mm;
   flex-shrink: 0;
 }
 
@@ -3285,18 +3345,18 @@ select:disabled {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin-top: 1mm;
+  margin-top: 0.8mm;
   flex-shrink: 0;
 }
 
 .id-card-footer span {
-  font-size: 1.7mm;
+  font-size: 1.5mm;
   color: var(--muted);
 }
 
 .id-card-qr {
-  width: 9mm;
-  height: 9mm;
+  width: 8mm;
+  height: 8mm;
   flex-shrink: 0;
 }
 
@@ -3353,6 +3413,7 @@ select:disabled {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .certificate-title {
@@ -3393,7 +3454,7 @@ select:disabled {
   display: flex;
   justify-content: space-between;
   gap: 24px;
-  margin-top: auto;
+  margin-top: 40px;
   padding: 0 14px;
 }
 

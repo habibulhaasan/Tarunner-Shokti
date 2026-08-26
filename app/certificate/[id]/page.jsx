@@ -7,13 +7,33 @@ import { Printer } from "lucide-react";
 import { db } from "../../../lib/firebase";
 import { useAuth } from "../../../context/AuthContext";
 import { useMyContributions } from "../../../lib/fundContributions";
-import { useCommitteeMembers } from "../../../lib/committee";
+import { useCommitteeMembers, useCommitteeRoles } from "../../../lib/committee";
 import Letterhead, { ORG_INFO } from "../../../components/common/Letterhead";
 
 // Fixed signatory roles for every certificate — real names are looked up
 // live from whoever currently holds these committee roles, so this updates
 // automatically as the committee changes with no code/content edits needed.
 const CERTIFICATE_SIGNATORY_TITLES = ["সভাপতি (বা প্রধান সমন্বয়কারী)", "মহাসচিব", "অর্থ সম্পাদক"];
+
+// "Pharmacist" for the Pharmacy department, "Medical Technologist (X)" for
+// every other department — the two professional titles this org's members
+// actually hold.
+function getProfessionalDesignation(profile) {
+  if (!profile.department) return "";
+  if (profile.department === "Pharmacy") return "Pharmacist";
+  return `Medical Technologist (${profile.department})`;
+}
+
+// Institute name for a student, office name for a service holder — same
+// logic as the ID card. instituteName isn't collected at registration yet
+// (separate follow-up); reads it here so this picks it up automatically the
+// moment that field exists.
+function getPlaceLine(profile) {
+  const emp = profile.employment;
+  if (!emp?.status) return "";
+  if (emp.status === "studying") return emp.instituteName || emp.institute || "";
+  return emp.officeName || emp.govtOrg || "";
+}
 
 export default function CertificatePage() {
   const { id: targetUid } = useParams();
@@ -22,6 +42,7 @@ export default function CertificatePage() {
   const [notFound, setNotFound] = useState(false);
   const { items, ready } = useMyContributions(targetUid);
   const { members: committeeMembers } = useCommitteeMembers();
+  const { rolesById } = useCommitteeRoles();
 
   const isAdmin = userDoc?.role === "admin";
   const isSelf = user?.uid === targetUid;
@@ -79,6 +100,12 @@ export default function CertificatePage() {
     return { title, name: holder?.name || "" };
   });
 
+  const professionalDesignation = getProfessionalDesignation(profile);
+  const placeLine = getPlaceLine(profile);
+  // Same "সদস্য" default as the ID card — the person's designation within
+  // TSPP itself, separate from their professional title above.
+  const orgDesignation = (profile.committeeRoleId && rolesById[profile.committeeRoleId]?.title) || "সদস্য";
+
   return (
     <div className="memo-print-wrap">
       <div className="no-print memo-print-toolbar" style={{ width: "297mm" }}>
@@ -104,8 +131,9 @@ export default function CertificatePage() {
             <p className="certificate-body">
               এই মর্মে প্রত্যয়ন করা যাচ্ছে যে,{" "}
               <span className="certificate-highlight">{profile.name}</span>
-              {profile.department ? ` (${profile.department}${profile.session ? `, ${profile.session}` : ""})` : ""}{" "}
-              তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ-এর কল্যাণ তহবিলে সর্বমোট{" "}
+              {professionalDesignation ? `, ${professionalDesignation}` : ""}
+              {placeLine ? `, ${placeLine}` : ""}, তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ-এর{" "}
+              <span className="certificate-highlight">{orgDesignation}</span>, কল্যাণ তহবিলে সর্বমোট{" "}
               <span className="certificate-highlight">৳{total.toLocaleString()}</span> টাকা অনুদান প্রদান করেছেন। পরিষদের
               পক্ষ থেকে তাঁর এই মহতী অবদানের জন্য আন্তরিক কৃতজ্ঞতা ও ধন্যবাদ জ্ঞাপন করা হচ্ছে। ভবিষ্যতেও তাঁর এই সহযোগিতা
               অব্যাহত থাকবে বলে আমরা আশাবাদী।
