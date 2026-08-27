@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
@@ -10,7 +10,13 @@ import AppShell from "./nav/AppShell";
 const AUTH_GATEWAY_PATHS = ["/", "/login", "/register", "/forgot-password"];
 
 function isOpenPath(pathname) {
-  return AUTH_GATEWAY_PATHS.includes(pathname) || pathname === "/info" || pathname.startsWith("/memo/");
+  return (
+    AUTH_GATEWAY_PATHS.includes(pathname) ||
+    pathname === "/info" ||
+    pathname === "/committee" ||
+    pathname === "/notices" ||
+    pathname.startsWith("/memo/")
+  );
 }
 
 export default function RouteGuard({ children }) {
@@ -62,7 +68,13 @@ export default function RouteGuard({ children }) {
 
   const isGateway = AUTH_GATEWAY_PATHS.includes(pathname);
   const showShell =
-    !!user && !!userDoc?.profileComplete && !isGateway && pathname !== "/onboarding" && pathname !== "/info";
+    !!user &&
+    !!userDoc?.profileComplete &&
+    !isGateway &&
+    pathname !== "/onboarding" &&
+    pathname !== "/info" &&
+    pathname !== "/committee" &&
+    pathname !== "/notices";
 
   return showShell ? <AppShell>{children}</AppShell> : children;
 }

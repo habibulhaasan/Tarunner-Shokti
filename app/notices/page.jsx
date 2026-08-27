@@ -1,0 +1,69 @@
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { FileText } from "lucide-react";
+import { useVisibleMemos } from "../../lib/memos";
+
+function fmtDate(d) {
+  try {
+    return new Date(d).toLocaleDateString(undefined, { dateStyle: "medium" });
+  } catch {
+    return d;
+  }
+}
+
+export default function NoticesPage() {
+  const { items: memos, ready: memosReady } = useVisibleMemos();
+
+  return (
+    <div className="landing-shell">
+      <nav className="landing-nav">
+        <div className="landing-nav-brand">
+          <div className="landing-nav-logo-wrap">
+            <Image src="/logo.png" alt="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ" fill className="landing-nav-logo" sizes="32px" />
+          </div>
+          তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ
+        </div>
+        <div className="landing-nav-actions">
+          <Link href="/" className="landing-nav-link">হোম</Link>
+          <Link href="/committee" className="landing-nav-link">কমিটি</Link>
+          <Link href="/login" className="landing-nav-link">লগ ইন</Link>
+          <Link href="/register" className="btn landing-nav-cta">রেজিস্টার করুন</Link>
+        </div>
+      </nav>
+
+      <section className="landing-features" style={{ minHeight: "60vh" }}>
+        <h2 className="landing-section-title">
+          <FileText size={22} style={{ verticalAlign: "-4px", marginRight: 8 }} />
+          প্রকাশিত স্মারক ও নোটিশ
+        </h2>
+        {!memosReady && <p className="helper-text" style={{ textAlign: "center" }}>লোড হচ্ছে…</p>}
+        {memosReady && memos.length === 0 && (
+          <p className="helper-text" style={{ textAlign: "center" }}>এখনও কোনো স্মারক প্রকাশ করা হয়নি।</p>
+        )}
+        <div className="fund-review-list" style={{ marginTop: 24, maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
+          {memos.map((m) => (
+            <div key={m.id} className="fund-review-card">
+              <div className="fund-review-top">
+                <div>
+                  <div className="fund-review-donor">{m.memoNo}</div>
+                  <div className="fund-review-meta">{m.title} · {fmtDate(m.date)}</div>
+                </div>
+              </div>
+              <div className="fund-review-actions">
+                <Link href={/memo/} target="_blank" className="btn-ghost btn" style={{ width: "auto" }}>
+                  দেখুন / প্রিন্ট করুন
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <footer className="landing-footer">
+        © {new Date().getFullYear()} তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ। সর্বস্বত্ব সংরক্ষিত।
+      </footer>
+    </div>
+  );
+}

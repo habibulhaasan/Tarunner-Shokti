@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   Users, Droplet, Bell, ShieldCheck, HeartHandshake, Landmark, FileText,
-  Download, Smartphone, Target, Eye, Rocket,
+  Download, Smartphone, Target, Eye, Rocket, MapPin, Mail, Phone,
 } from "lucide-react";
 
 const FEATURES = [
@@ -47,7 +47,9 @@ export default function LandingPage() {
         <div className="landing-nav-actions">
           <a href="#mission" className="landing-nav-link">লক্ষ্য ও উদ্দেশ্য</a>
           <a href="#features" className="landing-nav-link">সুবিধাসমূহ</a>
-          <Link href="/info" className="landing-nav-link">কমিটি ও নোটিশ</Link>
+          <Link href="/committee" className="landing-nav-link">কমিটি</Link>
+          <Link href="/notices" className="landing-nav-link">নোটিশ</Link>
+          <a href="#contact" className="landing-nav-link">যোগাযোগ</a>
           <Link href="/login" className="landing-nav-link">লগ ইন</Link>
           <Link href="/register" className="btn landing-nav-cta">রেজিস্টার করুন</Link>
         </div>
@@ -111,6 +113,26 @@ export default function LandingPage() {
               <p>{f.desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section id="contact" style={{ background: "var(--white)", borderTop: "1px solid var(--line)", padding: "54px 24px 64px" }}>
+        <div style={{ maxWidth: "960px", margin: "0 auto" }}>
+          <h2 className="landing-section-title" style={{ marginBottom: "28px" }}>যোগাযোগ</h2>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "center", gap: "20px 40px", fontSize: "15px", color: "#334155" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <MapPin size={18} style={{ color: "var(--coral)", flexShrink: 0 }} />
+              <span><strong>অস্থায়ী কার্যালয়:</strong> মাতৃ সনদ ও শিশু স্বাস্থ্য প্রশিক্ষণ প্রতিষ্ঠান, আজিমপুর, ঢাকা</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Mail size={18} style={{ color: "var(--coral)", flexShrink: 0 }} />
+              <a href="mailto:info.tarunnershokti@gmail.com" style={{ color: "var(--coral)", textDecoration: "none", fontWeight: 600 }}>info.tarunnershokti@gmail.com</a>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Phone size={18} style={{ color: "var(--coral)", flexShrink: 0 }} />
+              <a href="tel:01734228830" style={{ color: "var(--coral)", textDecoration: "none", fontWeight: 600 }}>01734228830</a>
+            </div>
+          </div>
         </div>
       </section>
 
