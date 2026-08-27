@@ -821,8 +821,8 @@
   {
     "id": "16770",
     "code": "10017205",
-    "name": "Barishal Institute of Health Technology",
-    "nameBn": "বরিশাল ইনস্টিটিউট অফ হেলথ টেকনোলজি",
+    "name": "Institute of Health Technology, Barishal",
+    "nameBn": "ইনস্টিটিউট অফ হেলথ টেকনোলজি, বরিশাল",
     "email": "istb@ac.dghs.gov.bd",
     "agency": "DGHS",
     "facilityTypeId": "15",
@@ -12019,8 +12019,8 @@
   {
     "id": "33741",
     "code": "10034153",
-    "name": "Kabirhat Institute of Health Technology, Noakhali",
-    "nameBn": "কবিরহাট  ইনস্টিটিউট অফ হেলথ টেকনোলজি, নোয়াখালী।",
+    "name": "Institute of Health Technology, Noakhali",
+    "nameBn": "ইনস্টিটিউট অফ হেলথ টেকনোলজি, নোয়াখালী।",
     "email": "",
     "agency": "DGHS",
     "facilityTypeId": "15",
@@ -16453,25 +16453,6 @@
     }
   },
   {
-    "id": "24178",
-    "code": "10024590",
-    "name": "Gopalganj Institute of Health Technology",
-    "nameBn": "গোপালগঞ্জ ইনস্টিটিউট অব হেলথ টেকনোলজি",
-    "email": "",
-    "agency": "DGHS",
-    "facilityTypeId": "15",
-    "facilityType": "Institute of Health Technology",
-    "location": {
-      "divisionId": "3",
-      "districtId": "4",
-      "upazilaId": "0401",
-      "cityCorporation": "Gopalganj N/A",
-      "cityCorporationBn": "গোপালগঞ্জ এন/এ",
-      "paurasava": null,
-      "union": null
-    }
-  },
-  {
     "id": "2216",
     "code": "10002233",
     "name": "Gopalganj 250 bed General Hospital",
@@ -16588,8 +16569,8 @@
   {
     "id": "33743",
     "code": "10034155",
-    "name": "Kashiani Institute of Health Technology, Gopalganj",
-    "nameBn": "কাশিয়ানী  ইনস্টিটিউট অফ হেলথ টেকনোলজি, গোপালগঞ্জ।",
+    "name": "Institute of Health Technology, Kashiani, Gopalganj",
+    "nameBn": "ইনস্টিটিউট অফ হেলথ টেকনোলজি, কাশিয়ানী গোপালগঞ্জ।",
     "email": "ihtkashiani@ac.dghs.gov.bd",
     "agency": "DGHS",
     "facilityTypeId": "15",
@@ -16987,8 +16968,8 @@
   {
     "id": "36007",
     "code": "10036419",
-    "name": "Tungipara Institute of Health Technology, Gopalganj",
-    "nameBn": "টুঙ্গিপাড়া ইনস্টিটিউট অফ হেলথ টেকনোলজি, গোপালগঞ্জ",
+    "name": "Institute of Health Technology, Tungipara, Gopalganj",
+    "nameBn": "ইনস্টিটিউট অফ হেলথ টেকনোলজি, টুঙ্গিপাড়া, গোপালগঞ্জ",
     "email": "",
     "agency": "DGHS",
     "facilityTypeId": "15",
@@ -19305,8 +19286,8 @@
   {
     "id": "33738",
     "code": "10034150",
-    "name": "Madaripur Institute of Health Technology",
-    "nameBn": "মাদারীপুর  ইনস্টিটিউট অফ হেলথ টেকনোলজি",
+    "name": "Institute of Health Technology, Madaripur",
+    "nameBn": "ইনস্টিটিউট অফ হেলথ টেকনোলজি, মাদারীপুর",
     "email": "",
     "agency": "DGHS",
     "facilityTypeId": "15",
@@ -20331,8 +20312,8 @@
   {
     "id": "33739",
     "code": "10034151",
-    "name": "Manikganj Institute of Health Technology",
-    "nameBn": "মানিকগঞ্জ  ইনস্টিটিউট অফ হেলথ টেকনোলজি",
+    "name": "Institute of Health Technology, Manikganj",
+    "nameBn": "ইনস্টিটিউট অফ হেলথ টেকনোলজি, মানিকগঞ্জ",
     "email": "",
     "agency": "DGHS",
     "facilityTypeId": "15",
@@ -22079,8 +22060,8 @@
   {
     "id": "25157",
     "code": "10025569",
-    "name": "Munshiganj Institute of Health Technology",
-    "nameBn": "মুন্সিগঞ্জ ইনস্টিটিউট অব হেলথ টেকনোলজি",
+    "name": "Institute of Health Technology, Munshiganj",
+    "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, মুন্সিগঞ্জ",
     "email": "",
     "agency": "DGHS",
     "facilityTypeId": "15",
@@ -31697,25 +31678,6 @@
     }
   },
   {
-    "id": "25254",
-    "code": "10025666",
-    "name": "Khulna Institute of Health Technology",
-    "nameBn": "খুলনা ইনষ্টিটিউট অব হেলথ টেকনোলজি।",
-    "email": "",
-    "agency": "DGHS",
-    "facilityTypeId": "15",
-    "facilityType": "Institute of Health Technology",
-    "location": {
-      "divisionId": "4",
-      "districtId": "59",
-      "upazilaId": "5911",
-      "cityCorporation": "Khulna City Corporation",
-      "cityCorporationBn": "খুলনা সিটি করপোরেশন",
-      "paurasava": null,
-      "union": null
-    }
-  },
-  {
     "id": "1798",
     "code": "10001805",
     "name": "Khulna 250 Bed General Hospital",
@@ -33953,8 +33915,8 @@
   {
     "id": "24776",
     "code": "10025188",
-    "name": "Satkhira Institute of Health Technology",
-    "nameBn": "সাতক্ষীরা ইনস্টিটিউট অব হেলথ টেকনোলজি",
+    "name": "Institute of Health Technology, Satkhira",
+    "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, সাতক্ষীরা",
     "email": "",
     "agency": "DGHS",
     "facilityTypeId": "15",
@@ -35682,8 +35644,8 @@
   {
     "id": "24988",
     "code": "10025400",
-    "name": "Gopinathpur Institute of Health Technology, Joypurhat",
-    "nameBn": "গোপিনাথপুর ইনস্টিটিউট অফ হেলথ টেকনোলজি, জয়পুরহাট।",
+    "name": "Institute of Health Technology, Joypurhat",
+    "nameBn": "ইনস্টিটিউট অফ হেলথ টেকনোলজি, জয়পুরহাট।",
     "email": "ihtgopinathpur@ac.dghs.gov.bd",
     "agency": "DGHS",
     "facilityTypeId": "15",
@@ -36271,8 +36233,8 @@
   {
     "id": "36008",
     "code": "10036420",
-    "name": "Dhamoirhat Institute of Health Technology, Naogaon",
-    "nameBn": "ধামইরহাট ইনস্টিটিউট অফ হেলথ টেকনোলজি, নওগাঁ",
+    "name": "Institute of Health Technology, Naogaon",
+    "nameBn": "ইনস্টিটিউট অফ হেলথ টেকনোলজি, নওগাঁ",
     "email": "",
     "agency": "DGHS",
     "facilityTypeId": "15",
@@ -49554,8 +49516,8 @@
   {
     "id": "24640",
     "code": "10025052",
-    "name": "Jamalpur Institute of Health Technology",
-    "nameBn": "জামালপুর ইনস্টিটিউট অব হেলথ টেকনোলজি",
+    "name": "Institute of Health Technology, Jamalpur",
+    "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, জামালপুর",
     "email": "sheikhhasinaiht@ac.dghs.gov.bd",
     "agency": "DGHS",
     "facilityTypeId": "15",
@@ -49573,8 +49535,8 @@
   {
     "id": "35989",
     "code": "10036401",
-    "name": "Mymensingh Institute of Health Technology",
-    "nameBn": "ময়মনসিংহ ইনস্টিটিউট অব হেলথ টেকনোলজি",
+    "name": "Institute of Health Technology, Mymensingh",
+    "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, ময়মনসিংহ",
     "email": "",
     "agency": "DGHS",
     "facilityTypeId": "15",
@@ -49668,7 +49630,7 @@
   {
     "id": "40047",
     "code": "",
-    "name": "Dhaka Institute of Health Technology",
+    "name": "Institute of Health Technology, Dhaka",
     "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, ঢাকা",
     "email": "",
     "agency": "DGHS",
@@ -49687,7 +49649,7 @@
   {
     "id": "40048",
     "code": "",
-    "name": "Rajshahi Institute of Health Technology",
+    "name": "Institute of Health Technology, Rajshahi",
     "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, রাজশাহী",
     "email": "",
     "agency": "DGHS",
@@ -49706,7 +49668,7 @@
   {
     "id": "40049",
     "code": "",
-    "name": "Bogura Institute of Health Technology",
+    "name": "Institute of Health Technology, Bogura",
     "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, বগুড়া",
     "email": "",
     "agency": "DGHS",
@@ -49725,7 +49687,7 @@
   {
     "id": "40050",
     "code": "",
-    "name": "Chattogram Institute of Health Technology",
+    "name": "Institute of Health Technology, Chattogram",
     "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, চট্টগ্রাম",
     "email": "",
     "agency": "DGHS",
@@ -49744,7 +49706,7 @@
   {
     "id": "40051",
     "code": "",
-    "name": "Rangpur Institute of Health Technology",
+    "name": "Institute of Health Technology, Rangpur",
     "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, রংপুর",
     "email": "",
     "agency": "DGHS",
@@ -49763,7 +49725,7 @@
   {
     "id": "40052",
     "code": "",
-    "name": "Jhenaidah Institute of Health Technology",
+    "name": "Institute of Health Technology, Jhenaidah",
     "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, ঝিনাইদহ",
     "email": "",
     "agency": "DGHS",
@@ -49782,7 +49744,7 @@
   {
     "id": "40053",
     "code": "",
-    "name": "Sylhet Institute of Health Technology",
+    "name": "Institute of Health Technology, Sylhet",
     "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, সিলেট",
     "email": "",
     "agency": "DGHS",
@@ -49801,7 +49763,7 @@
   {
     "id": "40054",
     "code": "",
-    "name": "Sirajganj Institute of Health Technology",
+    "name": "Institute of Health Technology, Sirajganj",
     "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, সিরাজগঞ্জ",
     "email": "",
     "agency": "DGHS",
@@ -49820,7 +49782,7 @@
   {
     "id": "40055",
     "code": "",
-    "name": "Gazipur Institute of Health Technology",
+    "name": "Institute of Health Technology, Gazipur",
     "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, গাজীপুর",
     "email": "",
     "agency": "DGHS",
@@ -49839,7 +49801,7 @@
   {
     "id": "40056",
     "code": "",
-    "name": "Kurigram Institute of Health Technology",
+    "name": "Institute of Health Technology, Kurigram",
     "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, কুড়িগ্রাম",
     "email": "",
     "agency": "DGHS",
@@ -49851,25 +49813,6 @@
       "upazilaId": "2804",
       "cityCorporation": "Kurigram N/A",
       "cityCorporationBn": "কুড়িগ্রাম এন/এ",
-      "paurasava": null,
-      "union": null
-    }
-  },
-  {
-    "id": "40057",
-    "code": "",
-    "name": "Shibchar Institute of Health Technology, Madaripur",
-    "nameBn": "ইনস্টিটিউট অব হেলথ টেকনোলজি, শিবচর, মাদারিপুর",
-    "email": "",
-    "agency": "DGHS",
-    "facilityTypeId": "15",
-    "facilityType": "Institute of Health Technology",
-    "location": {
-      "divisionId": "3",
-      "districtId": "7",
-      "upazilaId": "0704",
-      "cityCorporation": "Madaripur N/A",
-      "cityCorporationBn": "মাদারীপুর এন/এ",
       "paurasava": null,
       "union": null
     }

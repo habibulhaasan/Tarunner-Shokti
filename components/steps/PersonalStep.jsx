@@ -15,7 +15,7 @@ export default function PersonalStep({ data, setData }) {
 
       <div className="field">
         <label>Full name</label>
-        <input type="text" value={data.name || ""} onChange={field("name")} required />
+        <input type="text" value={data.name || ""} onChange={field("name")} placeholder="বাংলায় লিখুন" required />
       </div>
 
       <div className="field">

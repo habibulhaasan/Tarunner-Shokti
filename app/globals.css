@@ -73,6 +73,7 @@ h3 {
   letter-spacing: -0.01em;
   color: var(--forest);
   margin: 0;
+  padding-top: 20px;
 }
 
 a {
@@ -612,6 +613,7 @@ select:disabled {
   flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 28px;
+  padding-top: 20px;
 }
 
 .profile-header-name {
@@ -2468,7 +2470,7 @@ select:disabled {
 
 .auth-hero-logo-wrap img {
   /* This turns a dark/black image completely pure white */
-  filter: brightness(0) invert(1);
+  filter: brightness(1) invert(0);
 }
 
 .auth-hero-logo {

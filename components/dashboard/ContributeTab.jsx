@@ -81,6 +81,13 @@ export default function ContributeTab() {
       <h1>Donate</h1>
       <p className="step-sub">Support the community fund and track exactly where it goes.</p>
 
+      {myApprovedTotal > 0 && (
+        <Link href={`/certificate/${user.uid}`} target="_blank" className="btn-ghost btn certificate-link-btn">
+          <Award size={14} style={{ verticalAlign: "-2px", marginRight: 6 }} />
+          অনুদান সনদ
+        </Link>
+      )}
+
       <div className="fund-summary-cards">
         <div className="fund-summary-card">
           <div className="fund-summary-label">Current fund balance</div>
@@ -95,13 +102,6 @@ export default function ContributeTab() {
           <div className="fund-summary-amount">৳{expenseTotal.toLocaleString()}</div>
         </div>
       </div>
-
-      {myApprovedTotal > 0 && (
-        <Link href={`/certificate/${user.uid}`} target="_blank" className="btn-ghost btn certificate-link-btn">
-          <Award size={14} style={{ verticalAlign: "-2px", marginRight: 6 }} />
-          অনুদান সনদ
-        </Link>
-      )}
 
       <div className="admin-panel-section" style={{ marginTop: 24 }}>
         <h3>Submit a contribution</h3>

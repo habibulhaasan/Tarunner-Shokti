@@ -73,7 +73,7 @@ export default function AboutTab() {
         <h3>ডেভেলপার</h3>
         {/* TODO: প্রকৃত ডেভেলপার তথ্য দিয়ে প্রতিস্থাপন করুন */}
         <div className="about-dev-name">Habibul Hasan Hasib</div>
-        <div className="about-dev-role">Ex-Student</div>
+        <div className="about-dev-role">Pharmacist</div>
         <div className="about-dev-links">
           <a href="https://facebook.com/habibulhaasan" target="_blank" rel="noopener noreferrer" className="about-dev-link">
             <Link2 size={15} /> facebook.com/habibulhaasan

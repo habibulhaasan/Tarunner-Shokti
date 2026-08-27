@@ -68,7 +68,7 @@ function AddressBlock({ label, value, onChange }) {
           type="text"
           value={address.localAddress || ""}
           onChange={(e) => set({ localAddress: e.target.value })}
-          placeholder="House/road/village — e.g. House 12, Road 4, Shalbon"
+          placeholder="বাসা/রাস্তা/গ্রাম — যেমনঃ বাড়ি ১১, রাস্তা-২, বাবুপাড়া"
         />
         <p className="helper-text">Optional — detail below upazila level.</p>
       </div>
