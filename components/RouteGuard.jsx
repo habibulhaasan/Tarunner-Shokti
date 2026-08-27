@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
@@ -53,9 +53,10 @@ export default function RouteGuard({ children }) {
 
   const isAdmin = userDoc?.role === "admin";
 
-  // Maintenance mode: blocks everyone except signed-in admins and the
-  // /login page itself (so an admin can actually sign in to flip it back).
-  if (!live && !isAdmin && pathname !== "/login") {
+  // Maintenance mode: only blocks login and register pages so the
+  // landing page stays live. Admins bypass completely.
+  const MAINTENANCE_BLOCKED_PATHS = ["/login", "/register"];
+  if (!live && !isAdmin && MAINTENANCE_BLOCKED_PATHS.includes(pathname)) {
     return <MaintenancePage />;
   }
 
