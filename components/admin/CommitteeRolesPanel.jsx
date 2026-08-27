@@ -30,6 +30,10 @@ export default function CommitteeRolesPanel() {
     setDraft(list.map((r) => (r.id === id ? { ...r, title } : r)));
   };
 
+  const toggleSignatory = (id) => {
+    setDraft(list.map((r) => (r.id === id ? { ...r, isSignatory: !r.isSignatory } : r)));
+  };
+
   const addRole = () => {
     const nextOrder = list.length ? Math.max(...list.map((r) => r.order ?? 0)) + 1 : 0;
     setDraft([...list, newRoleDraft(nextOrder)]);
@@ -52,7 +56,7 @@ export default function CommitteeRolesPanel() {
     setSavedMsg("");
     try {
       const cleaned = list
-        .map((r, i) => ({ ...r, title: r.title.trim(), order: i }))
+        .map((r, i) => ({ ...r, title: r.title.trim(), order: i, isSignatory: !!r.isSignatory }))
         .filter((r) => r.title);
       await saveCommitteeRoles(cleaned);
       setDraft(null);
@@ -70,20 +74,26 @@ export default function CommitteeRolesPanel() {
       <h3>Committee roles</h3>
       <p className="step-sub">
         Define the roles here, then assign one to each member from the member list (open a member and pick their role).
-        Order here controls the order the committee page shows members in.
+        Order here controls the order the committee page shows members in. Tick <strong>Signatory</strong> for any
+        role whose current holder should sign the donation certificate — the certificate pulls those roles and names
+        live, so it updates automatically whenever a role holder changes.
       </p>
 
       <div className="fund-account-list">
         {list.map((r, i) => (
-          <div key={r.id} className="fund-account-card-footer" style={{ border: "1px solid var(--border, var(--line))", borderRadius: 10, padding: "10px 14px" }}>
+          <div key={r.id} className="fund-account-card-footer" style={{ border: "1px solid var(--border, var(--line))", borderRadius: 10, padding: "10px 14px", flexWrap: "wrap" }}>
             <GripVertical size={15} style={{ color: "var(--muted)" }} />
             <input
               type="text"
               placeholder="e.g. President, General Secretary, Treasurer"
               value={r.title}
               onChange={(e) => updateTitle(r.id, e.target.value)}
-              style={{ flex: 1 }}
+              style={{ flex: 1, minWidth: 160 }}
             />
+            <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, whiteSpace: "nowrap", color: "var(--muted)" }}>
+              <input type="checkbox" checked={!!r.isSignatory} onChange={() => toggleSignatory(r.id)} />
+              Signatory
+            </label>
             <button type="button" className="link-button" disabled={i === 0} onClick={() => move(i, -1)}>Up</button>
             <button type="button" className="link-button" disabled={i === list.length - 1} onClick={() => move(i, 1)}>Down</button>
             <button type="button" className="link-danger" onClick={() => removeRole(r.id)}>

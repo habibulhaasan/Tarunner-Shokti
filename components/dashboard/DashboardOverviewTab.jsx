@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, doc, onSnapshot } from "firebase/firestore";
 import {
   Bell, FileText, Calendar, HeartHandshake, Users, Landmark,
   Wallet, Receipt, BookOpen, MapPin, ArrowRight,
@@ -50,6 +50,9 @@ export default function DashboardOverviewTab() {
   const { user, userDoc } = useAuth();
   const isAdmin = userDoc?.role === "admin";
 
+  const [profileData, setProfileData] = useState(null);
+  const [memberCount, setMemberCount] = useState(null);
+
   const { notifications, unreadCount, ready: notifReady } = useNotifications(user?.uid);
   const { items: memos, ready: memosReady } = useVisibleMemos();
   const { items: events, ready: eventsReady } = useVisibleEvents();
@@ -57,12 +60,35 @@ export default function DashboardOverviewTab() {
   const { items: myContributions } = useMyContributions(user?.uid);
   const { approvedTotal, expenseTotal, balance, ready: fundReady } = useFundBalance();
 
-  const [memberCount, setMemberCount] = useState(null);
-
+  // Fetch logged-in user's profile from 'profiles' collection safely
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, "profiles"), (snap) => setMemberCount(snap.size));
+    if (!user?.uid) return;
+
+    const unsubProfile = onSnapshot(
+      doc(db, "profiles", user.uid),
+      (docSnap) => {
+        if (docSnap.exists()) {
+          setProfileData(docSnap.data());
+        }
+      },
+      (err) => console.warn("Profile fetch error:", err.message)
+    );
+
+    return () => unsubProfile();
+  }, [user?.uid]);
+
+  // Fetch total member count safely once user authentication is initialized
+  useEffect(() => {
+    if (!user?.uid) return;
+
+    const unsub = onSnapshot(
+      collection(db, "profiles"),
+      (snap) => setMemberCount(snap.size),
+      (err) => console.warn("Member count fetch error:", err.message)
+    );
+
     return () => unsub();
-  }, []);
+  }, [user?.uid]);
 
   const upcomingEvents = events
     .filter((e) => !e.startAt || new Date(e.startAt) >= new Date())
@@ -83,7 +109,7 @@ export default function DashboardOverviewTab() {
   return (
     <div className="dashboard-overview">
       <h1>ড্যাশবোর্ড</h1>
-      <p className="step-sub">স্বাগতম, {userDoc?.name || "সদস্য"}।</p>
+      <p className="step-sub">স্বাগতম, {profileData?.name || "সদস্য"}।</p>
 
       <div className="dashboard-quicklinks">
         {quickLinks.map((q) => (

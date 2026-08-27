@@ -187,7 +187,7 @@ export default function IdCardPage() {
           </div>
         </div>
       </div>
-      <p className="helper-text id-card-hint no-print">প্রকৃত আইডি কার্ডের সমান আকারে দেখানো হচ্ছে (85.6mm × 54mm)।</p>
+      <p className="helper-text id-card-hint no-print">You can print it as per need.</p>
     </div>
   );
 }

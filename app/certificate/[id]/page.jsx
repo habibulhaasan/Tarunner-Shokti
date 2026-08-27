@@ -1,19 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
-import { Printer } from "lucide-react";
+import { toPng } from "html-to-image";
+import { Printer, Download } from "lucide-react";
 import { db } from "../../../lib/firebase";
 import { useAuth } from "../../../context/AuthContext";
 import { useMyContributions } from "../../../lib/fundContributions";
-import { useCommitteeMembers, useCommitteeRoles } from "../../../lib/committee";
+import { useSignatoryMembers, useCommitteeRoles } from "../../../lib/committee";
 import Letterhead, { ORG_INFO } from "../../../components/common/Letterhead";
-
-// Fixed signatory roles for every certificate — real names are looked up
-// live from whoever currently holds these committee roles, so this updates
-// automatically as the committee changes with no code/content edits needed.
-const CERTIFICATE_SIGNATORY_TITLES = ["সভাপতি", "মহাসচিব", "অর্থ সম্পাদক"];
 
 // "Pharmacist" for the Pharmacy department, "Medical Technologist (X)" for
 // every other department — the two professional titles this org's members
@@ -35,13 +31,27 @@ function getPlaceLine(profile) {
   return emp.officeName || emp.govtOrg || "";
 }
 
+// Filename-safe tag for the downloaded PNG. No memberId-style format is
+// defined for certificates, so this mirrors the ID card page's fallback.
+function certificateFileTag(profile) {
+  return profile.memberId || profile.id.slice(0, 6).toUpperCase();
+}
+
 export default function CertificatePage() {
   const { id: targetUid } = useParams();
   const { user, userDoc } = useAuth();
   const [profile, setProfile] = useState(null);
   const [notFound, setNotFound] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
+  const frameRef = useRef(null);
   const { items, ready } = useMyContributions(targetUid);
-  const { members: committeeMembers } = useCommitteeMembers();
+  // Signatories are driven entirely by committee data: whichever roles an
+  // admin flags "Signatory" in the Committee panel show up here, in role
+  // order, with whoever currently holds that role pulled in live — no title
+  // strings hardcoded here, so this stays correct automatically as the
+  // committee (and its members) change.
+  const { signatories: signatoryMembers, ready: signatoriesReady } = useSignatoryMembers();
   const { rolesById } = useCommitteeRoles();
 
   const isAdmin = userDoc?.role === "admin";
@@ -56,6 +66,30 @@ export default function CertificatePage() {
       })
       .catch(() => setNotFound(true));
   }, [targetUid]);
+
+  const handleDownload = async () => {
+    if (!frameRef.current) return;
+    setDownloading(true);
+    setDownloadError("");
+    try {
+      // Same approach as the ID card's download: self-hosted font (see
+      // globals.css) lets html-to-image fetch/embed it same-origin, so the
+      // exported PNG uses real Bangla metrics instead of a fallback font.
+      const dataUrl = await toPng(frameRef.current, {
+        pixelRatio: 4,
+        backgroundColor: "#ffffff",
+      });
+      const link = document.createElement("a");
+      link.download = `certificate-${certificateFileTag(profile)}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Certificate image export failed:", err);
+      setDownloadError("ছবি তৈরি করা যায়নি। আবার চেষ্টা করুন, অথবা প্রিন্ট অপশন ব্যবহার করুন।");
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   if (!isAdmin && !isSelf && user) {
     return (
@@ -73,7 +107,7 @@ export default function CertificatePage() {
     );
   }
 
-  if (!profile || !ready) {
+  if (!profile || !ready || !signatoriesReady) {
     return (
       <div className="screen-center">
         <div className="loader" />
@@ -95,10 +129,10 @@ export default function CertificatePage() {
     );
   }
 
-  const signatories = CERTIFICATE_SIGNATORY_TITLES.map((title) => {
-    const holder = committeeMembers.find((m) => m.committeeRole.title === title);
-    return { title, name: holder?.name || "" };
-  });
+  const signatories = signatoryMembers.map((m) => ({
+    title: m.committeeRole.title,
+    name: m.name,
+  }));
 
   const professionalDesignation = getProfessionalDesignation(profile);
   const placeLine = getPlaceLine(profile);
@@ -108,15 +142,20 @@ export default function CertificatePage() {
 
   return (
     <div className="memo-print-wrap">
-      <div className="no-print memo-print-toolbar" style={{ width: "297mm" }}>
+      <div className="no-print memo-print-toolbar" style={{ width: "297mm", display: "flex", gap: 10 }}>
         <button type="button" className="btn" style={{ width: "auto" }} onClick={() => window.print()}>
           <Printer size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
           Print
         </button>
+        <button type="button" className="btn-ghost btn" style={{ width: "auto" }} onClick={handleDownload} disabled={downloading}>
+          <Download size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
+          {downloading ? "তৈরি হচ্ছে…" : "ছবি ডাউনলোড"}
+        </button>
       </div>
+      {downloadError && <p className="helper-text no-print" style={{ textAlign: "center", color: "var(--danger)", marginBottom: 10 }}>{downloadError}</p>}
 
       <div className="certificate-page">
-        <div className="certificate-frame">
+        <div className="certificate-frame" ref={frameRef}>
           {ORG_INFO.logoSrc && (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={ORG_INFO.logoSrc} alt="" className="certificate-watermark" />
@@ -146,16 +185,23 @@ export default function CertificatePage() {
             <div className="certificate-signature-row">
               {signatories.map((s) => (
                 <div key={s.title} className="certificate-signature">
-                  <div className="certificate-signature-line" />
                   {s.name && <div className="certificate-signature-name">{s.name}</div>}
+                  <div className="certificate-signature-line" />
                   <div>{s.title}</div>
                   <div className="certificate-esigned">ইলেকট্রনিকভাবে স্বাক্ষরিত</div>
                 </div>
               ))}
+              {signatories.length === 0 && (
+                <p className="helper-text no-print">
+                  কোনো স্বাক্ষরকারী নির্ধারণ করা নেই — অ্যাডমিন প্যানেলের Committee ট্যাবে এক বা একাধিক পদবীকে
+                  "Signatory" হিসেবে চিহ্নিত করুন।
+                </p>
+              )}
             </div>
           </div>
         </div>
       </div>
+      <p className="helper-text no-print" style={{ textAlign: "center", marginTop: 6 }}>You can print it as per need.</p>
     </div>
   );
 }

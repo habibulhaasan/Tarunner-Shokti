@@ -6,7 +6,7 @@
 export const ORG_INFO = {
   logoSrc: "/logo.png",
   nameBn: "তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ",
-  nameEn: "Tarunner Shakti Pharmacist Parishad",
+  nameEn: "একটি অরাজনৈতিক পেশাজীবী সংগঠন",
   // Left blank on purpose: the memo print page already carries the full
   // address/email/phone as its own footer line (per how official memos are
   // laid out), so repeating it here would print it twice on the same page.
