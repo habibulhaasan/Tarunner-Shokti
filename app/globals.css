@@ -2957,7 +2957,31 @@ select:disabled {
   .memo-print-wrap { padding: 10px; }
 }
 
-.memo-print-toolbar { display: flex; justify-content: flex-end; width: 210mm; margin: 0 auto 14px; }
+.memo-print-toolbar { display: flex; justify-content: flex-end; width: 210mm; max-width: 100%; margin: 0 auto 14px; }
+
+.memo-print-page-container {
+  width: 210mm;
+  margin: 0 auto;
+}
+
+@media (max-width: 820px) {
+  .memo-print-wrap {
+    padding: 12px 6px;
+    overflow-x: hidden;
+  }
+  .memo-print-page-container {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .memo-print-page {
+    transform-origin: top center;
+    transform: scale(calc((100vw - 12px) / 793.7)); 
+    margin-bottom: calc(-297mm + (297mm * ((100vw - 12px) / 793.7)));
+  }
+}
 
 .memo-print-page {
   width: 210mm;

@@ -42,11 +42,7 @@ export default function MemoPrintPage() {
       pixelRatio: 3,
       backgroundColor: "#ffffff",
       style: {
-        width: "210mm",
-        height: "297mm",
-        transform: "none",
-        padding: "15mm 16mm",
-        margin: "0"
+        width: "793.7px", height: "1122.5px", transform: "scale(1)", margin: "0"
       },
     });
   };
@@ -123,13 +119,18 @@ export default function MemoPrintPage() {
           <FileText size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
           {downloadingPdf ? "ডাউনলোড হচ্ছে..." : "PDF"}
         </button>
+        
         <button type="button" className="btn" style={{ width: "auto" }} onClick={() => window.print()}>
           <Printer size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
           Print
         </button>
       </div>
 
-      <div className="memo-print-page" ref={memoRef}>
+      <span className="helper-text no-print" style={{ marginBottom: 8, display: "block", textAlign: "center" }}>
+        <strong>Note:</strong> Download images and PDFs in desktop view for better quality.
+      </span>
+
+      <div className="memo-print-page-container"><div className="memo-print-page" ref={memoRef}>
         <img src="/logo.png" alt="" className="memo-watermark" />
 
         <div className="memo-print-inner">
@@ -163,6 +164,7 @@ export default function MemoPrintPage() {
           </div>
         </div>
       </div>
+</div>
     </div>
   );
 }
