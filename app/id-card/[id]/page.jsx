@@ -78,16 +78,15 @@ export default function IdCardPage() {
     setDownloading(true);
     setDownloadError("");
     try {
-      // skipFonts: true is the key fix — without it, html-to-image tries to
-      // fetch and inline the Google Fonts (Noto Sans Bengali) stylesheet to
-      // embed in the exported image, which fails under CORS and silently
-      // rejects the whole export. The font is already rendered on-screen by
-      // the browser regardless, so skipping re-embedding doesn't change how
-      // the exported PNG looks — it just avoids the network call that breaks.
+      // Font is now self-hosted (see globals.css) instead of loaded from the
+      // Google Fonts CDN, so html-to-image can fetch and embed it same-origin
+      // without hitting CORS — no more skipFonts workaround needed, and the
+      // export now uses the actual Noto Sans Bengali metrics instead of a
+      // fallback font, which is what was causing text to wrap after download
+      // even though it fit fine on-screen.
       const dataUrl = await toPng(cardRef.current, {
         pixelRatio: 4,
         backgroundColor: "#ffffff",
-        skipFonts: true,
       });
       const link = document.createElement("a");
       const memberId = profile.memberId || fallbackMemberId(profile.id);
