@@ -10,12 +10,20 @@ import { useMemoDoc } from "../../../lib/memos";
 
 function fmtDate(d) {
   try {
-    return new Date(d).toLocaleDateString(undefined, { dateStyle: "long" });
+    const date = new Date(d);
+    if (isNaN(date.getTime())) return d;
+    const dd = String(date.getDate()).padStart(2, "0");
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const yyyy = date.getFullYear();
+    const bn = {
+      "0": "০", "1": "১", "2": "২", "3": "৩", "4": "৪",
+      "5": "৫", "6": "৬", "7": "৭", "8": "৮", "9": "৯"
+    };
+    return (dd + "/" + mm + "/" + yyyy).replace(/[0-9]/g, (w) => bn[w]);
   } catch {
     return d;
   }
 }
-
 function getMemoTag(memoNo) {
   if (!memoNo) return "memo";
   return memoNo.replace(/[^ঀ-৿a-zA-Z0-9-]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
