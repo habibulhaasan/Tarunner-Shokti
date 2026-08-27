@@ -125,22 +125,24 @@ export default function CertificatePage() {
           <div className="certificate-content">
             <Letterhead align="left" />
 
-            <div className="certificate-title">অনুদান সনদপত্র</div>
-            <div className="certificate-subtitle">Certificate of Donation</div>
+            <div className="certificate-middle">
+              <div className="certificate-title">অনুদান সনদপত্র</div>
+              <div className="certificate-subtitle">Certificate of Donation</div>
 
-            <p className="certificate-body">
-              এই মর্মে প্রত্যয়ন করা যাচ্ছে যে,{" "}
-              <span className="certificate-highlight">{profile.name}</span>
-              {professionalDesignation ? `, ${professionalDesignation}` : ""}
-              {placeLine ? `, ${placeLine}` : ""}, তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ-এর{" "}
-              <span className="certificate-highlight">{orgDesignation}</span>, কল্যাণ তহবিলে সর্বমোট{" "}
-              <span className="certificate-highlight">৳{total.toLocaleString()}</span> টাকা অনুদান প্রদান করেছেন। পরিষদের
-              পক্ষ থেকে তাঁর এই মহতী অবদানের জন্য আন্তরিক কৃতজ্ঞতা ও ধন্যবাদ জ্ঞাপন করা হচ্ছে। ভবিষ্যতেও তাঁর এই সহযোগিতা
-              অব্যাহত থাকবে বলে আমরা আশাবাদী।
-            </p>
+              <p className="certificate-body">
+                এই মর্মে প্রত্যয়ন করা যাচ্ছে যে,{" "}
+                <span className="certificate-highlight">{profile.name}</span>
+                {professionalDesignation ? `, ${professionalDesignation}` : ""}
+                {placeLine ? `, ${placeLine}` : ""}, তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ-এর{" "}
+                <span className="certificate-highlight">{orgDesignation}</span>, কল্যাণ তহবিলে সর্বমোট{" "}
+                <span className="certificate-highlight">৳{total.toLocaleString()}</span> টাকা অনুদান প্রদান করেছেন। পরিষদের
+                পক্ষ থেকে তাঁর এই মহতী অবদানের জন্য আন্তরিক কৃতজ্ঞতা ও ধন্যবাদ জ্ঞাপন করা হচ্ছে। ভবিষ্যতেও তাঁর এই সহযোগিতা
+                অব্যাহত থাকবে বলে আমরা আশাবাদী।
+              </p>
 
-            <div className="certificate-meta-row">
-              <div>তারিখ: {today}</div>
+              <div className="certificate-meta-row">
+                <div>তারিখ: {today}</div>
+              </div>
             </div>
 
             <div className="certificate-signature-row">
