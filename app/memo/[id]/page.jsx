@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRef, useState } from "react";
 import { useParams } from "next/navigation";
@@ -18,7 +18,7 @@ function fmtDate(d) {
 
 function getMemoTag(memoNo) {
   if (!memoNo) return "memo";
-  return memoNo.replace(/[^à¦…-à¦¹0-9a-zA-Z-]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+  return memoNo.replace(/[^ঀ-৿a-zA-Z0-9-]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
 }
 
 export default function MemoPrintPage() {
@@ -30,8 +30,6 @@ export default function MemoPrintPage() {
   const memoRef = useRef(null);
 
   const getExportDataUrl = async () => {
-    // Generate image at standard high resolution with forced desktop dimensions
-    // to strictly preserve the A4 aspect ratio regardless of screen width on mobile
     return await toPng(memoRef.current, {
       pixelRatio: 3,
       backgroundColor: "#ffffff",
@@ -58,7 +56,7 @@ export default function MemoPrintPage() {
       link.click();
     } catch (err) {
       console.error("Memo image export failed:", err);
-      setDownloadError("à¦›à¦¬à¦¿ à¦¤à§ˆà¦°à¦¿ à¦•à¦°à¦¾ à¦¯à¦¾à§Ÿà¦¨à¦¿à¥¤ à¦†à¦¬à¦¾à¦° à¦šà§‡à¦·à§à¦Ÿà¦¾ à¦•à¦°à§à¦¨à¥¤");
+      setDownloadError("ছবি তৈরি করা যায়নি। আবার চেষ্টা করুন।");
     } finally {
       setDownloadingImg(false);
     }
@@ -75,13 +73,12 @@ export default function MemoPrintPage() {
         unit: "mm",
         format: "a4",
       });
-      // A4 size is 210 x 297 mm
       pdf.addImage(dataUrl, "PNG", 0, 0, 210, 297);
       const tag = getMemoTag(memo?.memoNo);
       pdf.save(`Memo-${tag}.pdf`);
     } catch (err) {
       console.error("Memo PDF export failed:", err);
-      setDownloadError("PDF à¦¤à§ˆà¦°à¦¿ à¦•à¦°à¦¾ à¦¯à¦¾à§Ÿà¦¨à¦¿à¥¤ à¦†à¦¬à¦¾à¦° à¦šà§‡à¦·à§à¦Ÿà¦¾ à¦•à¦°à§à¦¨à¥¤");
+      setDownloadError("PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।");
     } finally {
       setDownloadingPdf(false);
     }
@@ -99,7 +96,7 @@ export default function MemoPrintPage() {
     return (
       <div className="memo-print-wrap">
         <p className="helper-text" style={{ padding: 24 }}>
-          This memo isn't available â€” it may have been removed, or isn't published yet.
+          This memo isn't available — it may have been removed, or isn't published yet.
         </p>
       </div>
     );
@@ -112,11 +109,11 @@ export default function MemoPrintPage() {
         
         <button type="button" className="btn-ghost btn" style={{ width: "auto", marginRight: 8 }} onClick={handleDownloadImage} disabled={downloadingImg || downloadingPdf}>
           <Download size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
-          {downloadingImg ? "à¦¡à¦¾à¦‰à¦¨à¦²à§‹à¦¡ à¦¹à¦šà§à¦›à§‡..." : "Image"}
+          {downloadingImg ? "ডাউনলোড হচ্ছে..." : "Image"}
         </button>
         <button type="button" className="btn-ghost btn" style={{ width: "auto", marginRight: 8, background: "var(--surface)", borderColor: "var(--line)" }} onClick={handleDownloadPdf} disabled={downloadingImg || downloadingPdf}>
           <FileText size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
-          {downloadingPdf ? "à¦¡à¦¾à¦‰à¦¨à¦²à§‹à¦¡ à¦¹à¦šà§à¦›à§‡..." : "PDF"}
+          {downloadingPdf ? "ডাউনলোড হচ্ছে..." : "PDF"}
         </button>
         <button type="button" className="btn" style={{ width: "auto" }} onClick={() => window.print()}>
           <Printer size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
@@ -131,12 +128,12 @@ export default function MemoPrintPage() {
           <Letterhead align="left" />
 
           <div className="memo-meta-row">
-            <div>à¦¸à§à¦®à¦¾à¦°à¦• à¦¨à¦‚: {memo.memoNo}</div>
-            <div>à¦¤à¦¾à¦°à¦¿à¦–: {fmtDate(memo.date)}</div>
+            <div>স্মারক নং: {memo.memoNo}</div>
+            <div>তারিখ: {fmtDate(memo.date)}</div>
           </div>
 
           <div className="memo-subject">
-            <span className="memo-subject-label">à¦¬à¦¿à¦·à§Ÿ:</span> {memo.title}
+            <span className="memo-subject-label">বিষয়:</span> {memo.title}
           </div>
 
           <div className="memo-body">{memo.content}</div>
@@ -154,7 +151,7 @@ export default function MemoPrintPage() {
           )}
 
           <div className="memo-footer">
-            à¦…à¦¸à§à¦¥à¦¾à§Ÿà§€ à¦•à¦¾à¦°à§à¦¯à¦¾à¦²à§Ÿ: à¦®à¦¾à¦¤à§ƒ à¦¸à¦¦à¦¨ à¦“ à¦¶à¦¿à¦¶à§ à¦¸à§à¦¬à¦¾à¦¸à§à¦¥à§à¦¯ à¦ªà§à¦°à¦¶à¦¿à¦•à§à¦·à¦£ à¦ªà§à¦°à¦¤à¦¿à¦·à§à¦ à¦¾à¦¨, à¦†à¦œà¦¿à¦®à¦ªà§à¦°, à¦¢à¦¾à¦•à¦¾ | {ORG_INFO.email || "info.tarunnershokti@gmail.com"} | à§¦à§§à§­à§©à§ªà§¨à§¨à§®à§®à§©à§¦
+            অস্থায়ী কার্যালয়: মাতৃ সদন ও শিশু স্বাস্থ্য প্রশিক্ষণ প্রতিষ্ঠান, আজিমপুর, ঢাকা | {ORG_INFO.email || "info.tarunnershokti@gmail.com"} | ০১৭৩৪২২৮৮৩০
           </div>
         </div>
       </div>
