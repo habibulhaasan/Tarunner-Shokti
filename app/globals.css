@@ -2430,7 +2430,7 @@ select:disabled {
 
 .auth-hero-logo-wrap img {
   /* This turns a dark/black image completely pure white */
-  filter: brightness(0) invert(1);
+  filter: brightness(1) invert(0);
 }
 
 .auth-hero-logo {
@@ -2908,6 +2908,14 @@ select:disabled {
 
 .memo-print-wrap { min-height: 100vh; background: var(--ivory); padding: 24px; overflow-x: auto; }
 
+@media (max-width: 480px) {
+  /* Recovers width so the true-size ID card (85.6mm ≈ 324px) fits within a
+     typical phone viewport without needing horizontal scroll. Memos and
+     certificates (A4-sized) still need to scroll on mobile regardless of
+     padding — this just gives them a little more room too. */
+  .memo-print-wrap { padding: 10px; }
+}
+
 .memo-print-toolbar { display: flex; justify-content: flex-end; width: 210mm; margin: 0 auto 14px; }
 
 .memo-print-page {
@@ -3189,7 +3197,7 @@ select:disabled {
 
 .id-card {
   width: 85.6mm;
-  height: 54mm;
+  min-height: 54mm;
   flex-shrink: 0;
   background: var(--white);
   border: 1px solid var(--border, var(--line));
@@ -3198,7 +3206,6 @@ select:disabled {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   font-family: var(--font-body);
   position: relative;
 }
@@ -3250,9 +3257,6 @@ select:disabled {
   font-weight: 700;
   color: var(--forest);
   line-height: 1.15;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .id-card-motto {
@@ -3260,9 +3264,6 @@ select:disabled {
   font-weight: 400;
   color: var(--muted);
   line-height: 1.1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .id-card-body {
@@ -3290,9 +3291,6 @@ select:disabled {
   font-weight: 700;
   color: var(--forest);
   line-height: 1.15;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .id-card-designation {
@@ -3311,9 +3309,6 @@ select:disabled {
   color: var(--coral-dark);
   font-weight: 600;
   margin-top: 0.35mm;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .id-card-row {
@@ -3331,14 +3326,11 @@ select:disabled {
 }
 
 .id-card-address {
-  overflow: hidden;
+  overflow: visible;
 }
 
 .id-card-address-value {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  display: inline;
 }
 
 .id-card-footer {
