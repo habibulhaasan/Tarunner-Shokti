@@ -73,7 +73,7 @@ export default function LandingPage() {
         </div>
 
         <div className="landing-hero-app-download">
-          <a href="/.png" download className="app-download-btn">
+          <a href="/TarunnerShokti.apk" download className="app-download-btn">
             <div className="app-download-icon">
               <Smartphone size={28} />
               <div className="download-badge">
