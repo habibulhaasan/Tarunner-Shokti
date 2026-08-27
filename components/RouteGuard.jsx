@@ -3,24 +3,19 @@
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
+import { useSiteStatus } from "../lib/siteStatus";
+import MaintenancePage from "./MaintenancePage";
 import AppShell from "./nav/AppShell";
 
-// Pre-login entry points: anonymous visitors can see these, and a logged-in,
-// fully-onboarded user gets bounced away from them to /dashboard (no reason
-// to show the landing/login/register pages to someone already signed in).
 const AUTH_GATEWAY_PATHS = ["/", "/login", "/register", "/forgot-password"];
 
-// Also viewable without an account, but — unlike the auth gateways above —
-// a logged-in user is allowed to just look at them normally (no forced
-// redirect). /memo/[id] only actually renders content when the memo itself
-// is marked visible; that's enforced by firestore.rules + the page's own
-// notFound handling, not by this guard.
 function isOpenPath(pathname) {
   return AUTH_GATEWAY_PATHS.includes(pathname) || pathname === "/info" || pathname.startsWith("/memo/");
 }
 
 export default function RouteGuard({ children }) {
   const { user, userDoc, loading } = useAuth();
+  const { live, loaded: statusLoaded } = useSiteStatus();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -41,8 +36,6 @@ export default function RouteGuard({ children }) {
         router.replace("/onboarding");
         return;
       }
-      // Only the auth-gateway pages force a signed-in user elsewhere — /info
-      // and /memo/[id] stay viewable even while logged in.
       if (!incomplete && (isGateway || pathname === "/onboarding")) {
         router.replace("/dashboard");
         return;
@@ -50,7 +43,7 @@ export default function RouteGuard({ children }) {
     }
   }, [user, userDoc, loading, pathname, router]);
 
-  if (loading) {
+  if (loading || !statusLoaded) {
     return (
       <div className="screen-center">
         <div className="loader" />
@@ -58,10 +51,15 @@ export default function RouteGuard({ children }) {
     );
   }
 
+  const isAdmin = userDoc?.role === "admin";
+
+  // Maintenance mode: blocks everyone except signed-in admins and the
+  // /login page itself (so an admin can actually sign in to flip it back).
+  if (!live && !isAdmin && pathname !== "/login") {
+    return <MaintenancePage />;
+  }
+
   const isGateway = AUTH_GATEWAY_PATHS.includes(pathname);
-  // Nav only makes sense once someone is authenticated, past onboarding, and
-  // not on a gateway/standalone page — covers /dashboard, /admin, and
-  // anything added later without needing to touch this file again.
   const showShell =
     !!user && !!userDoc?.profileComplete && !isGateway && pathname !== "/onboarding" && pathname !== "/info";
 
