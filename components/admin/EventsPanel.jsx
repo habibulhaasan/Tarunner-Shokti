@@ -114,13 +114,13 @@ export default function EventsPanel() {
 
   return (
     <div className="admin-panel-section">
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 6 }}>
         <div>
           <h3>Events &amp; calendar</h3>
           <p className="step-sub" style={{ marginTop: 2 }}>Create events, publish them to members, and see who's RSVP'd.</p>
         </div>
         {editingId === null && (
-          <button type="button" className="btn" style={{ width: "auto" }} onClick={openNew}>
+          <button type="button" className="btn" style={{ width: "auto", flexShrink: 0 }} onClick={openNew}>
             <Plus size={14} style={{ verticalAlign: "-2px", marginRight: 6 }} />
             New event
           </button>

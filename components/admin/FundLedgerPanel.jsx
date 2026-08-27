@@ -77,9 +77,9 @@ export default function FundLedgerPanel() {
 
   return (
     <div className="admin-panel-section">
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
         <h3>আর্থিক লেজার (Financial Ledger)</h3>
-        <button type="button" className="btn-ghost btn" style={{ width: "auto" }} onClick={handleExport} disabled={transactions.length === 0}>
+        <button type="button" className="btn-ghost btn" style={{ width: "auto", flexShrink: 0 }} onClick={handleExport} disabled={transactions.length === 0}>
           <Download size={14} style={{ verticalAlign: "-2px", marginRight: 6 }} />
           Export CSV
         </button>

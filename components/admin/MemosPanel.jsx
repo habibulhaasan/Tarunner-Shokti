@@ -114,13 +114,13 @@ export default function MemosPanel() {
 
   return (
     <div className="admin-panel-section">
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 6 }}>
         <div>
           <h3>Memos (স্মারক নং)</h3>
           <p className="step-sub" style={{ marginTop: 2 }}>Create official memos with a letterhead-ready printable format. Toggle visibility to publish to members.</p>
         </div>
         {editingId === null && (
-          <button type="button" className="btn" style={{ width: "auto" }} onClick={openNew}>
+          <button type="button" className="btn" style={{ width: "auto", flexShrink: 0 }} onClick={openNew}>
             <Plus size={14} style={{ verticalAlign: "-2px", marginRight: 6 }} />
             New memo
           </button>
