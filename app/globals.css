@@ -1,4 +1,23 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap");
+/* Self-hosted (via npm packages, bundled at build time) instead of the
+   Google Fonts CDN. This is what actually fixes the ID card PNG export bug:
+   html-to-image needs to fetch and embed whatever font-CSS is in use so the
+   exported canvas renders it correctly. A cross-origin fonts.googleapis.com
+   stylesheet fails that fetch under CORS, which previously forced a
+   skipFonts:true workaround — but skipping embedding meant the export fell
+   back to a system font with different (wider) Bengali glyph metrics than
+   Noto Sans Bengali, causing text that fit on-screen to wrap once
+   downloaded. Self-hosting makes the font same-origin, so embedding works
+   properly and skipFonts is no longer needed at all. */
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@import "@fontsource/inter/800.css";
+@import "@fontsource/noto-sans-bengali/400.css";
+@import "@fontsource/noto-sans-bengali/500.css";
+@import "@fontsource/noto-sans-bengali/600.css";
+@import "@fontsource/noto-sans-bengali/700.css";
+@import "@fontsource/noto-sans-bengali/800.css";
 
 :root {
   /* Minimal professional theme: neutral slate scale + a single blue accent. */
@@ -180,7 +199,6 @@ a {
 }
 
 .field input,
-.field select,
 .field textarea {
   width: 100%;
   padding: 12px 14px;
@@ -194,11 +212,10 @@ a {
 }
 
 .field input:focus,
-.field select:focus,
 .field textarea:focus {
   outline: none;
   border-color: var(--coral);
-  box-shadow: 0 0 0 4px rgba(255, 107, 74, 0.12);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
 .field-row {
@@ -224,22 +241,37 @@ a {
    select and .directory-filters select) that both fell back to each
    browser's native dropdown chrome, so the arrow/height/disabled look
    differed across the app (and wasn't styled at all on selects that had no
-   wrapper class). This one rule covers every <select> consistently. */
+   wrapper class). This one rule covers every <select> consistently,
+   regardless of what it's nested inside. */
 select {
   appearance: none;
   -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1L7 7L13 1' stroke='%230b3d2e' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  width: 100%;
+  padding: 12px 38px 12px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background-color: var(--white);
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1L7 7L13 1' stroke='%231e293b' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 14px center;
-  padding-right: 38px !important;
-  cursor: pointer;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--coral);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
 select:disabled {
   background-color: #f1f5f9;
   color: #94a3b8;
   cursor: not-allowed;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1L7 7L13 1' stroke='%23bdb6a4' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1L7 7L13 1' stroke='%2394a3b8' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
 .btn {
@@ -1369,10 +1401,13 @@ select:disabled {
   border-bottom: 1.5px solid var(--line);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
 }
 
-.admin-toplevel-tabs::-webkit-scrollbar { display: none; }
+.admin-toplevel-tabs::-webkit-scrollbar { height: 6px; }
+.admin-toplevel-tabs::-webkit-scrollbar-track { background: transparent; }
+.admin-toplevel-tabs::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
 
 .admin-toplevel-tab {
   display: flex;
@@ -1990,10 +2025,13 @@ select:disabled {
   border-bottom: 1.5px solid var(--line, #e2e8f0);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line, #e2e8f0) transparent;
 }
 
-.admin-toplevel-tabs::-webkit-scrollbar { display: none; }
+.admin-toplevel-tabs::-webkit-scrollbar { height: 6px; }
+.admin-toplevel-tabs::-webkit-scrollbar-track { background: transparent; }
+.admin-toplevel-tabs::-webkit-scrollbar-thumb { background: var(--line, #e2e8f0); border-radius: 999px; }
 
 .admin-toplevel-tab {
   background: none;
@@ -2430,7 +2468,7 @@ select:disabled {
 
 .auth-hero-logo-wrap img {
   /* This turns a dark/black image completely pure white */
-  filter: brightness(1) invert(0);
+  filter: brightness(0) invert(1);
 }
 
 .auth-hero-logo {
@@ -2865,8 +2903,8 @@ select:disabled {
 }
 
 .letterhead-logo {
-  width: 64px;
-  height: 64px;
+  width: 76px;
+  height: 76px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -2874,15 +2912,15 @@ select:disabled {
 .letterhead-text { flex: 1; text-align: center; }
 
 .letterhead-name-bn {
-  font-size: 20px;
+  font-size: 26px;
   font-weight: 800;
   color: var(--forest);
 }
 
 .letterhead-name-en {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--muted);
-  margin-top: 2px;
+  margin-top: 3px;
   letter-spacing: 0.02em;
 }
 
@@ -2920,7 +2958,7 @@ select:disabled {
 
 .memo-print-page {
   width: 210mm;
-  min-height: 297mm;
+  height: 297mm;
   margin: 0 auto;
   background: var(--white);
   border: 1px solid var(--border, var(--line));
@@ -2929,7 +2967,6 @@ select:disabled {
   box-sizing: border-box;
   font-family: var(--font-body);
   position: relative;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -2958,6 +2995,7 @@ select:disabled {
   flex-direction: column;
   flex: 1;
   width: 100%;
+  min-height: 0;
 }
 
 .memo-meta-row {
@@ -2990,7 +3028,8 @@ select:disabled {
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 24px;
-  margin-top: 60px;
+  margin-top: auto;
+  padding-top: 40px;
 }
 
 .memo-signature {
@@ -3009,7 +3048,7 @@ select:disabled {
 .memo-signature-role { color: var(--muted); margin-top: 2px; }
 
 .memo-footer {
-  margin-top: auto;
+  margin-top: 20px;
   padding-top: 16px;
   border-top: 1px solid var(--border, var(--line));
   font-size: 10.5px;
@@ -3399,17 +3438,28 @@ select:disabled {
 .certificate-content {
   position: relative;
   z-index: 1;
-  padding: 18mm 28mm;
+  padding: 16mm 28mm;
   text-align: center;
   height: 100%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+}
+
+/* Sits between the (top) letterhead and the (bottom) signature row, and
+   centers its own content vertically+horizontally within whatever space is
+   left — this is what keeps the header pinned to the top and the signature
+   pinned to the bottom regardless of how much space the body text needs. */
+.certificate-middle {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  min-height: 0;
 }
 
 .certificate-title {
-  margin-top: 20px;
   font-size: 26px;
   font-weight: 800;
   color: var(--forest);
@@ -3429,11 +3479,23 @@ select:disabled {
   line-height: 2;
   color: var(--ink);
   text-align: justify;
+  max-width: 210mm;
 }
 
 .certificate-highlight {
   font-weight: 700;
   color: var(--coral-dark);
+}
+
+/* Right after the header, right-aligned — not part of the centered middle
+   block, since the date is meant to sit at the top of the page like a
+   dateline, not float with the centered body content. */
+.certificate-date-row {
+  text-align: right;
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+  flex-shrink: 0;
 }
 
 .certificate-meta-row {
@@ -3446,7 +3508,7 @@ select:disabled {
   display: flex;
   justify-content: space-between;
   gap: 24px;
-  margin-top: 40px;
+  flex-shrink: 0;
   padding: 0 14px;
 }
 
