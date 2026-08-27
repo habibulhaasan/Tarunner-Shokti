@@ -1,7 +1,10 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { useParams } from "next/navigation";
-import { Printer } from "lucide-react";
+import { Printer, Download, FileText } from "lucide-react";
+import { toPng } from "html-to-image";
+import jsPDF from "jspdf";
 import Letterhead, { ORG_INFO } from "../../../components/common/Letterhead";
 import { useMemoDoc } from "../../../lib/memos";
 
@@ -13,9 +16,76 @@ function fmtDate(d) {
   }
 }
 
+function getMemoTag(memoNo) {
+  if (!memoNo) return "memo";
+  return memoNo.replace(/[^অ-হ0-9a-zA-Z-]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+}
+
 export default function MemoPrintPage() {
   const { id } = useParams();
   const { memo, notFound, ready } = useMemoDoc(id);
+  const [downloadingImg, setDownloadingImg] = useState(false);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
+  const memoRef = useRef(null);
+
+  const getExportDataUrl = async () => {
+    // Generate image at standard high resolution with forced desktop dimensions
+    // to strictly preserve the A4 aspect ratio regardless of screen width on mobile
+    return await toPng(memoRef.current, {
+      pixelRatio: 3,
+      backgroundColor: "#ffffff",
+      style: {
+        width: "210mm",
+        height: "297mm",
+        transform: "none",
+        padding: "15mm 16mm",
+        margin: "0"
+      },
+    });
+  };
+
+  const handleDownloadImage = async () => {
+    if (!memoRef.current) return;
+    setDownloadingImg(true);
+    setDownloadError("");
+    try {
+      const dataUrl = await getExportDataUrl();
+      const link = document.createElement("a");
+      const tag = getMemoTag(memo?.memoNo);
+      link.download = `memo-${tag}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Memo image export failed:", err);
+      setDownloadError("ছবি তৈরি করা যায়নি। আবার চেষ্টা করুন।");
+    } finally {
+      setDownloadingImg(false);
+    }
+  };
+
+  const handleDownloadPdf = async () => {
+    if (!memoRef.current) return;
+    setDownloadingPdf(true);
+    setDownloadError("");
+    try {
+      const dataUrl = await getExportDataUrl();
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+      // A4 size is 210 x 297 mm
+      pdf.addImage(dataUrl, "PNG", 0, 0, 210, 297);
+      const tag = getMemoTag(memo?.memoNo);
+      pdf.save(`memo-${tag}.pdf`);
+    } catch (err) {
+      console.error("Memo PDF export failed:", err);
+      setDownloadError("PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।");
+    } finally {
+      setDownloadingPdf(false);
+    }
+  };
 
   if (!ready) {
     return (
@@ -38,13 +108,23 @@ export default function MemoPrintPage() {
   return (
     <div className="memo-print-wrap">
       <div className="no-print memo-print-toolbar">
+        {downloadError && <span className="helper-text" style={{ marginRight: "auto", color: "var(--danger)" }}>{downloadError}</span>}
+        
+        <button type="button" className="btn-ghost btn" style={{ width: "auto", marginRight: 8 }} onClick={handleDownloadImage} disabled={downloadingImg || downloadingPdf}>
+          <Download size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
+          {downloadingImg ? "ডাউনলোড হচ্ছে..." : "Image"}
+        </button>
+        <button type="button" className="btn-ghost btn" style={{ width: "auto", marginRight: 8, background: "var(--surface)", borderColor: "var(--line)" }} onClick={handleDownloadPdf} disabled={downloadingImg || downloadingPdf}>
+          <FileText size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
+          {downloadingPdf ? "ডাউনলোড হচ্ছে..." : "PDF"}
+        </button>
         <button type="button" className="btn" style={{ width: "auto" }} onClick={() => window.print()}>
           <Printer size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
           Print
         </button>
       </div>
 
-      <div className="memo-print-page">
+      <div className="memo-print-page" ref={memoRef}>
         <img src="/logo.png" alt="" className="memo-watermark" />
 
         <div className="memo-print-inner">
@@ -56,7 +136,7 @@ export default function MemoPrintPage() {
           </div>
 
           <div className="memo-subject">
-            <span className="memo-subject-label">বিষয়:</span> {memo.title}
+            <span className="memo-subject-label">বিষয়:</span> {memo.title}
           </div>
 
           <div className="memo-body">{memo.content}</div>
@@ -74,7 +154,7 @@ export default function MemoPrintPage() {
           )}
 
           <div className="memo-footer">
-            অস্থায়ী কার্যালয়: মাতৃ সদন ও শিশু স্বাস্থ্য প্রশিক্ষণ প্রতিষ্ঠান, আজিমপুর, ঢাকা | {ORG_INFO.email || "info.tarunnershokti@gmail.com"} | ০১৭৩৪২২৮৮৩০
+            অস্থায়ী কার্যালয়: মাতৃ সদন ও শিশু স্বাস্থ্য প্রশিক্ষণ প্রতিষ্ঠান, আজিমপুর, ঢাকা | {ORG_INFO.email || "info.tarunnershokti@gmail.com"} | ০১৭৩৪২২৮৮৩০
           </div>
         </div>
       </div>

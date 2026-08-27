@@ -3,7 +3,7 @@
    html-to-image needs to fetch and embed whatever font-CSS is in use so the
    exported canvas renders it correctly. A cross-origin fonts.googleapis.com
    stylesheet fails that fetch under CORS, which previously forced a
-   skipFonts:true workaround — but skipping embedding meant the export fell
+   skipFonts:true workaround ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â but skipping embedding meant the export fell
    back to a system font with different (wider) Bengali glyph metrics than
    Noto Sans Bengali, causing text that fit on-screen to wrap once
    downloaded. Self-hosting makes the font same-origin, so embedding works
@@ -26,7 +26,7 @@
   --forest-light: #334155; /* slate-700: secondary emphasis */
   --ivory: #f8fafc;        /* slate-50: page background */
   --ivory-dim: #eef2f6;    /* subtle section background */
-  --coral: #2563eb;        /* blue-600: the one accent — buttons, links, focus */
+  --coral: #2563eb;        /* blue-600: the one accent ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â buttons, links, focus */
   --coral-dark: #1d4ed8;   /* blue-700: accent hover/active */
   --line: #e2e8f0;         /* slate-200: borders/dividers */
   --white: #ffffff;
@@ -42,7 +42,7 @@
   --success-bg: #f0fdf4;
   --shadow: 0 20px 60px -20px rgba(15, 23, 42, 0.18);
   --radius: 12px;
-  /* "Noto Sans Bengali" as the primary Bangla font per project convention —
+  /* "Noto Sans Bengali" as the primary Bangla font per project convention ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â
      falls through to Inter for Latin glyphs and each other's script gaps. */
   --font-display: "Noto Sans Bengali", "Inter", -apple-system, sans-serif;
   --font-body: "Noto Sans Bengali", "Inter", -apple-system, sans-serif;
@@ -238,7 +238,7 @@ a {
   }
 }
 
-/* Unified select styling — used to be two disconnected rule sets (.field
+/* Unified select styling ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â used to be two disconnected rule sets (.field
    select and .directory-filters select) that both fell back to each
    browser's native dropdown chrome, so the arrow/height/disabled look
    differed across the app (and wasn't styled at all on selects that had no
@@ -787,7 +787,7 @@ select:disabled {
   color: #64748b;
 }
 
-/* ----- Mobile: cards (Directory tab only — always-narrow media query,
+/* ----- Mobile: cards (Directory tab only ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â always-narrow media query,
    distinct from the plain .directory-grid used by the Favorites tab, which
    has no table alternative and should always show as a grid) ----- */
 
@@ -1041,7 +1041,7 @@ select:disabled {
 .audit-meta { font-size: 11px; color: #94a3b8; }
 
 
-/* Desktop sidebar: visible ≥ your existing breakpoint, hidden below it */
+/* Desktop sidebar: visible ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¥ your existing breakpoint, hidden below it */
 .dashboard-topbar-mobile,
 .dashboard-nav-mobile { display: none; }
 
@@ -1498,7 +1498,7 @@ select:disabled {
     display: none;
   }
   /* Once a member is selected: flip to showing only the detail pane,
-     with a way back to the list — avoids the old side-by-side squeeze
+     with a way back to the list ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â avoids the old side-by-side squeeze
      that made both panes unusably narrow on small screens. */
   .admin-columns.showing-detail .admin-list-pane {
     display: none;
@@ -1703,7 +1703,7 @@ select:disabled {
   .admin-columns { grid-template-columns: 1fr; }
 
   /* Master-detail on mobile: only one pane visible at a time. Desktop
-     ignores this entirely — both panes stay side by side. */
+     ignores this entirely ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â both panes stay side by side. */
   .admin-columns:not(.showing-detail) .admin-edit-pane { display: none; }
   .admin-columns.showing-detail .admin-list-pane { display: none; }
 
@@ -2057,7 +2057,7 @@ select:disabled {
 
 /* ---------- Admin tabs: mobile dropdown instead of a scrolling tab row ----------
    8 top-level sections is too many for horizontal-scroll tabs to be a good
-   mobile experience — a native <select> is a much clearer, one-glance way
+   mobile experience ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â a native <select> is a much clearer, one-glance way
    to jump between them on a small screen. Desktop keeps the tab row. */
 
 .admin-tabs-mobile-select {
@@ -2943,17 +2943,17 @@ select:disabled {
 .letterhead-compact .letterhead-logo { width: 44px; height: 44px; }
 .letterhead-compact .letterhead-name-bn { font-size: 16px; }
 
-/* ---------- Memos (স্মারক নং) ---------- */
+/* ---------- Memos (ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¦ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¸ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¦ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â®ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¦ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¾ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¦ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¦ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¦ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¨ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¦ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡) ---------- */
 /* Locked to A4 portrait (210mm x 297mm) so it always prints as one proper
    page-sized document instead of stretching with the browser window. */
 
 .memo-print-wrap { min-height: 100vh; background: var(--ivory); padding: 24px; overflow-x: auto; }
 
 @media (max-width: 480px) {
-  /* Recovers width so the true-size ID card (85.6mm ≈ 324px) fits within a
+  /* Recovers width so the true-size ID card (85.6mm ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â  324px) fits within a
      typical phone viewport without needing horizontal scroll. Memos and
      certificates (A4-sized) still need to scroll on mobile regardless of
-     padding — this just gives them a little more room too. */
+     padding ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â this just gives them a little more room too. */
   .memo-print-wrap { padding: 10px; }
 }
 
@@ -2962,11 +2962,13 @@ select:disabled {
 .memo-print-page {
   width: 210mm;
   height: 297mm;
+  max-height: 297mm;
+  overflow: hidden;
   margin: 0 auto;
   background: var(--white);
   border: 1px solid var(--border, var(--line));
   border-radius: var(--radius);
-  padding: 20mm 18mm;
+  padding: 15mm 16mm;
   box-sizing: border-box;
   font-family: var(--font-body);
   position: relative;
@@ -2987,7 +2989,7 @@ select:disabled {
 }
 
 /* flex:1 fills whatever height .memo-print-page has (at least one A4 page,
-   more if content is long) — that's what lets .memo-footer's margin-top:auto
+   more if content is long) ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â that's what lets .memo-footer's margin-top:auto
    push all the way to the true bottom of the page regardless of how much or
    little content the memo has, while the signature block stays right where
    it belongs: directly after the letter body, not artificially pinned down. */
@@ -3021,7 +3023,7 @@ select:disabled {
 .memo-body {
   margin-top: 20px;
   white-space: pre-wrap;
-  line-height: 1.9;
+  line-height: 1.7;
   font-size: 14.5px;
   color: var(--ink);
 }
@@ -3032,7 +3034,7 @@ select:disabled {
   justify-content: space-between;
   gap: 24px;
   margin-top: auto;
-  padding-top: 40px;
+  padding-top: 24px;
 }
 
 .memo-signature {
@@ -3071,16 +3073,41 @@ select:disabled {
 
   .dashboard-main { margin: 0 !important; padding: 0 !important; }
 
-  .memo-print-wrap { background: var(--white) !important; padding: 0 !important; }
-
   @page { size: A4 portrait; margin: 0; }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .memo-print-wrap {
+    background: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
 
   .memo-print-page {
     width: 210mm !important;
-    min-height: 297mm !important;
+    height: 297mm !important;
+    max-width: 100% !important;
+    max-height: 297mm !important;
     border: none !important;
     box-shadow: none !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
+    padding: 12mm 14mm !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .memo-signature-row, .memo-footer {
+    page-break-before: avoid !important;
+    page-break-inside: avoid !important;
   }
 }
 
@@ -3213,7 +3240,7 @@ select:disabled {
 .ledger-row { padding: 14px 16px; }
 
 /* ---------- ID card ---------- */
-/* Locked to true CR80 card size (85.6mm x 54mm, standard ID-card format) —
+/* Locked to true CR80 card size (85.6mm x 54mm, standard ID-card format) ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â
    fixed physical units, not percentages/max-width, so it renders at the
    same real-world size regardless of screen or page width, both on screen
    and when printed. */
@@ -3402,7 +3429,7 @@ select:disabled {
 /* ---------- Donation certificate ---------- */
 /* Locked to A4 landscape (297mm x 210mm). .certificate-page is the bleed
    area (blank margin, no border) around .certificate-frame, which carries
-   the visible border line and holds everything else — the classic
+   the visible border line and holds everything else ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â the classic
    "certificate frame with a bit of breathing room to the page edge" look,
    rather than a border running flush to the paper's cut edge. */
 
@@ -3451,7 +3478,7 @@ select:disabled {
 
 /* Sits between the (top) letterhead and the (bottom) signature row, and
    centers its own content vertically+horizontally within whatever space is
-   left — this is what keeps the header pinned to the top and the signature
+   left ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â this is what keeps the header pinned to the top and the signature
    pinned to the bottom regardless of how much space the body text needs. */
 .certificate-middle {
   flex: 1;
@@ -3490,7 +3517,7 @@ select:disabled {
   color: var(--coral-dark);
 }
 
-/* Right after the header, right-aligned — not part of the centered middle
+/* Right after the header, right-aligned ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â not part of the centered middle
    block, since the date is meant to sit at the top of the page like a
    dateline, not float with the centered body content. */
 .certificate-date-row {
