@@ -97,9 +97,9 @@ export default function ContributeTab() {
       </div>
 
       {myApprovedTotal > 0 && (
-        <Link href={`/certificate/${user.uid}`} target="_blank" className="btn-ghost btn" style={{ width: "auto", marginTop: 14 }}>
+        <Link href={`/certificate/${user.uid}`} target="_blank" className="btn-ghost btn certificate-link-btn">
           <Award size={14} style={{ verticalAlign: "-2px", marginRight: 6 }} />
-          আমার অনুদান সনদ দেখুন / প্রিন্ট করুন
+          অনুদান সনদ
         </Link>
       )}
 
