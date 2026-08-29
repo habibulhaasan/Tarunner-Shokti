@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test:rules": "node ./scripts/test-rules.js"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.6",
@@ -19,5 +20,10 @@
     "qrcode": "^1.5.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
+  }
+  ,
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "*",
+    "firebase-admin": "^11.11.0"
   }
 }

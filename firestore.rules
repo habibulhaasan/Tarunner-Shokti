@@ -13,19 +13,24 @@ service cloud.firestore {
 
     // Safe exist check prevents permission evaluation failures when users doc doesn't exist yet
     function isAdmin() {
-      return isSignedIn() &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+      // Support two admin signals:
+      // 1) A Firebase custom claim `admin: true` on the authenticated token
+      // 2) A users/{uid} document with `role == "admin"` (legacy)
+      return isSignedIn() && (
+        (request.auth.token.admin == true) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin")
+      );
     }
 
     // Public site-status flag — readable by anyone (even signed-out visitors),
-// writable only by admins. Separate top-level collection (not "config",
-// which requires isSignedIn()) because maintenance mode must be checkable
-// before anyone logs in.
-match /siteStatus/{docId} {
-  allow read: if true;
-  allow write: if isAdmin();
-}
+    // writable only by admins. Separate top-level collection (not "config",
+    // which requires isSignedIn()) because maintenance mode must be checkable
+    // before anyone logs in.
+    match /siteStatus/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
 
     // True until the owner's users/{uid}.profileComplete flips to true.
     // Lets the owner set locked fields (name, dob, department, etc.) for the
@@ -88,16 +93,8 @@ match /siteStatus/{docId} {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly(allowed);
     }
 
-    // Collection-group rule for bloodDonations across any parent path
-    // Ensure writes are allowed only by the donation owner (uid field) or admins.
-    match /{path=**}/bloodDonations/{donationId} {
-      allow read: if isSignedIn();
-      // On create/update, require the document to carry a `uid` field matching
-      // the authenticated user. Avoid using `isOwner(request.auth.uid)` here
-      // because that would always evaluate true for any signed-in user.
-      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
-      allow update, delete: if (isSignedIn() && (request.resource.data.uid == request.auth.uid || resource.data.uid == request.auth.uid)) || isAdmin();
-    }
+    // Note: bloodDonations are scoped as a subcollection under profiles/{uid}
+    // — the specific nested match below enforces ownership and uid field checks.
 
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
@@ -136,8 +133,13 @@ match /siteStatus/{docId} {
       allow delete: if isAdmin();
 
       match /bloodDonations/{donationId} {
-        allow read: if isSignedIn();
-        allow write: if isOwner(uid) || isAdmin();
+        // Read only for the owning user or admins for privacy.
+        allow read: if isAdmin() || resource.data.uid == request.auth.uid;
+        // Require the created document to include the owner's uid matching
+        // the parent profile id. Updates/deletes allowed only for the owner
+        // (where the existing doc's uid matches) or admins.
+        allow create: if isOwner(uid) && request.resource.data.uid == uid;
+        allow update, delete: if (isOwner(uid) && (resource.data.uid == uid || request.resource.data.uid == uid)) || isAdmin();
       }
     }
 
@@ -186,7 +188,13 @@ match /siteStatus/{docId} {
     }
 
     match /fundContributions/{id} {
-      allow read: if isSignedIn() && (isOwner(resource.data.uid) || isAdmin());
+      // A non-owner, non-admin signed-in member can still read *approved*
+      // contributions — needed so useFundBalance()'s fund-total query (used
+      // on the Dashboard and Donate tab) works for everyone, not just
+      // admins. Pending/rejected submissions stay private to their owner
+      // and admins.
+      allow read: if isSignedIn() &&
+        (isOwner(resource.data.uid) || isAdmin() || resource.data.status == "approved");
 
       allow create: if isSignedIn() &&
         request.resource.data.uid == request.auth.uid &&

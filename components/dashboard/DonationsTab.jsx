@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   collection, addDoc, deleteDoc, doc, onSnapshot,
-  query, orderBy, serverTimestamp,
+  query, where, orderBy, serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { useAuth } from "../../context/AuthContext";
@@ -19,7 +19,16 @@ export default function DonationsTab() {
 
   useEffect(() => {
     if (!user) return;
-    const q = query(collection(db, "profiles", user.uid, "bloodDonations"), orderBy("date", "desc"));
+    // where("uid", ...) matches firestore.rules' bloodDonations read
+    // condition (resource.data.uid == request.auth.uid) exactly — without
+    // it, Firestore denies this list query outright for non-admins, since
+    // it can't structurally verify every result satisfies a doc-dependent
+    // rule from an unfiltered query.
+    const q = query(
+      collection(db, "profiles", user.uid, "bloodDonations"),
+      where("uid", "==", user.uid),
+      orderBy("date", "desc")
+    );
     const unsub = onSnapshot(q, (snap) => {
       setDonations(
         snap.docs.map((d) => ({
@@ -44,6 +53,7 @@ export default function DonationsTab() {
     if (!newDate) return;
     setBusy(true);
     await addDoc(collection(db, "profiles", user.uid, "bloodDonations"), {
+      uid: user.uid, // required by firestore.rules' create check (request.resource.data.uid == uid)
       date: new Date(newDate),
       note: note || null,
       createdAt: serverTimestamp(),
