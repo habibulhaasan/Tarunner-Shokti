@@ -71,15 +71,11 @@ export default function AboutTab() {
 
       <div className="about-card about-card-full">
         <h3>ডেভেলপার</h3>
-        {/* TODO: প্রকৃত ডেভেলপার তথ্য দিয়ে প্রতিস্থাপন করুন */}
-        <div className="about-dev-name">Habibul Hasan Hasib</div>
-        <div className="about-dev-role">Pharmacist</div>
+        <div className="about-dev-name">Code Caplet™</div>
+        <div className="about-dev-role">Full Stack Developer</div>
         <div className="about-dev-links">
-          <a href="https://facebook.com/habibulhaasan" target="_blank" rel="noopener noreferrer" className="about-dev-link">
-            <Link2 size={15} /> facebook.com/habibulhaasan
-          </a>
-          <a href="mailto:hasanthp@gmail.com" className="about-dev-link">
-            <Mail size={15} /> hasanthp@gmail.com
+          <a href="mailto:lab.codecaplet@gmail.com" className="about-dev-link">
+            <Mail size={15} /> lab.codecaplet@gmail.com
           </a>
           <a href="https://wa.me/8801601767234" target="_blank" rel="noopener noreferrer" className="about-dev-link">
             <MessageCircle size={15} /> 01601767234 (WhatsApp)
