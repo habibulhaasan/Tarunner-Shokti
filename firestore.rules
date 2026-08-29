@@ -58,12 +58,21 @@ match /siteStatus/{docId} {
     }
 
     function computedProfileComplete(uid) {
-      let p = get(/databases/$(database)/documents/profiles/$(uid)).data;
-      return p.name != null && p.dob != null && p.bloodGroup != null && p.gender != null &&
-        p.maritalStatus != null && p.phone != null &&
-        p.department != null && p.session != null && p.passingYear != null &&
-        isAddressFilled(p.permanentAddress) && isAddressFilled(p.currentAddress) &&
-        isEmploymentFilled(p.employment);
+      // Return false when the profile doc doesn't exist, otherwise
+      // evaluate field-by-field from the profiles/{uid} doc.
+      return exists(/databases/$(database)/documents/profiles/$(uid)) &&
+        get(/databases/$(database)/documents/profiles/$(uid)).data.name != null &&
+        get(/databases/$(database)/documents/profiles/$(uid)).data.dob != null &&
+        get(/databases/$(database)/documents/profiles/$(uid)).data.bloodGroup != null &&
+        get(/databases/$(database)/documents/profiles/$(uid)).data.gender != null &&
+        get(/databases/$(database)/documents/profiles/$(uid)).data.maritalStatus != null &&
+        get(/databases/$(database)/documents/profiles/$(uid)).data.phone != null &&
+        get(/databases/$(database)/documents/profiles/$(uid)).data.department != null &&
+        get(/databases/$(database)/documents/profiles/$(uid)).data.session != null &&
+        get(/databases/$(database)/documents/profiles/$(uid)).data.passingYear != null &&
+        isAddressFilled(get(/databases/$(database)/documents/profiles/$(uid)).data.permanentAddress) &&
+        isAddressFilled(get(/databases/$(database)/documents/profiles/$(uid)).data.currentAddress) &&
+        isEmploymentFilled(get(/databases/$(database)/documents/profiles/$(uid)).data.employment);
     }
 
     // Fields a regular user is allowed to change on their own profile.
@@ -79,11 +88,15 @@ match /siteStatus/{docId} {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly(allowed);
     }
 
-    // ADD THIS: Allow collection group queries for blood donations
-    // Top-level collection group query support for blood donations across all member profiles
+    // Collection-group rule for bloodDonations across any parent path
+    // Ensure writes are allowed only by the donation owner (uid field) or admins.
     match /{path=**}/bloodDonations/{donationId} {
       allow read: if isSignedIn();
-      allow write: if isOwner(request.auth.uid) || isAdmin();
+      // On create/update, require the document to carry a `uid` field matching
+      // the authenticated user. Avoid using `isOwner(request.auth.uid)` here
+      // because that would always evaluate true for any signed-in user.
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if (isSignedIn() && (request.resource.data.uid == request.auth.uid || resource.data.uid == request.auth.uid)) || isAdmin();
     }
 
     match /users/{uid} {

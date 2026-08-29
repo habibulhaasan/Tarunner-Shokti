@@ -1958,6 +1958,9 @@ select:disabled {
   border: 1.5px solid var(--line, #e2e8f0);
   border-radius: var(--radius, 12px);
   padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
 }
 
 .directory-settings-list {
@@ -3706,16 +3709,17 @@ select:disabled {
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 16px;
   margin-top: 20px;
 }
 
+/* keep a sensible breakpoint fallback for older layouts */
 @media (min-width: 860px) {
-  .dashboard-grid { grid-template-columns: 1fr 1fr; }
+  .dashboard-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 }
 
-.dashboard-section-card { margin: 0; }
+.dashboard-section-card { margin: 0; box-sizing: border-box; width: 100%; max-width: 100%; }
 
 .dashboard-section-header {
   display: flex;
