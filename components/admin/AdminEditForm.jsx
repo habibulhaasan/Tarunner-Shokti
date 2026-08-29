@@ -18,7 +18,7 @@ import AuditHistory from "./AuditHistory";
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 const GENDERS = ["male", "female", "other"];
 const MARITAL = ["single", "married", "other"];
-const DEPARTMENTS = ["Laboratory", "Radiology", "Physiotherapy", "Radiotherapy", "Dental", "Pharmacy", "SIT"];
+const DEPARTMENTS = ["Pharmacy"];
 
 // Everything an admin can write. Excludes email (synced from Firebase Auth —
 // editing here wouldn't touch the auth record) and profileComplete/

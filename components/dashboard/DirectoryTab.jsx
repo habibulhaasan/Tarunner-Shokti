@@ -13,7 +13,7 @@ import { defaultAvatarFor } from "../../lib/photoUtils";
 import { useDirectorySettings, isFieldVisible } from "../../lib/directorySettings";
 
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
-const DEPARTMENTS = ["Laboratory", "Radiology", "Physiotherapy", "Radiotherapy", "Dental", "Pharmacy", "SIT"];
+const DEPARTMENTS = ["Pharmacy"];
 
 const DEPARTMENT_COLORS = {
   Laboratory: { bg: "#eaf4ff", fg: "#1d5fa8" },

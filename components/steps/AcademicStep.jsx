@@ -1,13 +1,7 @@
 "use client";
 
 const DEPARTMENTS = [
-  "Laboratory",
-  "Radiology",
-  "Physiotherapy",
-  "Radiotherapy",
-  "Dental",
   "Pharmacy",
-  "SIT",
 ];
 
 // Helper function to dynamically generate sessions from 1971 to the current year
