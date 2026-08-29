@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "iht-rangpur"
-  }
+    "default": "tarunner-shokti"
+  },
+  "targets": {},
+  "etags": {}
 }
