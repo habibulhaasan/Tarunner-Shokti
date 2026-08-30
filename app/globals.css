@@ -18,6 +18,9 @@
 @import "@fontsource/noto-sans-bengali/600.css";
 @import "@fontsource/noto-sans-bengali/700.css";
 @import "@fontsource/noto-sans-bengali/800.css";
+@import "@fontsource/tiro-bangla/400.css";
+/* Tiro Bangla only ships weight 400, so keep Noto Sans Bengali for bold/semibold headings */
+
 
 :root {
   /* Minimal professional theme: neutral slate scale + a single blue accent. */
@@ -45,7 +48,7 @@
   /* "Noto Sans Bengali" as the primary Bangla font per project convention ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â
      falls through to Inter for Latin glyphs and each other's script gaps. */
   --font-display: "Noto Sans Bengali", "Inter", -apple-system, sans-serif;
-  --font-body: "Noto Sans Bengali", "Inter", -apple-system, sans-serif;
+  --font-body: "Tiro Bangla", "Noto Sans Bengali", "Inter", -apple-system, sans-serif;
 }
 
 body {
