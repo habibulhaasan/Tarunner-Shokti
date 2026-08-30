@@ -11,7 +11,7 @@
   "dependencies": {
     "@fontsource/inter": "^5.2.6",
     "@fontsource/noto-sans-bengali": "^5.2.11",
-    "firebase": "^10.12.2",
+    "firebase": "^12.0.0",
     "html-to-image": "^1.11.13",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",
