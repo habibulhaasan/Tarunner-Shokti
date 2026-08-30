@@ -122,7 +122,7 @@ export default function LandingPage() {
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "center", gap: "20px 40px", fontSize: "15px", color: "#334155" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <MapPin size={18} style={{ color: "var(--coral)", flexShrink: 0 }} />
-              <span><strong>অস্থায়ী কার্যালয়:</strong> মাতৃ সনদ ও শিশু স্বাস্থ্য প্রশিক্ষণ প্রতিষ্ঠান, আজিমপুর, ঢাকা</span>
+              <span><strong>অস্থায়ী কার্যালয়:</strong> মাতৃ সদন ও শিশু স্বাস্থ্য প্রশিক্ষণ প্রতিষ্ঠান, আজিমপুর, ঢাকা</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <Mail size={18} style={{ color: "var(--coral)", flexShrink: 0 }} />
