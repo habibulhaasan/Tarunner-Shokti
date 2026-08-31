@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
@@ -7,11 +7,12 @@ import { useSiteStatus } from "../lib/siteStatus";
 import MaintenancePage from "./MaintenancePage";
 import AppShell from "./nav/AppShell";
 
-const AUTH_GATEWAY_PATHS = ["/", "/login", "/register", "/forgot-password"];
+const AUTH_GATEWAY_PATHS = ["/login", "/register", "/forgot-password"];
 
 function isOpenPath(pathname) {
   return (
-    AUTH_GATEWAY_PATHS.includes(pathname) ||
+    pathname === "/" ||
+    pathname === "/about-us" ||
     pathname === "/info" ||
     pathname === "/committee" ||
     pathname === "/notices" ||
@@ -31,7 +32,7 @@ export default function RouteGuard({ children }) {
     const isGateway = AUTH_GATEWAY_PATHS.includes(pathname);
     const isOpen = isOpenPath(pathname);
 
-    if (!user && !isOpen) {
+    if (!user && !isOpen && !isGateway) {
       router.replace("/login");
       return;
     }
@@ -67,14 +68,15 @@ export default function RouteGuard({ children }) {
   }
 
   const isGateway = AUTH_GATEWAY_PATHS.includes(pathname);
+  const isPublicPage = pathname === "/" || pathname === "/about-us" || pathname === "/committee" || pathname === "/notices";
+
   const showShell =
     !!user &&
     !!userDoc?.profileComplete &&
     !isGateway &&
+    !isPublicPage &&
     pathname !== "/onboarding" &&
-    pathname !== "/info" &&
-    pathname !== "/committee" &&
-    pathname !== "/notices";
+    pathname !== "/info";
 
   return showShell ? <AppShell>{children}</AppShell> : children;
 }
