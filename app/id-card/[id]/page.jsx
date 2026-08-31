@@ -139,10 +139,10 @@ export default function IdCardPage() {
   return (
     <div className="memo-print-wrap">
       <div className="no-print id-card-toolbar">
-        <button type="button" className="btn" style={{ width: "auto" }} onClick={() => window.print()}>
+        {/* <button type="button" className="btn" style={{ width: "auto" }} onClick={() => window.print()}>
           <Printer size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
           প্রিন্ট
-        </button>
+        </button> */}
         <button type="button" className="btn-ghost btn" style={{ width: "auto" }} onClick={handleDownload} disabled={downloading}>
           <Download size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
           {downloading ? "তৈরি হচ্ছে…" : "ছবি ডাউনলোড"}
@@ -163,7 +163,8 @@ export default function IdCardPage() {
             />
             <div className="id-card-header-text">
               <span className="id-card-org-name">তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ</span>
-              <span className="id-card-motto">একটা অরাজনৈতিক পেশাজীবি সংগঠন</span>
+              <span className="id-card-motto">অরাজনৈতিক তরুণ পেশাজীবী সংগঠন</span>
+              <span className="id-card-motto">info.tarunnershokti@gmail.com</span>
             </div>
           </div>
 
@@ -183,6 +184,7 @@ export default function IdCardPage() {
 
           <div className="id-card-footer">
             <span>ইস্যু: {issued}</span>
+            <span>www.tarunnershokti.com</span>
             {qrDataUrl && <img src={qrDataUrl} alt="QR" className="id-card-qr" />}
           </div>
         </div>
