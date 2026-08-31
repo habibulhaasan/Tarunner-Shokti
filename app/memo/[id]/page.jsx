@@ -127,7 +127,7 @@ export default function MemoPrintPage() {
       </div>
 
       <span className="helper-text no-print" style={{ marginBottom: 8, display: "block", textAlign: "center" }}>
-        <strong>Note:</strong> Download images and PDFs in desktop view for better quality.
+        <strong>Note:</strong> প্রিন্ট করার জন্য ডেস্কটপ ভিউ ব্যবহার করুন এরপর PDF/Image ডাউনলোড করে প্রিন্ট করুন.
       </span>
 
       <div className="memo-print-page-container"><div className="memo-print-page" ref={memoRef}>
@@ -154,6 +154,8 @@ export default function MemoPrintPage() {
                   <div className="memo-signature-line" />
                   <div className="memo-signature-name">{s.name}</div>
                   <div className="memo-signature-role">{s.roleTitle}</div>
+                  <div className="memo-signature-team">কেন্দ্রীয় কার্যনির্বাহী কমিটি</div>
+                  <div className="memo-signature-org">{ORG_INFO.nameBn}</div>
                 </div>
               ))}
             </div>
