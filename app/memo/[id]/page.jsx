@@ -120,10 +120,10 @@ export default function MemoPrintPage() {
           {downloadingPdf ? "ডাউনলোড হচ্ছে..." : "PDF"}
         </button>
         
-        <button type="button" className="btn" style={{ width: "auto" }} onClick={() => window.print()}>
+        {/* <button type="button" className="btn" style={{ width: "auto" }} onClick={() => window.print()}>
           <Printer size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
           Print
-        </button>
+        </button> */}
       </div>
 
       <span className="helper-text no-print" style={{ marginBottom: 8, display: "block", textAlign: "center" }}>
