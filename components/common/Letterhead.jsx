@@ -6,14 +6,14 @@
 export const ORG_INFO = {
   logoSrc: "/logo.png",
   nameBn: "তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ",
-  nameEn: "একটি অরাজনৈতিক পেশাজীবী সংগঠন",
+  motto: "অরাজনৈতিক তরুণ পেশাজীবী সংগঠন",
   // Left blank on purpose: the memo print page already carries the full
   // address/email/phone as its own footer line (per how official memos are
   // laid out), so repeating it here would print it twice on the same page.
   addressBn: "",
   phone: "",
-  email: "",
-  website: "",
+  email: "info.tarunnershokti@gmail.com",
+  website: "www.tarunnershokti.com",
 };
 
 export default function Letterhead({ compact = false, align = "center" }) {
@@ -26,12 +26,12 @@ export default function Letterhead({ compact = false, align = "center" }) {
         )}
         <div className="letterhead-text" style={{ textAlign: align }}>
           <div className="letterhead-name-bn">{ORG_INFO.nameBn}</div>
-          <div className="letterhead-name-en">{ORG_INFO.nameEn}</div>
+          <div className="letterhead-name-en">{ORG_INFO.motto}</div>
           {(ORG_INFO.addressBn || ORG_INFO.phone || ORG_INFO.email || ORG_INFO.website) && (
             <div className="letterhead-contact">
               {[ORG_INFO.addressBn, ORG_INFO.phone, ORG_INFO.email, ORG_INFO.website]
                 .filter(Boolean)
-                .join(" · ")}
+                .join(" | ")}
             </div>
           )}
         </div>

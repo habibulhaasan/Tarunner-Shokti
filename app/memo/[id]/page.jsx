@@ -160,7 +160,7 @@ export default function MemoPrintPage() {
           )}
 
           <div className="memo-footer">
-            অস্থায়ী কার্যালয়: মাতৃ সদন ও শিশু স্বাস্থ্য প্রশিক্ষণ প্রতিষ্ঠান, আজিমপুর, ঢাকা | {ORG_INFO.email || "info.tarunnershokti@gmail.com"} | ০১৭৩৪২২৮৮৩০
+            অস্থায়ী কার্যালয়: মাতৃসদন ও শিশু স্বাস্থ্য প্রশিক্ষণ প্রতিষ্ঠান, আজিমপুর, ঢাকা | {ORG_INFO.email || "info.tarunnershokti@gmail.com"} | ০১৭৩৪২২৮৮৩০
           </div>
         </div>
       </div>
