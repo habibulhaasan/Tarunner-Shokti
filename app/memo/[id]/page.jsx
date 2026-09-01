@@ -29,26 +29,89 @@ function getMemoTag(memoNo) {
   return memoNo.replace(/[^ঀ-৿a-zA-Z0-9-]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
 }
 
+// A4 @ 96dpi. Shared by both the visible preview and the hidden export copy
+// so the two numbers can never drift apart.
+const EXPORT_WIDTH = 793.7;
+const EXPORT_HEIGHT = 1122.5;
+
+// Single source of truth for the memo markup — rendered twice below (once
+// for the responsive on-screen preview, once for the hidden export copy)
+// so they never fall out of sync.
+function MemoDocument({ memo }) {
+  return (
+    <>
+      <img src="/logo.png" alt="" className="memo-watermark" />
+      <div className="memo-print-inner">
+        <Letterhead align="left" />
+
+        <div className="memo-meta-row">
+          <div>স্মারক নং: {memo.memoNo}</div>
+          <div>তারিখ: {fmtDate(memo.date)}</div>
+        </div>
+
+        <div className="memo-subject">
+          <span className="memo-subject-label">বিষয়:</span> {memo.title}
+        </div>
+
+        <div className="memo-body">{memo.content}</div>
+
+        {memo.signatories?.length > 0 && (
+          <div className="memo-signature-row">
+            {memo.signatories.map((s) => (
+              <div key={s.profileUid} className="memo-signature">
+                <div className="memo-signature-line" />
+                <div className="memo-signature-name">{s.name}</div>
+                <div className="memo-signature-role">{s.roleTitle}</div>
+                <div className="memo-signature-team">কেন্দ্রীয় কার্যনির্বাহী কমিটি</div>
+                <div className="memo-signature-org">{ORG_INFO.nameBn}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="memo-footer">
+          অস্থায়ী কার্যালয়: মাতৃসদন ও শিশু স্বাস্থ্য প্রশিক্ষণ প্রতিষ্ঠান, আজিমপুর, ঢাকা | {ORG_INFO.email || "info.tarunnershokti@gmail.com"} | ০১৭৩৪২২৮৮৩০
+        </div>
+      </div>
+    </>
+  );
+}
+
 export default function MemoPrintPage() {
   const { id } = useParams();
   const { memo, notFound, ready } = useMemoDoc(id);
   const [downloadingImg, setDownloadingImg] = useState(false);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [downloadError, setDownloadError] = useState("");
-  const memoRef = useRef(null);
+
+  // Points at the HIDDEN, always full-size copy — never the responsive
+  // on-screen preview. That's the whole fix: export no longer depends on
+  // whatever CSS transform the current viewport happens to be applying.
+  const exportRef = useRef(null);
 
   const getExportDataUrl = async () => {
-    return await toPng(memoRef.current, {
-      pixelRatio: 3,
+    // Wait for the self-hosted Bangla webfonts to finish loading. Skipping
+    // this is the classic cause of a "messy/wrapped" export: on a slow
+    // mobile connection the canvas can get rasterized before the fonts are
+    // ready, so it falls back to a system font with different glyph widths
+    // and the text reflows differently than what's shown on screen.
+    if (typeof document !== "undefined" && document.fonts?.ready) {
+      await document.fonts.ready;
+    }
+
+    return await toPng(exportRef.current, {
+      pixelRatio: 2, // 3x here can exceed canvas memory limits in budget
+                      // Android browsers / in-app webviews (FB/Messenger),
+                      // which silently corrupts the output. 2x is still
+                      // plenty sharp for A4 print.
       backgroundColor: "#ffffff",
-      style: {
-        width: "793.7px", height: "1122.5px", transform: "scale(1)", margin: "0"
-      },
+      width: EXPORT_WIDTH,
+      height: EXPORT_HEIGHT,
     });
   };
 
   const handleDownloadImage = async () => {
-    if (!memoRef.current) return;
+    if (!exportRef.current) return;
     setDownloadingImg(true);
     setDownloadError("");
     try {
@@ -60,14 +123,14 @@ export default function MemoPrintPage() {
       link.click();
     } catch (err) {
       console.error("Memo image export failed:", err);
-      setDownloadError("ছবি তৈরি করা যায়নি। আবার চেষ্টা করুন।");
+      setDownloadError("ছবি তৈরি করা যায়নি। আবার চেষ্টা করুন।");
     } finally {
       setDownloadingImg(false);
     }
   };
 
   const handleDownloadPdf = async () => {
-    if (!memoRef.current) return;
+    if (!exportRef.current) return;
     setDownloadingPdf(true);
     setDownloadError("");
     try {
@@ -82,7 +145,7 @@ export default function MemoPrintPage() {
       pdf.save(`Memo-${tag}.pdf`);
     } catch (err) {
       console.error("Memo PDF export failed:", err);
-      setDownloadError("PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।");
+      setDownloadError("PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।");
     } finally {
       setDownloadingPdf(false);
     }
@@ -110,7 +173,7 @@ export default function MemoPrintPage() {
     <div className="memo-print-wrap">
       <div className="no-print memo-print-toolbar">
         {downloadError && <span className="helper-text" style={{ marginRight: "auto", color: "var(--danger)" }}>{downloadError}</span>}
-        
+
         <button type="button" className="btn-ghost btn" style={{ width: "auto", marginRight: 8 }} onClick={handleDownloadImage} disabled={downloadingImg || downloadingPdf}>
           <Download size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
           {downloadingImg ? "ডাউনলোড হচ্ছে..." : "Image"}
@@ -119,54 +182,29 @@ export default function MemoPrintPage() {
           <FileText size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
           {downloadingPdf ? "ডাউনলোড হচ্ছে..." : "PDF"}
         </button>
-        
-        {/* <button type="button" className="btn" style={{ width: "auto" }} onClick={() => window.print()}>
-          <Printer size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
-          Print
-        </button> */}
       </div>
 
-      <span className="helper-text no-print" style={{ marginBottom: 8, display: "block", textAlign: "center" }}>
-        <strong>Note:</strong> প্রিন্ট করার জন্য ডেস্কটপ ভিউ ব্যবহার করুন এরপর PDF/Image ডাউনলোড করে প্রিন্ট করুন.
-      </span>
-
-      <div className="memo-print-page-container"><div className="memo-print-page" ref={memoRef}>
-        <img src="/logo.png" alt="" className="memo-watermark" />
-
-        <div className="memo-print-inner">
-          <Letterhead align="left" />
-
-          <div className="memo-meta-row">
-            <div>স্মারক নং: {memo.memoNo}</div>
-            <div>তারিখ: {fmtDate(memo.date)}</div>
-          </div>
-
-          <div className="memo-subject">
-            <span className="memo-subject-label">বিষয়:</span> {memo.title}
-          </div>
-
-          <div className="memo-body">{memo.content}</div>
-
-          {memo.signatories?.length > 0 && (
-            <div className="memo-signature-row">
-              {memo.signatories.map((s) => (
-                <div key={s.profileUid} className="memo-signature">
-                  <div className="memo-signature-line" />
-                  <div className="memo-signature-name">{s.name}</div>
-                  <div className="memo-signature-role">{s.roleTitle}</div>
-                  <div className="memo-signature-team">কেন্দ্রীয় কার্যনির্বাহী কমিটি</div>
-                  <div className="memo-signature-org">{ORG_INFO.nameBn}</div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="memo-footer">
-            অস্থায়ী কার্যালয়: মাতৃসদন ও শিশু স্বাস্থ্য প্রশিক্ষণ প্রতিষ্ঠান, আজিমপুর, ঢাকা | {ORG_INFO.email || "info.tarunnershokti@gmail.com"} | ০১৭৩৪২২৮৮৩০
-          </div>
+      {/* Visible, responsive preview — purely for on-screen viewing.
+          Scales down on phones via the existing CSS. No longer used
+          for export, so its shrink transform can't leak into the file. */}
+      <div className="memo-print-page-container">
+        <div className="memo-print-page">
+          <MemoDocument memo={memo} />
         </div>
       </div>
-</div>
+
+      {/* Hidden export copy: always rendered at true full A4 pixel size,
+          off-screen, immune to any responsive/mobile CSS. This is what
+          Image/PDF downloads actually capture. */}
+      <div aria-hidden="true" style={{ position: "fixed", top: 0, left: "-10000px", pointerEvents: "none" }}>
+        <div
+          ref={exportRef}
+          className="memo-print-page"
+          style={{ width: EXPORT_WIDTH, height: EXPORT_HEIGHT, transform: "none", margin: 0 }}
+        >
+          <MemoDocument memo={memo} />
+        </div>
+      </div>
     </div>
   );
 }
