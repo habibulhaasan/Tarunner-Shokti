@@ -52,9 +52,9 @@ export default function NoticesPage() {
                 </div>
               </div>
               <div className="fund-review-actions">
-                <Link href={/memo/} target="_blank" className="btn-ghost btn" style={{ width: "auto" }}>
-                  দেখুন / প্রিন্ট করুন
-                </Link>
+                <Link href={`/memo/${m.id}`} target="_blank" className="btn-ghost btn" style={{ width: "auto" }}>
+  দেখুন / প্রিন্ট করুন
+</Link>
               </div>
             </div>
           ))}
