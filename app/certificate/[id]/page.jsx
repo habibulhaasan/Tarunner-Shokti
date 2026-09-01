@@ -11,19 +11,12 @@ import { useMyContributions } from "../../../lib/fundContributions";
 import { useSignatoryMembers, useCommitteeRoles } from "../../../lib/committee";
 import Letterhead, { ORG_INFO } from "../../../components/common/Letterhead";
 
-// "Pharmacist" for the Pharmacy department, "Medical Technologist (X)" for
-// every other department — the two professional titles this org's members
-// actually hold.
 function getProfessionalDesignation(profile) {
   if (!profile.department) return "";
   if (profile.department === "Pharmacy") return "Pharmacist";
   return `Medical Technologist (${profile.department})`;
 }
 
-// Institute name for a student, office name for a service holder — same
-// logic as the ID card. instituteName isn't collected at registration yet
-// (separate follow-up); reads it here so this picks it up automatically the
-// moment that field exists.
 function getPlaceLine(profile) {
   const emp = profile.employment;
   if (!emp?.status) return "";
@@ -31,10 +24,65 @@ function getPlaceLine(profile) {
   return emp.officeName || emp.govtOrg || "";
 }
 
-// Filename-safe tag for the downloaded PNG. No memberId-style format is
-// defined for certificates, so this mirrors the ID card page's fallback.
 function certificateFileTag(profile) {
   return profile.memberId || profile.id.slice(0, 6).toUpperCase();
+}
+
+// 297mm x 210mm @ 96dpi — the certificate's true landscape A4 size.
+const EXPORT_WIDTH = 1122.5;
+const EXPORT_HEIGHT = 793.7;
+
+// Shared markup — rendered once for the visible (responsive) preview and
+// once for the hidden, always-full-size export copy, so the two can never
+// drift out of sync.
+function CertificateBody({ profile, today, total, signatories, professionalDesignation, placeLine, orgDesignation }) {
+  return (
+    <>
+      {ORG_INFO.logoSrc && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={ORG_INFO.logoSrc} alt="" className="certificate-watermark" />
+      )}
+
+      <div className="certificate-content">
+        <Letterhead align="left" />
+
+        <div className="certificate-date-row">তারিখ: {today}</div>
+
+        <div className="certificate-middle">
+          <div className="certificate-title">অনুদান সনদপত্র</div>
+          <div className="certificate-subtitle">Certificate of Donation</div>
+
+          <p className="certificate-body">
+            এই মর্মে প্রত্যয়ন করা যাচ্ছে যে,{" "}
+            <span className="certificate-highlight">{profile.name}</span>
+            {professionalDesignation ? `, ${professionalDesignation}` : ""}
+            {placeLine ? `, ${placeLine}` : ""}, তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ-এর{" "}
+            <span className="certificate-highlight">{orgDesignation}</span>, কল্যাণ তহবিলে সর্বমোট{" "}
+            <span className="certificate-highlight">৳{total.toLocaleString()}</span> টাকা অনুদান প্রদান করেছেন। পরিষদের
+            পক্ষ থেকে তাঁর এই মহতী অবদানের জন্য আন্তরিক কৃতজ্ঞতা ও ধন্যবাদ জ্ঞাপন করা হচ্ছে। ভবিষ্যতেও তাঁর এই সহযোগিতা
+            অব্যাহত থাকবে বলে আমরা আশাবাদী।
+          </p>
+        </div>
+
+        <div className="certificate-signature-row">
+          {signatories.map((s) => (
+            <div key={s.title} className="certificate-signature">
+              {s.name && <div className="certificate-signature-name">{s.name}</div>}
+              <div className="certificate-signature-line" />
+              <div>{s.title}</div>
+              <div className="certificate-esigned">ইলেকট্রনিকভাবে স্বাক্ষরিত</div>
+            </div>
+          ))}
+          {signatories.length === 0 && (
+            <p className="helper-text no-print">
+              কোনো স্বাক্ষরকারী নির্ধারণ করা নেই — অ্যাডমিন প্যানেলের Committee ট্যাবে এক বা একাধিক পদবীকে
+              "Signatory" হিসেবে চিহ্নিত করুন।
+            </p>
+          )}
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default function CertificatePage() {
@@ -44,13 +92,15 @@ export default function CertificatePage() {
   const [notFound, setNotFound] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState("");
-  const frameRef = useRef(null);
+
+  // Points at the hidden, always-full-size (297mm x 210mm) copy — never the
+  // responsive on-screen preview. Same fix as the memo page: exporting the
+  // live preview let mobile's responsive layout leak into the downloaded
+  // image; capturing a detached, fixed-size clone guarantees identical
+  // output on every device.
+  const exportRef = useRef(null);
+
   const { items, ready } = useMyContributions(targetUid);
-  // Signatories are driven entirely by committee data: whichever roles an
-  // admin flags "Signatory" in the Committee panel show up here, in role
-  // order, with whoever currently holds that role pulled in live — no title
-  // strings hardcoded here, so this stays correct automatically as the
-  // committee (and its members) change.
   const { signatories: signatoryMembers, ready: signatoriesReady } = useSignatoryMembers();
   const { rolesById } = useCommitteeRoles();
 
@@ -68,16 +118,25 @@ export default function CertificatePage() {
   }, [targetUid]);
 
   const handleDownload = async () => {
-    if (!frameRef.current) return;
+    if (!exportRef.current) return;
     setDownloading(true);
     setDownloadError("");
     try {
-      // Same approach as the ID card's download: self-hosted font (see
-      // globals.css) lets html-to-image fetch/embed it same-origin, so the
-      // exported PNG uses real Bangla metrics instead of a fallback font.
-      const dataUrl = await toPng(frameRef.current, {
-        pixelRatio: 4,
+      // Wait for the self-hosted Bangla webfonts to finish loading before
+      // rasterizing — on a slow mobile connection html-to-image can fire
+      // before they're ready and fall back to a system font with different
+      // glyph metrics, which is what used to cause mismatched output.
+      if (typeof document !== "undefined" && document.fonts?.ready) {
+        await document.fonts.ready;
+      }
+
+      const dataUrl = await toPng(exportRef.current, {
+        pixelRatio: 3, // sharp enough to print/frame without risking the
+                        // canvas-memory limits some mobile/in-app browsers
+                        // hit at higher multipliers (the old value was 4)
         backgroundColor: "#ffffff",
+        width: EXPORT_WIDTH,
+        height: EXPORT_HEIGHT,
       });
       const link = document.createElement("a");
       link.download = `certificate-${certificateFileTag(profile)}.png`;
@@ -136,13 +195,13 @@ export default function CertificatePage() {
 
   const professionalDesignation = getProfessionalDesignation(profile);
   const placeLine = getPlaceLine(profile);
-  // Same "সদস্য" default as the ID card — the person's designation within
-  // TSPP itself, separate from their professional title above.
   const orgDesignation = (profile.committeeRoleId && rolesById[profile.committeeRoleId]?.title) || "সদস্য";
+
+  const bodyProps = { profile, today, total, signatories, professionalDesignation, placeLine, orgDesignation };
 
   return (
     <div className="memo-print-wrap">
-      <div className="no-print memo-print-toolbar" style={{ width: "297mm", display: "flex", gap: 10 }}>
+      <div className="no-print memo-print-toolbar" style={{ width: "100%", maxWidth: "297mm", display: "flex", flexWrap: "wrap", gap: 10 }}>
         <button type="button" className="btn" style={{ width: "auto" }} onClick={() => window.print()}>
           <Printer size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />
           Print
@@ -154,53 +213,28 @@ export default function CertificatePage() {
       </div>
       {downloadError && <p className="helper-text no-print" style={{ textAlign: "center", color: "var(--danger)", marginBottom: 10 }}>{downloadError}</p>}
 
-      <div className="certificate-page">
-        <div className="certificate-frame" ref={frameRef}>
-          {ORG_INFO.logoSrc && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={ORG_INFO.logoSrc} alt="" className="certificate-watermark" />
-          )}
+      {/* Visible, responsive preview. `.certificate-preview` scopes the
+          mobile-only readability tweaks in globals.css so they only ever
+          touch this copy — never the hidden export node below. */}
+      <div className="certificate-page certificate-preview">
+        <div className="certificate-frame">
+          <CertificateBody {...bodyProps} />
+        </div>
+      </div>
 
-          <div className="certificate-content">
-            <Letterhead align="left" />
-
-            <div className="certificate-date-row">তারিখ: {today}</div>
-
-            <div className="certificate-middle">
-              <div className="certificate-title">অনুদান সনদপত্র</div>
-              <div className="certificate-subtitle">Certificate of Donation</div>
-
-              <p className="certificate-body">
-                এই মর্মে প্রত্যয়ন করা যাচ্ছে যে,{" "}
-                <span className="certificate-highlight">{profile.name}</span>
-                {professionalDesignation ? `, ${professionalDesignation}` : ""}
-                {placeLine ? `, ${placeLine}` : ""}, তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ-এর{" "}
-                <span className="certificate-highlight">{orgDesignation}</span>, কল্যাণ তহবিলে সর্বমোট{" "}
-                <span className="certificate-highlight">৳{total.toLocaleString()}</span> টাকা অনুদান প্রদান করেছেন। পরিষদের
-                পক্ষ থেকে তাঁর এই মহতী অবদানের জন্য আন্তরিক কৃতজ্ঞতা ও ধন্যবাদ জ্ঞাপন করা হচ্ছে। ভবিষ্যতেও তাঁর এই সহযোগিতা
-                অব্যাহত থাকবে বলে আমরা আশাবাদী।
-              </p>
-            </div>
-
-            <div className="certificate-signature-row">
-              {signatories.map((s) => (
-                <div key={s.title} className="certificate-signature">
-                  {s.name && <div className="certificate-signature-name">{s.name}</div>}
-                  <div className="certificate-signature-line" />
-                  <div>{s.title}</div>
-                  <div className="certificate-esigned">ইলেকট্রনিকভাবে স্বাক্ষরিত</div>
-                </div>
-              ))}
-              {signatories.length === 0 && (
-                <p className="helper-text no-print">
-                  কোনো স্বাক্ষরকারী নির্ধারণ করা নেই — অ্যাডমিন প্যানেলের Committee ট্যাবে এক বা একাধিক পদবীকে
-                  "Signatory" হিসেবে চিহ্নিত করুন।
-                </p>
-              )}
-            </div>
+      {/* Hidden export copy: always rendered at true 297mm x 210mm pixel
+          size, off-screen, and immune to any responsive/mobile CSS since it
+          lacks the .certificate-preview class. This is what "ছবি ডাউনলোড"
+          actually captures. `no-print` keeps it out of the Print button's
+          output too. */}
+      <div className="no-print" aria-hidden="true" style={{ position: "fixed", top: 0, left: "-10000px", pointerEvents: "none" }}>
+        <div className="certificate-page" style={{ width: EXPORT_WIDTH, height: EXPORT_HEIGHT }}>
+          <div ref={exportRef} className="certificate-frame" style={{ width: "100%", height: "100%" }}>
+            <CertificateBody {...bodyProps} />
           </div>
         </div>
       </div>
+
       <p className="helper-text no-print" style={{ textAlign: "center", marginTop: 6 }}>You can print it as per need.</p>
     </div>
   );
