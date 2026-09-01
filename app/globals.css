@@ -2984,20 +2984,48 @@ select:disabled {
   }
 
   .memo-print-page-container {
-    container-type: inline-size;
     width: 100%;
     max-width: 100%;
-    aspect-ratio: 210 / 297;
-    position: relative;
-    overflow: hidden;
   }
 
+  /* Mobile: stop trying to shrink a literal A4 replica to fit the screen —
+     that always ends up either too tiny to read or (since A4's proportions
+     are less elongated than a phone screen) fitting the whole page with no
+     scrolling at all. Instead, flow the same content naturally at full
+     device width and a comfortable font size, like any responsive page —
+     you scroll down to read it. The true fixed-size A4 replica still
+     exists (see the hidden export node in page.jsx) purely for Image/PDF
+     downloads, which is the only place it needs to be pixel-accurate. */
   .memo-print-page {
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform-origin: top left;
-    transform: scale(calc(100cqw / 793.7));
+    width: 100%;
+    height: auto;
+    max-height: none;
+    padding: 22px 16px;
+    border-radius: 10px;
+  }
+
+  .memo-watermark {
+    display: none; /* sized in mm for the A4 layout; skip rather than fight scaling */
+  }
+
+  .memo-meta-row {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13.5px;
+  }
+
+  .memo-subject { font-size: 14.5px; }
+
+  .memo-body {
+    font-size: 14.5px;
+    line-height: 1.75;
+  }
+
+  .memo-signature-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    margin-top: 30px;
   }
 }
 
