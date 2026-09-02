@@ -23,6 +23,23 @@ service cloud.firestore {
       );
     }
 
+    function hasRole(role) {
+      return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+
+    function canManageNotifications() {
+      return isAdmin() || hasRole('cashier') || hasRole('office_secretary');
+    }
+
+    function canManageDonations() {
+      return isAdmin() || hasRole('cashier');
+    }
+
+    function canManageMemosAndEvents() {
+      return isAdmin() || hasRole('office_secretary');
+    }
+
     // Public site-status flag — readable by anyone (even signed-out visitors),
     // writable only by admins. Separate top-level collection (not "config",
     // which requires isSignedIn()) because maintenance mode must be checkable
@@ -168,8 +185,8 @@ service cloud.firestore {
     // enforces that server-side.
     match /notifications/{id} {
       allow read: if isSignedIn() &&
-        (resource.data.audience == "all" || resource.data.targetUid == request.auth.uid);
-      allow create, update, delete: if isAdmin();
+        (canManageNotifications() || resource.data.audience == "all" || resource.data.targetUid == request.auth.uid);
+      allow create, update, delete: if canManageNotifications();
     }
 
     // Per-member read receipts for the above — own subcollection under
@@ -194,7 +211,7 @@ service cloud.firestore {
       // admins. Pending/rejected submissions stay private to their owner
       // and admins.
       allow read: if isSignedIn() &&
-        (isOwner(resource.data.uid) || isAdmin() || resource.data.status == "approved");
+        (isOwner(resource.data.uid) || canManageDonations() || resource.data.status == "approved");
 
       allow create: if isSignedIn() &&
         request.resource.data.uid == request.auth.uid &&
@@ -203,7 +220,7 @@ service cloud.firestore {
         request.resource.data.amount > 0;
 
       allow update: if
-        (isAdmin() &&
+        (canManageDonations() &&
           request.resource.data.diff(resource.data).affectedKeys()
             .hasOnly(['status', 'adminNote', 'reviewedAt', 'reviewedBy'])) ||
         (isOwner(resource.data.uid) && isPending() &&
@@ -243,8 +260,8 @@ service cloud.firestore {
       // Published memos are meant to be public notices — readable by anyone,
       // signed in or not (the public /info page and the /memo/[id] print
       // page both rely on this). Drafts stay admin-only.
-      allow read: if isAdmin() || resource.data.visible == true;
-      allow create, update, delete: if isAdmin();
+      allow read: if canManageMemosAndEvents() || resource.data.visible == true;
+      allow create, update, delete: if canManageMemosAndEvents();
     }
 
     // --- Events & calendar ---
@@ -253,8 +270,8 @@ service cloud.firestore {
     // events aren't exposed to anonymous visitors — RSVP requires an account
     // anyway.)
     match /events/{id} {
-      allow read: if isAdmin() || (isSignedIn() && resource.data.visible == true);
-      allow create, update, delete: if isAdmin();
+      allow read: if canManageMemosAndEvents() || (isSignedIn() && resource.data.visible == true);
+      allow create, update, delete: if canManageMemosAndEvents();
 
       // A member's own RSVP, keyed by their uid as the doc id.
       match /rsvps/{uid} {

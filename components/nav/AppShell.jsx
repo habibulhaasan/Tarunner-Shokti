@@ -8,12 +8,11 @@ import { auth } from "../../lib/firebase";
 import { clearSessionCookie } from "../../lib/sessionCookie";
 import { useAuth } from "../../context/AuthContext";
 import { useNotifications } from "../../lib/notifications";
-import { useFundSettings } from "../../lib/fundContributions";
-import { useTabVisibility } from "../../lib/tabVisibility";
 import DesktopSidebar from "./DesktopSidebar";
 import MobileTopBar from "./MobileTopBar";
 import MobileNav from "./MobileNav";
 import MobileMoreSheet from "./MobileMoreSheet";
+import { hasAdminAccess } from "../../lib/permissions";
 
 // Full nav item set, in the order the desktop sidebar shows them. Mobile
 // splits this into "primary" (always visible in the bottom bar) vs.
@@ -42,25 +41,15 @@ export default function AppShell({ children }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const isAdmin = userDoc?.role === "admin";
+  const canAccessAdminPanel = hasAdminAccess(userDoc?.role);
   const { unreadCount } = useNotifications(user?.uid);
-  const { settings: fundSettings } = useFundSettings();
-  const { hidden: hiddenTabs } = useTabVisibility();
   const [moreOpen, setMoreOpen] = useState(false);
 
   const activeKey = pathname === "/admin" ? "admin" : searchParams.get("tab") || "dashboard";
 
-  // The "Donate" tab is admin-controlled: hidden from regular members until
-  // an admin flips fundSettings.visible on. Admins always see it themselves
-  // so they can preview it before publishing.
-  const showFundTab = isAdmin || fundSettings.visible;
-  const baseTabs = showFundTab
-    ? [...DASHBOARD_TABS, { key: "contribute", label: "Donate", icon: HeartHandshake }]
-    : DASHBOARD_TABS;
-
-  // Same admin-always-sees-everything pattern as the fund tab above, just
-  // generalized to any tab via Admin → Tab visibility.
-  const tabs = isAdmin ? baseTabs : baseTabs.filter((t) => !hiddenTabs.includes(t.key));
+  // Dashboard pages are available to every signed-in role. Role-based access
+  // is limited to the admin-panel views below.
+  const tabs = [...DASHBOARD_TABS, { key: "contribute", label: "Donate", icon: HeartHandshake }];
 
   const navItems = [
     ...tabs.map((t) => ({
@@ -68,7 +57,7 @@ export default function AppShell({ children }) {
       href: `/dashboard?tab=${t.key}`,
       badge: t.key === "notifications" && unreadCount > 0 ? unreadCount : null,
     })),
-    ...(isAdmin ? [{ key: "admin", label: "Admin panel", icon: Shield, href: "/admin", badge: null }] : []),
+    ...(canAccessAdminPanel ? [{ key: "admin", label: "Admin panel", icon: Shield, href: "/admin", badge: null }] : []),
   ];
 
   const mobilePrimary = navItems.filter((i) => MOBILE_PRIMARY_KEYS.includes(i.key));

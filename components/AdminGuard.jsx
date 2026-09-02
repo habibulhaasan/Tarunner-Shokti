@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
+import { hasAdminAccess } from "../lib/permissions";
 
 export default function AdminGuard({ children }) {
   const { userDoc, loading } = useAuth();
@@ -10,12 +11,12 @@ export default function AdminGuard({ children }) {
 
   useEffect(() => {
     if (loading) return;
-    if (!userDoc || userDoc.role !== "admin") {
+    if (!userDoc || !hasAdminAccess(userDoc.role)) {
       router.replace("/dashboard");
     }
   }, [userDoc, loading, router]);
 
-  if (loading || !userDoc || userDoc.role !== "admin") {
+  if (loading || !userDoc || !hasAdminAccess(userDoc.role)) {
     return <div className="screen-center"><div className="loader" /></div>;
   }
 

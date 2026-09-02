@@ -18,6 +18,8 @@ import MemosPanel from "../../components/admin/MemosPanel";
 import EventsPanel from "../../components/admin/EventsPanel";
 import TabVisibilityPanel from "../../components/admin/TabVisibilityPanel";
 import { Users, Settings, Bell, HeartHandshake, Landmark, FileText, Calendar, Eye } from "lucide-react";
+import { canAccessAdminView, getDefaultAdminView, getVisibleAdminViews } from "../../lib/permissions";
+import { useAuth } from "../../context/AuthContext";
 
 const ADMIN_VIEWS = [
   { key: "members", label: "Members", icon: Users },
@@ -43,31 +45,40 @@ function statusOf(p) {
 }
 
 export default function AdminPage() {
+  const { userDoc } = useAuth();
+  const visibleViewKeys = getVisibleAdminViews(userDoc?.role);
+  const visibleViews = ADMIN_VIEWS.filter((v) => visibleViewKeys.includes(v.key));
   const [profiles, setProfiles] = useState([]);
   const [usersByUid, setUsersByUid] = useState({});
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [selectedUid, setSelectedUid] = useState(null);
   const [page, setPage] = useState(1);
-  const [view, setView] = useState("members"); // "members" | "settings" | "notifications" | "donations" | "committee" | "memos" | "events" | "tabs"
+  const [view, setView] = useState(() => getDefaultAdminView(userDoc?.role));
   const [fundView, setFundView] = useState("review"); // "review" | "expenses" | "ledger" | "accounts"
   const [notifyView, setNotifyView] = useState("compose"); // "compose" | "feedback"
 
   useEffect(() => {
+    if (!canAccessAdminView(userDoc?.role, view)) setView(getDefaultAdminView(userDoc?.role));
+  }, [userDoc?.role, view]);
+
+  useEffect(() => {
+    if (!canAccessAdminView(userDoc?.role, "members")) return undefined;
     const unsub = onSnapshot(collection(db, "profiles"), (snap) => {
       setProfiles(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
     });
     return () => unsub();
-  }, []);
+  }, [userDoc?.role]);
 
   useEffect(() => {
+    if (!canAccessAdminView(userDoc?.role, "members")) return undefined;
     const unsub = onSnapshot(collection(db, "users"), (snap) => {
       const map = {};
       snap.docs.forEach((d) => { map[d.id] = d.data(); });
       setUsersByUid(map);
     });
     return () => unsub();
-  }, []);
+  }, [userDoc?.role]);
 
   const merged = useMemo(
     () =>
@@ -123,14 +134,14 @@ export default function AdminPage() {
       <div className="admin-shell">
         <div className="admin-tabs-mobile-select no-print">
           <select value={view} onChange={(e) => setView(e.target.value)}>
-            {ADMIN_VIEWS.map((v) => (
+            {visibleViews.map((v) => (
               <option key={v.key} value={v.key}>{v.label}</option>
             ))}
           </select>
         </div>
 
         <div className="admin-toplevel-tabs">
-          {ADMIN_VIEWS.map((v) => (
+          {visibleViews.map((v) => (
             <button
               key={v.key}
               type="button"
@@ -183,9 +194,11 @@ export default function AdminPage() {
           </div>
         ) : (
           <>
-            <div className={`admin-toolbar ${selectedUid ? "admin-toolbar-hidden-mobile" : ""}`}>
-              <AdminFilterBar profiles={merged} filters={filters} onChange={setFilters} />
-            </div>
+            {view === "members" && (
+              <div className={`admin-toolbar ${selectedUid ? "admin-toolbar-hidden-mobile" : ""}`}>
+                <AdminFilterBar profiles={merged} filters={filters} onChange={setFilters} />
+              </div>
+            )}
             {view === "notifications" ? (
               <div className="admin-settings-view">
                 <div className="pill-group" style={{ marginBottom: 18 }}>

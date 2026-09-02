@@ -2,8 +2,8 @@
   "env": {
     "ANTHROPIC_API_KEY": "sk-a8e48ad8ad2b96fe-6d691e-484ccc01",
     "ANTHROPIC_BASE_URL": "http://localhost:20128/v1",
-    "ANTHROPIC_MODEL": "antigravity",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "antigravity",
+    "ANTHROPIC_MODEL": "auto/claude",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "auto/claude",
     "ANTHROPIC_AUTH_TOKEN": ""
   },
   "effortLevel": "low",

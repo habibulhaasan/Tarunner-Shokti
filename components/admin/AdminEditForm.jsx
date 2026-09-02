@@ -14,6 +14,7 @@ import { HOSPITALS } from "../../lib/hospitalData";
 import { useCommitteeRoles } from "../../lib/committee";
 import { useMyContributions } from "../../lib/fundContributions";
 import { resizeAndEncodeSignature } from "../../lib/photoUtils";
+import { ROLE_LABELS, ROLE_OPTIONS, ROLES } from "../../lib/permissions";
 import AuditHistory from "./AuditHistory";
 
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
@@ -373,18 +374,12 @@ export default function AdminEditForm({ profile }) {
     setTimeout(() => setSavedMsg(""), 2000);
   };
 
-  const handleToggleRole = async () => {
+  const handleRoleChange = async (e) => {
     if (profile.id === adminUser.uid) {
       alert("You can't change your own admin status — ask another admin to do it.");
       return;
     }
-    const nextRole = profile.role === "admin" ? "user" : "admin";
-    const confirmMsg =
-      nextRole === "admin"
-        ? `Make ${profile.name || profile.email} an admin? They'll be able to edit anyone's locked fields.`
-        : `Remove admin access from ${profile.name || profile.email}?`;
-    if (!confirm(confirmMsg)) return;
-
+    const nextRole = e.target.value;
     await updateDoc(doc(db, "users", profile.id), { role: nextRole, updatedAt: serverTimestamp() });
   };
 
@@ -394,12 +389,12 @@ export default function AdminEditForm({ profile }) {
       <p className="step-sub">Changes here are written to the audit log automatically.</p>
 
       <div className="role-toggle-row">
-        <span className={`role-badge ${profile.role === "admin" ? "is-admin" : ""}`}>
-          {profile.role === "admin" ? "Admin" : "Regular user"}
+        <span className={`role-badge ${profile.role === ROLES.ADMIN ? "is-admin" : ""}`}>
+          {ROLE_LABELS[profile.role] || ROLE_LABELS[ROLES.USER]}
         </span>
-        <button type="button" className="btn-ghost btn" style={{ width: "auto" }} onClick={handleToggleRole}>
-          {profile.role === "admin" ? "Remove admin access" : "Make admin"}
-        </button>
+        <select value={profile.role || ROLES.USER} onChange={handleRoleChange} disabled={profile.id === adminUser.uid}>
+          {ROLE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+        </select>
       </div>
 
       <div className="field" style={{ marginTop: 14 }}>
