@@ -953,6 +953,9 @@ select:disabled {
 }
 
 .admin-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   text-align: left;
   background: var(--white);
   border: 1.5px solid var(--line);
@@ -961,18 +964,39 @@ select:disabled {
   cursor: pointer;
 }
 
+.admin-list-item-avatar {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--ivory-dim);
+}
+
+.admin-list-item-content {
+  min-width: 0;
+  flex: 1;
+}
+
 .admin-list-item.active {
   border-color: var(--coral);
   box-shadow: 0 0 0 3px rgba(255, 107, 74, 0.12);
 }
 
 .admin-list-item-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-weight: 700;
   font-size: 14px;
   color: var(--forest);
 }
 
 .admin-list-item-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 12px;
   color: #94a3b8;
 }

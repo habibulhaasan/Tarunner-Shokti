@@ -20,6 +20,7 @@ import TabVisibilityPanel from "../../components/admin/TabVisibilityPanel";
 import { Users, Settings, Bell, HeartHandshake, Landmark, FileText, Calendar, Eye } from "lucide-react";
 import { canAccessAdminView, getDefaultAdminView, getVisibleAdminViews } from "../../lib/permissions";
 import { useAuth } from "../../context/AuthContext";
+import { defaultAvatarFor } from "../../lib/photoUtils";
 
 const ADMIN_VIEWS = [
   { key: "members", label: "Members", icon: Users },
@@ -42,6 +43,12 @@ function statusOf(p) {
   if (e.status === "job" && e.jobType === "govt") return "govt";
   if (e.status === "job" && e.jobType === "non-govt") return "non-govt";
   return "unset";
+}
+
+function memberPhoto(profile) {
+  return profile.photo?.useDefault === false && profile.photo?.base64
+    ? profile.photo.base64
+    : defaultAvatarFor(profile.gender);
 }
 
 export default function AdminPage() {
@@ -229,12 +236,15 @@ export default function AdminPage() {
                         className={`admin-list-item ${selectedUid === p.id ? "active" : ""}`}
                         onClick={() => setSelectedUid(p.id)}
                       >
-                        <div className="admin-list-item-name">
-                          {p.name || "(no name)"}
-                          {p.role === "admin" && <span className="admin-badge">ADMIN</span>}
-                          {!p.profileComplete && <span className="incomplete-badge">INCOMPLETE</span>}
+                        <img src={memberPhoto(p)} alt="" className="admin-list-item-avatar" />
+                        <div className="admin-list-item-content">
+                          <div className="admin-list-item-name">
+                            {p.name || "(no name)"}
+                            {p.role === "admin" && <span className="admin-badge">ADMIN</span>}
+                            {!p.profileComplete && <span className="incomplete-badge">INCOMPLETE</span>}
+                          </div>
+                          <div className="admin-list-item-meta">{p.department} · {p.session} · {p.email}</div>
                         </div>
-                        <div className="admin-list-item-meta">{p.department} · {p.session} · {p.email}</div>
                       </button>
                     ))}
                     {searched.length === 0 && <p className="helper-text">No matches.</p>}
