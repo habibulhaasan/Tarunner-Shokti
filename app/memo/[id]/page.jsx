@@ -1,12 +1,14 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
+import { doc, getDoc } from "firebase/firestore";
 import { Printer, Download, FileText } from "lucide-react";
 import { toPng } from "html-to-image";
 import jsPDF from "jspdf";
 import Letterhead, { ORG_INFO } from "../../../components/common/Letterhead";
 import { useMemoDoc } from "../../../lib/memos";
+import { db } from "../../../lib/firebase";
 
 function fmtDate(d) {
   try {
@@ -37,7 +39,7 @@ const EXPORT_HEIGHT = 1122.5;
 // Single source of truth for the memo markup — rendered twice below (once
 // for the responsive on-screen preview, once for the hidden export copy)
 // so they never fall out of sync.
-function MemoDocument({ memo }) {
+function MemoDocument({ memo, signatureMap }) {
   return (
     <>
       <img src="/logo.png" alt="" className="memo-watermark" />
@@ -55,8 +57,8 @@ function MemoDocument({ memo }) {
           <span className="memo-subject-label">বিষয়:</span> {memo.title}
         </div>
 
-        {/* content is now rich-text HTML (bold/italic/underline/lists) from
-            the admin panel's editor. Old plain-text memos render safely too
+        {/* content is rich-text HTML (bold/italic/underline/lists) from the
+            admin panel's editor. Old plain-text memos render safely too
             since they contain no tags. */}
         <div className="memo-body" dangerouslySetInnerHTML={{ __html: memo.content }} />
 
@@ -66,6 +68,13 @@ function MemoDocument({ memo }) {
           <div className="memo-signature-row">
             {memo.signatories.map((s) => (
               <div key={s.profileUid} className="memo-signature">
+                {memo.showSignatureImages && signatureMap[s.profileUid] && (
+                  <img
+                    src={signatureMap[s.profileUid]}
+                    alt={`${s.name} signature`}
+                    className="memo-signature-image"
+                  />
+                )}
                 <div className="memo-signature-line" />
                 <div className="memo-signature-name">{s.name}</div>
                 <div className="memo-signature-role">{s.roleTitle}</div>
@@ -90,6 +99,38 @@ export default function MemoPrintPage() {
   const [downloadingImg, setDownloadingImg] = useState(false);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [downloadError, setDownloadError] = useState("");
+
+  // uid -> signature base64. Signatures live on each signatory's own
+  // profiles/{uid} doc (set by an admin in AdminEditForm), not on the memo
+  // itself, so they're fetched separately once the memo (and its
+  // signatory list) is known. A one-time getDoc per signatory is enough —
+  // this page doesn't need to live-update if someone's signature changes
+  // mid-view. Firestore rules already allow reading a profile with
+  // committeeRoleId set even when signed out, matching every other
+  // signatory-facing page in this app.
+  const [signatureMap, setSignatureMap] = useState({});
+  const signatoryKey = JSON.stringify(memo?.signatories?.map((s) => s.profileUid) || []);
+
+  useEffect(() => {
+    if (!memo?.signatories?.length) return;
+    let cancelled = false;
+    (async () => {
+      const entries = await Promise.all(
+        memo.signatories.map(async (s) => {
+          try {
+            const snap = await getDoc(doc(db, "profiles", s.profileUid));
+            return [s.profileUid, snap.exists() ? snap.data().signature?.base64 || null : null];
+          } catch (err) {
+            console.error("Failed to load signature for", s.profileUid, err);
+            return [s.profileUid, null];
+          }
+        })
+      );
+      if (!cancelled) setSignatureMap(Object.fromEntries(entries));
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [signatoryKey]);
 
   // Points at the HIDDEN, always full-size copy — never the responsive
   // on-screen preview. That's the whole fix: export no longer depends on
@@ -196,7 +237,7 @@ export default function MemoPrintPage() {
           for export, so its shrink transform can't leak into the file. */}
       <div className="memo-print-page-container">
         <div className="memo-print-page">
-          <MemoDocument memo={memo} />
+          <MemoDocument memo={memo} signatureMap={signatureMap} />
         </div>
       </div>
 
@@ -209,7 +250,7 @@ export default function MemoPrintPage() {
           className="memo-print-page"
           style={{ width: EXPORT_WIDTH, height: EXPORT_HEIGHT, transform: "none", margin: 0 }}
         >
-          <MemoDocument memo={memo} />
+          <MemoDocument memo={memo} signatureMap={signatureMap} />
         </div>
       </div>
     </div>
