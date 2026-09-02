@@ -8,7 +8,6 @@ import {
 import { db } from "../../lib/firebase";
 import { useAuth } from "../../context/AuthContext";
 import { getLastDonation, getCountdown, sortDonations } from "../../lib/donationUtils";
-import { recalcDonationStats } from "../../lib/donationStats";
 
 export default function DonationsTab() {
   const { user } = useAuth();
@@ -36,13 +35,6 @@ export default function DonationsTab() {
           ...d.data(),
           date: d.data().date?.toDate?.() ?? new Date(d.data().date),
         }))
-      );
-      // Keeps profiles/{uid}.donationCount / .lastDonationDate in sync with
-      // whatever's actually in this subcollection — fires on every load AND
-      // every add/remove (since those trigger this same snapshot), so it
-      // also backfills existing donation logs that predate this fix.
-      recalcDonationStats(user.uid).catch((err) =>
-        console.error("recalcDonationStats failed:", err)
       );
     });
     return () => unsub();
