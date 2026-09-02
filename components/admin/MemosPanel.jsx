@@ -28,6 +28,7 @@ function emptyForm() {
   return {
     memoNo: "", title: "", topic: "", content: "", closingNote: "ধন্যবাদান্তে,",
     date: new Date().toISOString().slice(0, 10), visible: false, signatories: [],
+    showSignatureImages: false,
   };
 }
 
@@ -128,6 +129,7 @@ export default function MemosPanel() {
       memoNo: m.memoNo, title: m.title, topic: m.topic || "", content: m.content,
       closingNote: m.closingNote || "", date: m.date,
       visible: m.visible, signatories: m.signatories || [],
+      showSignatureImages: !!m.showSignatureImages,
     });
     setEditingId(m.id);
   };
@@ -285,6 +287,22 @@ export default function MemosPanel() {
                 {availableSignatories.length === 0 && <p className="helper-text">No matches.</p>}
               </div>
             )}
+
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 12 }}>
+              <label className="toggle-switch toggle-switch-sm">
+                <input
+                  type="checkbox"
+                  checked={form.showSignatureImages}
+                  onChange={(e) => setForm({ ...form, showSignatureImages: e.target.checked })}
+                />
+                <span className="toggle-track"><span className="toggle-thumb" /></span>
+              </label>
+              <span className="helper-text" style={{ margin: 0 }}>
+                {form.showSignatureImages
+                  ? "Signature images will show above each name (for signatories who have one uploaded)"
+                  : "Show signature images above each name"}
+              </span>
+            </div>
           </div>
 
           <div className="fund-account-card-footer">
