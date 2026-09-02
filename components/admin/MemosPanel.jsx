@@ -1,14 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Plus, Trash2, Printer, Pencil, X, Search } from "lucide-react";
+import { Plus, Trash2, Printer, Pencil, X, Search, Bold, Italic, Underline, List, ListOrdered } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useAllMemos, createMemo, updateMemo, deleteMemo, toggleMemoVisibility } from "../../lib/memos";
 import { useCommitteeMembers } from "../../lib/committee";
 import { defaultAvatarFor } from "../../lib/photoUtils";
 
-const DEFAULT_SIGNATORY_TITLES = ["সভাপতি (বা প্রধান সমন্বয়কারী)", "সাংগঠনিক সম্পাদক", "মহাসচিব"];
+const DEFAULT_SIGNATORY_TITLES = ["সভাপতি", "সাংগঠনিক সম্পাদক", "মহাসচিব"];
 
 function fmtDate(d) {
   try {
@@ -25,7 +25,81 @@ function avatarFor(profile) {
 }
 
 function emptyForm() {
-  return { memoNo: "", title: "", content: "", date: new Date().toISOString().slice(0, 10), visible: false, signatories: [] };
+  return {
+    memoNo: "", title: "", topic: "", content: "", closingNote: "ধন্যবাদান্তে,",
+    date: new Date().toISOString().slice(0, 10), visible: false, signatories: [],
+  };
+}
+
+// A contentEditable HTML string is "empty" even when it contains stray
+// tags like <p><br></p>, so we strip tags before checking for real text.
+function isHtmlEmpty(html) {
+  return !html || !html.replace(/<[^>]*>/g, "").trim();
+}
+
+// Lightweight rich-text editor (Bold/Italic/Underline/bullets/numbering)
+// built on contentEditable + execCommand — no external dependency needed.
+// It's deliberately uncontrolled: innerHTML is only set once on mount, and
+// afterwards we read it out via onInput. Making this a controlled React
+// component (re-setting innerHTML every render) would fight the browser's
+// own cursor position on every keystroke.
+function RichTextEditor({ value, onChange, placeholder }) {
+  const editorRef = useRef(null);
+  const [, bump] = useState(0); // forces a re-render so toolbar active-states refresh
+
+  useEffect(() => {
+    if (editorRef.current) editorRef.current.innerHTML = value || "";
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // intentionally once — parent remounts this via `key` when the form (re)opens
+
+  const exec = (command) => {
+    editorRef.current?.focus();
+    document.execCommand(command, false, null);
+    onChange(editorRef.current?.innerHTML || "");
+    bump((n) => n + 1);
+  };
+
+  const isActive = (command) => {
+    try {
+      return document.queryCommandState(command);
+    } catch {
+      return false;
+    }
+  };
+
+  const ToolbarButton = ({ command, label, Icon }) => (
+    <button
+      type="button"
+      className={isActive(command) ? "active" : ""}
+      onMouseDown={(e) => e.preventDefault()} // keep focus/selection inside the editor
+      onClick={() => exec(command)}
+      title={label}
+      aria-label={label}
+    >
+      <Icon size={15} />
+    </button>
+  );
+
+  return (
+    <div>
+      <div className="rte-toolbar">
+        <ToolbarButton command="bold" label="Bold" Icon={Bold} />
+        <ToolbarButton command="italic" label="Italic" Icon={Italic} />
+        <ToolbarButton command="underline" label="Underline" Icon={Underline} />
+        <span className="rte-divider" />
+        <ToolbarButton command="insertUnorderedList" label="Bullet list" Icon={List} />
+        <ToolbarButton command="insertOrderedList" label="Numbered list" Icon={ListOrdered} />
+      </div>
+      <div
+        ref={editorRef}
+        className="rte-editor"
+        contentEditable
+        suppressContentEditableWarning
+        onInput={() => onChange(editorRef.current?.innerHTML || "")}
+        data-placeholder={placeholder}
+      />
+    </div>
+  );
 }
 
 export default function MemosPanel() {
@@ -51,14 +125,15 @@ export default function MemosPanel() {
 
   const openEdit = (m) => {
     setForm({
-      memoNo: m.memoNo, title: m.title, content: m.content, date: m.date,
+      memoNo: m.memoNo, title: m.title, topic: m.topic || "", content: m.content,
+      closingNote: m.closingNote || "", date: m.date,
       visible: m.visible, signatories: m.signatories || [],
     });
     setEditingId(m.id);
   };
   const closeForm = () => { setEditingId(null); setSignatorySearch(""); };
 
-  const canSave = form.memoNo.trim() && form.title.trim() && form.content.trim() && !saving;
+  const canSave = form.memoNo.trim() && form.title.trim() && !isHtmlEmpty(form.content) && !saving;
 
   const availableSignatories = useMemo(() => {
     const chosenUids = new Set(form.signatories.map((s) => s.profileUid));
@@ -139,13 +214,40 @@ export default function MemosPanel() {
               <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
             </div>
           </div>
+
+          <div className="field">
+            <label>বিষয়ের ধরন (Topic)</label>
+            <input
+              type="text"
+              value={form.topic}
+              onChange={(e) => setForm({ ...form, topic: e.target.value })}
+              placeholder="উদা: প্রেস রিলিজ, শোক বার্তা, শুভেচ্ছা বার্তা"
+            />
+          </div>
+
           <div className="field">
             <label>বিষয় (Subject / Title)</label>
             <input type="text" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Subject line" />
           </div>
+
           <div className="field">
             <label>বিস্তারিত (Content)</label>
-            <textarea rows={8} value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} placeholder="Full memo text — line breaks are preserved as written." />
+            <RichTextEditor
+              key={editingId}
+              value={form.content}
+              onChange={(html) => setForm((f) => ({ ...f, content: html }))}
+              placeholder="Full memo text — use the toolbar to format."
+            />
+          </div>
+
+          <div className="field">
+            <label>ধন্যবাদান্তে (Closing note)</label>
+            <input
+              type="text"
+              value={form.closingNote}
+              onChange={(e) => setForm({ ...form, closingNote: e.target.value })}
+              placeholder="ধন্যবাদান্তে,"
+            />
           </div>
 
           <div className="field">
