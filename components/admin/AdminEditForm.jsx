@@ -13,6 +13,7 @@ import { BD_DIVISIONS, getDistrictsByDivision, getUpazilasByDistrict } from "../
 import { HOSPITALS } from "../../lib/hospitalData";
 import { useCommitteeRoles } from "../../lib/committee";
 import { useMyContributions } from "../../lib/fundContributions";
+import { resizeAndEncodeSignature } from "../../lib/photoUtils";
 import AuditHistory from "./AuditHistory";
 
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
@@ -27,7 +28,7 @@ const ADMIN_EDITABLE_FIELDS = [
   "name", "dob", "bloodGroup", "gender", "maritalStatus",
   "department", "session", "passingYear", "finalYearRoll",
   "phone", "currentAddress", "permanentAddress", "employment", "photo",
-  "committeeRoleId", "memberId",
+  "committeeRoleId", "memberId", "signature",
 ];
 
 function officesFor(agency, divisionId, districtId, upazilaId) {
@@ -348,6 +349,15 @@ export default function AdminEditForm({ profile }) {
   const field = (key) => (e) => setDraft((d) => ({ ...d, [key]: e.target.value }));
   const pick = (key, value) => () => setDraft((d) => ({ ...d, [key]: value }));
 
+  const handleSignatureFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const base64 = await resizeAndEncodeSignature(file);
+    setDraft((d) => ({ ...d, signature: { base64 } }));
+  };
+
+  const removeSignature = () => setDraft((d) => ({ ...d, signature: null }));
+
   const handleSave = async () => {
     setSaving(true);
     setSavedMsg("");
@@ -541,6 +551,32 @@ export default function AdminEditForm({ profile }) {
           </div>
         ) : (
           <p className="helper-text">No custom photo uploaded — showing the default avatar for this member's gender.</p>
+        )}
+      </div>
+
+      <h3 className="admin-form-section-title">Signature</h3>
+
+      <div className="field">
+        <p className="helper-text" style={{ marginTop: 0 }}>
+          Optional. When a memo has its "Show signature images" toggle turned on, this image
+          appears above this person's name/line if they're listed as a signatory.
+        </p>
+        {draft.signature?.base64 ? (
+          <div className="admin-photo-row">
+            <img
+              src={draft.signature.base64}
+              alt="Signature"
+              style={{ width: 140, height: 60, objectFit: "contain", background: "var(--white)", border: "1px solid var(--line)", borderRadius: 8 }}
+            />
+            <button type="button" className="btn-ghost btn" style={{ width: "auto" }} onClick={removeSignature}>
+              Remove signature
+            </button>
+          </div>
+        ) : (
+          <label className="btn-ghost btn" style={{ display: "inline-block", cursor: "pointer", width: "auto" }}>
+            Upload signature
+            <input type="file" accept="image/*" onChange={handleSignatureFile} style={{ display: "none" }} />
+          </label>
         )}
       </div>
 
