@@ -49,11 +49,18 @@ function MemoDocument({ memo }) {
           <div>তারিখ: {fmtDate(memo.date)}</div>
         </div>
 
+        {memo.topic && <div className="memo-topic">{memo.topic}</div>}
+
         <div className="memo-subject">
           <span className="memo-subject-label">বিষয়:</span> {memo.title}
         </div>
 
-        <div className="memo-body">{memo.content}</div>
+        {/* content is now rich-text HTML (bold/italic/underline/lists) from
+            the admin panel's editor. Old plain-text memos render safely too
+            since they contain no tags. */}
+        <div className="memo-body" dangerouslySetInnerHTML={{ __html: memo.content }} />
+
+        {memo.closingNote && <div className="memo-closing">{memo.closingNote}</div>}
 
         {memo.signatories?.length > 0 && (
           <div className="memo-signature-row">
