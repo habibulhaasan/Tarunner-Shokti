@@ -33,7 +33,7 @@ const ADMIN_VIEWS = [
   { key: "tabs", label: "Tab visibility", icon: Eye },
 ];
 
-const PAGE_SIZE = 30;
+const PAGE_SIZE = 10;
 const EMPTY_FILTERS = { department: "", session: "", status: "", completeness: "" };
 
 function statusOf(p) {
