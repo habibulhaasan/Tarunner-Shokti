@@ -3073,6 +3073,14 @@ select:disabled {
   color: var(--ink);
 }
 
+.memo-signature-image {
+  display: block;
+  max-width: 130px;
+  max-height: 50px;
+  margin: 0 auto 6px;
+  object-fit: contain;
+}
+
 .memo-body p { margin: 0 0 10px; }
 .memo-body ul, .memo-body ol { margin: 0 0 10px; padding-left: 24px; }
 .memo-body li { margin-bottom: 4px; }
