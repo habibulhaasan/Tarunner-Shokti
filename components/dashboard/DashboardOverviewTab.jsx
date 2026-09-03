@@ -216,7 +216,7 @@ export default function DashboardOverviewTab() {
           </div>
           <button type="button" className="btn btn-primary-blue" style={{ width: "auto" }} onClick={() => setConstitutionOpen(true)}>
             <FileText size={16} />
-            সংবিধান পড়ুন
+            গঠনতন্ত্র পড়ুন
           </button>
         </div>
 
@@ -224,7 +224,7 @@ export default function DashboardOverviewTab() {
           <div className="constitution-modal-overlay" onClick={() => setConstitutionOpen(false)}>
             <div className="constitution-modal" onClick={(e) => e.stopPropagation()}>
               <div className="constitution-modal-header">
-                <h3>সংগঠনের সংবিধান</h3>
+                <h3>সংগঠনের গঠনতন্ত্র</h3>
                 <button type="button" className="constitution-modal-close" onClick={() => setConstitutionOpen(false)}>
                   <X size={20} />
                 </button>
@@ -232,7 +232,7 @@ export default function DashboardOverviewTab() {
               <div className="constitution-modal-body">
                 <iframe
                   src="https://drive.google.com/file/d/1I6JF6EugtF3e7Y9-y7rGXXVsMTiM98Xn/preview"
-                  title="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ-এর সংবিধান"
+                  title="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ-এর গঠনতন্ত্র"
                   allow="autoplay"
                 />
               </div>

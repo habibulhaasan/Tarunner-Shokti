@@ -38,7 +38,7 @@ export default function CommitteePage() {
           <Link href="/about-us" className="landing-nav-link">আমাদের কথা</Link>
           <Link href="/committee" className="landing-nav-link active">কমিটি</Link>
           <Link href="/notices" className="landing-nav-link">নোটিশ</Link>
-          <Link href="/constitution" className="landing-nav-link">সংবিধান</Link>
+          <Link href="/constitution" className="landing-nav-link">গঠনতন্ত্র</Link>
           <Link href="/#contact" className="landing-nav-link">যোগাযোগ</Link>
           <Link href="/login" className="landing-nav-link">লগ ইন</Link>
           <Link href="/register" className="btn landing-nav-cta">রেজিস্টার করুন</Link>

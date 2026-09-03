@@ -7,8 +7,8 @@ const CONSTITUTION_PREVIEW_URL = `https://drive.google.com/file/d/${CONSTITUTION
 const CONSTITUTION_DOWNLOAD_URL = `https://drive.google.com/uc?export=download&id=${CONSTITUTION_ID}`;
 
 export const metadata = {
-  title: "সংগঠনের সংবিধান | তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ",
-  description: "তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ-এর সংগঠনের সংবিধান পড়ুন।",
+  title: "সংগঠনের গঠনতন্ত্র | তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ",
+  description: "তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ-এর সংগঠনের গঠনতন্ত্র পড়ুন।",
 };
 
 export default function ConstitutionPage() {
@@ -35,7 +35,7 @@ export default function ConstitutionPage() {
           <Link href="/about-us" className="landing-nav-link">আমাদের কথা</Link>
           <Link href="/committee" className="landing-nav-link">কমিটি</Link>
           <Link href="/notices" className="landing-nav-link">নোটিশ</Link>
-          <Link href="/constitution" className="landing-nav-link active">সংবিধান</Link>
+          <Link href="/constitution" className="landing-nav-link active">গঠনতন্ত্র</Link>
           <Link href="/#contact" className="landing-nav-link">যোগাযোগ</Link>
           <Link href="/login" className="landing-nav-link">লগ ইন</Link>
           <Link href="/register" className="btn landing-nav-cta">রেজিস্টার</Link>
@@ -46,7 +46,7 @@ export default function ConstitutionPage() {
         <div className="constitution-heading">
           <div>
             <span className="section-subtitle">প্রাতিষ্ঠানিক দলিল</span>
-            <h1 className="landing-section-title">সংগঠনের সংবিধান</h1>
+            <h1 className="landing-section-title">সংগঠনের গঠনতন্ত্র</h1>
           </div>
           <a className="btn btn-primary-blue constitution-download" href={CONSTITUTION_DOWNLOAD_URL} download>
             <Download size={17} />
@@ -57,12 +57,12 @@ export default function ConstitutionPage() {
         <div className="constitution-viewer-wrap">
           <div className="constitution-viewer-label">
             <FileText size={18} />
-            <span>সংবিধান পড়ুন</span>
+            <span>গঠনতন্ত্র পড়ুন</span>
           </div>
           <iframe
             className="constitution-viewer"
             src={CONSTITUTION_PREVIEW_URL}
-            title="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ-এর সংবিধান"
+            title="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ-এর গঠনতন্ত্র"
             allow="autoplay"
           />
         </div>

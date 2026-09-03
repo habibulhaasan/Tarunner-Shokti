@@ -78,7 +78,7 @@ export default function LandingPage() {
           <Link href="/about-us" className="landing-nav-link">আমাদের কথা</Link>
           <Link href="/committee" className="landing-nav-link">কমিটি</Link>
           <Link href="/notices" className="landing-nav-link">নোটিশ</Link>
-          <Link href="/constitution" className="landing-nav-link">সংবিধান</Link>
+          <Link href="/constitution" className="landing-nav-link">গঠনতন্ত্র</Link>
           <a href="#contact" className="landing-nav-link">যোগাযোগ</a>
           <Link href="/login" className="landing-nav-link">লগ ইন</Link>
           <Link href="/register" className="btn landing-nav-cta">রেজিস্টার</Link>
