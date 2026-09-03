@@ -49,7 +49,7 @@ export default function ConstitutionPage() {
             <h1 className="landing-section-title">সংগঠনের গঠনতন্ত্র</h1>
           </div>
           <a className="btn btn-primary-blue constitution-download" href={CONSTITUTION_DOWNLOAD_URL} download>
-            <Download size={17} />
+            <Download size={10} />
             ডাউনলোড করুন
           </a>
         </div>

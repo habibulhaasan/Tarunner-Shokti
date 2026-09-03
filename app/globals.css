@@ -4530,9 +4530,11 @@ select:disabled {
 }
 
 .constitution-download {
+  width: auto;
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  align-items: center;
+  padding: 11px 18px;
   white-space: nowrap;
   text-decoration: none;
 }
