@@ -16,6 +16,7 @@ function isOpenPath(pathname) {
     pathname === "/info" ||
     pathname === "/committee" ||
     pathname === "/notices" ||
+    pathname === "/constitution" ||
     pathname.startsWith("/memo/")
   );
 }
@@ -68,7 +69,7 @@ export default function RouteGuard({ children }) {
   }
 
   const isGateway = AUTH_GATEWAY_PATHS.includes(pathname);
-  const isPublicPage = pathname === "/" || pathname === "/about-us" || pathname === "/committee" || pathname === "/notices";
+  const isPublicPage = pathname === "/" || pathname === "/about-us" || pathname === "/committee" || pathname === "/notices" || pathname === "/constitution";
 
   const showShell =
     !!user &&

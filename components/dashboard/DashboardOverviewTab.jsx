@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { collection, doc, onSnapshot } from "firebase/firestore";
 import {
   Bell, FileText, Calendar, HeartHandshake, Users, Landmark,
-  Wallet, Receipt, BookOpen, MapPin, ArrowRight,
+  Wallet, Receipt, BookOpen, MapPin, ArrowRight, Download, X,
 } from "lucide-react";
 import { db } from "../../lib/firebase";
 import { useAuth } from "../../context/AuthContext";
@@ -59,6 +59,8 @@ export default function DashboardOverviewTab() {
   const { settings: fundSettings } = useFundSettings();
   const { items: myContributions } = useMyContributions(user?.uid);
   const { approvedTotal, expenseTotal, balance, ready: fundReady } = useFundBalance();
+
+  const [constitutionOpen, setConstitutionOpen] = useState(false);
 
   // Fetch logged-in user's profile from 'profiles' collection safely
   useEffect(() => {
@@ -212,8 +214,43 @@ export default function DashboardOverviewTab() {
           <div className="dashboard-section-header">
             <h3><BookOpen size={16} style={{ verticalAlign: "-3px", marginRight: 6 }} />গঠনতন্ত্র (Constitution)</h3>
           </div>
-          <p className="helper-text">শীঘ্রই যুক্ত করা হবে।</p>
+          <button type="button" className="btn btn-primary-blue" style={{ width: "auto" }} onClick={() => setConstitutionOpen(true)}>
+            <FileText size={16} />
+            সংবিধান পড়ুন
+          </button>
         </div>
+
+        {constitutionOpen && (
+          <div className="constitution-modal-overlay" onClick={() => setConstitutionOpen(false)}>
+            <div className="constitution-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="constitution-modal-header">
+                <h3>সংগঠনের সংবিধান</h3>
+                <button type="button" className="constitution-modal-close" onClick={() => setConstitutionOpen(false)}>
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="constitution-modal-body">
+                <iframe
+                  src="https://drive.google.com/file/d/1I6JF6EugtF3e7Y9-y7rGXXVsMTiM98Xn/preview"
+                  title="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ-এর সংবিধান"
+                  allow="autoplay"
+                />
+              </div>
+              <div className="constitution-modal-footer">
+                <a
+                  className="btn btn-primary-blue"
+                  href="https://drive.google.com/uc?export=download&id=1I6JF6EugtF3e7Y9-y7rGXXVsMTiM98Xn"
+                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Download size={16} />
+                  ডাউনলোড করুন
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

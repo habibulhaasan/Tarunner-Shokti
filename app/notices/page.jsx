@@ -63,6 +63,9 @@ export default function NoticesPage() {
 
       <footer className="landing-footer">
         © {new Date().getFullYear()} তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ। সর্বস্বত্ব সংরক্ষিত।
+        <span className="landing-footer-developer">
+          Developed by <strong>Code Caplet™</strong> · <a href="mailto:lab.codecaplet@gmail.com">lab.codecaplet@gmail.com</a>
+        </span>
       </footer>
     </div>
   );

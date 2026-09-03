@@ -4489,6 +4489,216 @@ select:disabled {
   font-size: 13px;
 }
 
+.landing-footer-developer {
+  display: inline-block;
+  margin-left: 8px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.landing-footer-developer strong {
+  color: #475569;
+  font-weight: 700;
+}
+
+.landing-footer-developer a {
+  color: #64748b;
+  text-decoration: none;
+}
+
+.landing-footer-developer a:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.constitution-main {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 48px 0 64px;
+}
+
+.constitution-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.constitution-heading .landing-section-title {
+  padding-top: 8px;
+}
+
+.constitution-download {
+  display: inline-flex;
+  align-items: center;
+  align-items: center;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.constitution-viewer-wrap {
+.constitution-heading > div {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+}
+
+.constitution-viewer-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 11px 18px;
+  padding: 0 18px;
+  color: #334155;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.constitution-viewer-label svg {
+  color: #2563eb;
+}
+
+.constitution-viewer {
+  display: block;
+  width: 100%;
+  height: min(78vh, 920px);
+  min-height: 620px;
+  border: 0;
+  background: #f1f5f9;
+}
+
+@media (max-width: 640px) {
+  .constitution-main {
+    width: min(100% - 32px, 1180px);
+    padding: 32px 0 44px;
+  }
+
+  .constitution-heading {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .constitution-download {
+    justify-content: center;
+  }
+
+  .constitution-viewer {
+    height: 72vh;
+    min-height: 520px;
+  }
+}
+
+/* ---------- Constitution Modal ---------- */
+.constitution-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 42, 34, 0.5);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.constitution-modal {
+  background: var(--white, #fff);
+  border-radius: 16px;
+  box-shadow: 0 25px 50px rgba(15, 23, 42, 0.15);
+  width: 100%;
+  max-width: 900px;
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.constitution-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line, #e2e8f0);
+}
+
+.constitution-modal-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--forest, #0f172a);
+}
+
+.constitution-modal-close {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.constitution-modal-close:hover {
+  background: var(--ivory-dim, #eef2f6);
+  color: var(--forest, #0f172a);
+}
+
+.constitution-modal-body {
+  flex: 1;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+.constitution-modal-body iframe {
+  display: block;
+  width: 100%;
+  height: min(70vh, 700px);
+  min-height: 480px;
+  border: 0;
+}
+
+.constitution-modal-footer {
+  padding: 12px 20px;
+  border-top: 1px solid var(--line, #e2e8f0);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@media (max-width: 640px) {
+  .constitution-modal-overlay {
+    padding: 16px;
+    align-items: flex-end;
+  }
+
+  .constitution-modal {
+    max-height: calc(100vh - 32px);
+    border-radius: 16px 16px 0 0;
+  }
+
+  .constitution-modal-body iframe {
+    height: 60vh;
+    min-height: 400px;
+  }
+
+  .constitution-modal-footer {
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+}
+
 /* Mobile Navigation & Responsive CTA Alignment Fixes */
 @media (max-width: 768px) {
   .landing-nav {
