@@ -43,18 +43,27 @@ export default function AboutUsPage() {
       {/* Navigation */}
       <nav className="landing-nav">
         <div className="landing-nav-brand">
-          <Link href="/" className="flex items-center gap-2 text-decoration-none">
+          <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
             <div className="landing-nav-logo-wrap">
               <Image src="/logo.png" alt="তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ" fill className="landing-nav-logo" sizes="36px" priority />
             </div>
-            <span className="landing-brand-text">তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ</span>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+              <span className="landing-brand-text" style={{ fontSize: "16px", fontWeight: "700", color: "#0f172a", lineHeight: "1.2", textDecoration: "none" }}>
+                তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ
+              </span>
+              <span style={{ fontSize: "11.5px", fontWeight: "500", color: "#64748b", marginTop: "2px", textDecoration: "none" }}>
+                অরাজনৈতিক ও তরুণ পেশাজীবি সংগঠন
+              </span>
+            </div>
           </Link>
         </div>
         <div className="landing-nav-actions">
-          <Link href="/" className="landing-nav-link">হোম</Link>
+          <Link href="/#mission" className="landing-nav-link">লক্ষ্য ও ভিশন</Link>
           <Link href="/about-us" className="landing-nav-link active">আমাদের কথা</Link>
           <Link href="/committee" className="landing-nav-link">কমিটি</Link>
           <Link href="/notices" className="landing-nav-link">নোটিশ</Link>
+          <Link href="/constitution" className="landing-nav-link">সংবিধান</Link>
+          <Link href="/#contact" className="landing-nav-link">যোগাযোগ</Link>
           <Link href="/login" className="landing-nav-link">লগ ইন</Link>
           <Link href="/register" className="btn landing-nav-cta">রেজিস্টার করুন</Link>
         </div>
