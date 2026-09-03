@@ -3,7 +3,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { collection, onSnapshot, doc, setDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
-import { Star, Phone, Mail, MapPin, Briefcase, GraduationCap, Droplet, RotateCcw } from "lucide-react";
+import { Star, Phone, Mail, MapPin, Briefcase, GraduationCap, Droplet, RotateCcw, ChevronLeft, ChevronRight } from "lucide-react";
 import { PhoneAction, PhoneIconLink } from "../common/PhoneAction";
 import { db } from "../../lib/firebase";
 import { useAuth } from "../../context/AuthContext";
@@ -70,6 +70,8 @@ const INITIAL_FILTERS = {
   department: "",
 };
 
+const PAGE_SIZE = 10;
+
 
 
 export default function DirectoryTab() {
@@ -78,6 +80,7 @@ export default function DirectoryTab() {
   const [profiles, setProfiles] = useState([]);
   const [favoriteIds, setFavoriteIds] = useState(new Set());
   const [filters, setFilters] = useState(INITIAL_FILTERS);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "profiles"), (snap) => {
@@ -130,15 +133,27 @@ export default function DirectoryTab() {
     });
   }, [profiles, filters, user]);
 
-  const setFilter = (key) => (e) =>
+  // Reset to first page whenever the filtered set shrinks/grows (or the
+  // user changes filters) so we never sit on a now-empty page.
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const pageStart = (safePage - 1) * PAGE_SIZE;
+  const pagedProfiles = filtered.slice(pageStart, pageStart + PAGE_SIZE);
+
+  const setFilter = (key) => (e) => {
+    setPage(1);
     setFilters((f) => ({
       ...f,
       [key]: e.target.value,
       ...(key === "divisionId" ? { districtId: "", upazilaId: "" } : {}),
       ...(key === "districtId" ? { upazilaId: "" } : {}),
     }));
+  };
 
-  const resetFilters = () => setFilters(INITIAL_FILTERS);
+  const resetFilters = () => {
+    setFilters(INITIAL_FILTERS);
+    setPage(1);
+  };
   const hasActiveFilters = JSON.stringify(filters) !== JSON.stringify(INITIAL_FILTERS);
 
   // A column only ever appears if the admin allows that field at all —
@@ -150,7 +165,12 @@ export default function DirectoryTab() {
   return (
     <div className="directory-tab">
       <h2>Directory</h2>
-      <p className="step-sub">{filtered.length} people match your filters.</p>
+      <p className="step-sub">
+        {filtered.length} people match your filters.
+        {filtered.length > 0 && (
+          <> Showing {pageStart + 1}–{Math.min(pageStart + PAGE_SIZE, filtered.length)}.</>
+        )}
+      </p>
 
       <div className="directory-filters">
         <input
@@ -215,7 +235,7 @@ export default function DirectoryTab() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((p) => (
+            {pagedProfiles.map((p) => (
               <DirectoryRow
                 key={p.id}
                 profile={p}
@@ -229,7 +249,7 @@ export default function DirectoryTab() {
       </div>
 
       <div className="directory-grid-mobile">
-        {filtered.map((p) => (
+        {pagedProfiles.map((p) => (
           <DirectoryCard
             key={p.id}
             profile={p}
@@ -239,6 +259,32 @@ export default function DirectoryTab() {
           />
         ))}
       </div>
+
+      {totalPages > 1 && (
+        <nav className="directory-pagination" aria-label="Directory pagination">
+          <button
+            type="button"
+            className="btn-ghost btn"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={safePage <= 1}
+          >
+            <ChevronLeft size={14} />
+            Prev
+          </button>
+          <span className="directory-pagination-info">
+            Page {safePage} of {totalPages}
+          </span>
+          <button
+            type="button"
+            className="btn-ghost btn"
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={safePage >= totalPages}
+          >
+            Next
+            <ChevronRight size={14} />
+          </button>
+        </nav>
+      )}
     </div>
   );
 }
