@@ -130,7 +130,7 @@ export default function LandingPage() {
       <section className="landing-features" style={{ paddingBottom: "30px" }}>
         <div className="section-header-center" style={{ marginBottom: "28px" }}>
           <span className="section-subtitle">আমাদের নেতৃত্ব</span>
-          <h2 className="landing-section-title">কেন্দ্রীয় কার্যনির্বাহী সংসদ (২০২৫-২০২৬)</h2>
+          <h2 className="landing-section-title">কেন্দ্রীয় কার্যনির্বাহী সংসদ (২০২৬-২০২৯)</h2>
         </div>
         <div className="landing-features-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", maxWidth: "760px", margin: "0 auto 28px" }}>
           <div className="landing-feature-card" style={{ textAlign: "center", padding: "32px 24px" }}>
