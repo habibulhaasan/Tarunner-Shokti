@@ -65,7 +65,7 @@ export default function AboutUsPage() {
           <Link href="/constitution" className="landing-nav-link">গঠনতন্ত্র</Link>
           <Link href="/#contact" className="landing-nav-link">যোগাযোগ</Link>
           <Link href="/login" className="landing-nav-link">লগ ইন</Link>
-          <Link href="/register" className="btn landing-nav-cta">রেজিস্টার করুন</Link>
+          <Link href="/register" className="btn landing-nav-cta">রেজিস্টার</Link>
         </div>
       </nav>
 
