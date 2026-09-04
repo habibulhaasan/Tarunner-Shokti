@@ -4,7 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   Users, Target, Eye, Rocket, MapPin, Mail, Phone,
-  ArrowRight, Smartphone, Download, Sparkles, Bell, ChevronRight, FileText
+  ArrowRight, Smartphone, Download, Sparkles, Bell, ChevronRight, FileText,
+  Globe
 } from "lucide-react";
 import { usePublicCommitteeMembers } from "../lib/committee";
 import { useVisibleMemos } from "../lib/memos";
@@ -276,6 +277,30 @@ export default function LandingPage() {
               <div>
                 <strong>ফোন নম্বর</strong>
                 <p><a href="tel:01734228830">01734228830</a></p>
+              </div>
+            </div>
+            <div className="contact-item">
+              <div className="contact-icon"><Globe size={20} /></div>
+              <div>
+                <strong>ফেসবুক</strong>
+                <p style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginTop: "4px" }}>
+                  <a
+                    href="https://www.facebook.com/profile.php?id=61593973204688"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "#1877F2", fontWeight: "600", textDecoration: "none" }}
+                  >
+                    <Globe size={16} /> পেজ
+                  </a>
+                  <a
+                    href="https://www.facebook.com/groups/1227142839002006"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "#1877F2", fontWeight: "600", textDecoration: "none" }}
+                  >
+                    <Users size={16} /> গ্রুপ
+                  </a>
+                </p>
               </div>
             </div>
           </div>
