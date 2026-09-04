@@ -241,13 +241,13 @@ service cloud.firestore {
     // can never edit status/adminRemark themselves; only an admin moves it
     // to "reviewed" and sets a remark.
     match /feedback/{id} {
-      allow read: if isSignedIn() && (isOwner(resource.data.uid) || isAdmin());
+      allow read: if isSignedIn() && (isOwner(resource.data.uid) || isAdmin() || hasRole('office_secretary'));
 
       allow create: if isSignedIn() &&
         request.resource.data.uid == request.auth.uid &&
         request.resource.data.status == "open";
 
-      allow update: if isAdmin() &&
+      allow update: if (isAdmin() || hasRole('office_secretary')) &&
         request.resource.data.diff(resource.data).affectedKeys()
           .hasOnly(['status', 'adminRemark', 'reviewedAt', 'reviewedBy']);
 
