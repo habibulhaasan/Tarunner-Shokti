@@ -2912,9 +2912,17 @@ select:disabled {
   line-height: 1.35;
 }
 
+.fund-account-number-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
 .fund-account-choice-number {
   font-size: 13.5px;
-  margin-top: 8px;
   font-weight: 700;
   color: #0f172a;
   letter-spacing: 0.3px;
@@ -2924,6 +2932,35 @@ select:disabled {
   width: fit-content;
   border: 1px dashed #cbd5e1;
   font-family: var(--font-mono, monospace), system-ui;
+}
+
+.fund-account-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #334155;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  line-height: 1;
+}
+
+.fund-account-copy-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+.fund-account-copy-btn.copied {
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #86efac;
 }
 
 .fund-review-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }

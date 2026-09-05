@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Award } from "lucide-react";
+import { Award, Copy, Check } from "lucide-react";
 import PaymentLogo from "../common/PaymentLogo";
 import { useAuth } from "../../context/AuthContext";
 import { useFundSettings, useMyContributions, useFundBalance, submitContribution } from "../../lib/fundContributions";
@@ -35,6 +35,29 @@ export default function ContributeTab() {
   const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitMsg, setSubmitMsg] = useState("");
+  const [copiedId, setCopiedId] = useState(null);
+
+  const handleCopy = async (id, text) => {
+    if (!text) return;
+    try {
+      if (typeof navigator !== "undefined" && navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (err) {
+      console.error("Failed to copy account number:", err);
+    }
+  };
 
   const activeAccounts = (settings.accounts || []).filter((a) => a.active !== false);
 
@@ -114,11 +137,18 @@ export default function ContributeTab() {
               <label>Send to</label>
               <div className="fund-account-choice-list">
                 {activeAccounts.map((a) => (
-                  <button
-                    type="button"
+                  <div
                     key={a.id}
+                    role="button"
+                    tabIndex={0}
                     className={`fund-account-choice ${accountId === a.id ? "active" : ""}`}
                     onClick={() => setAccountId(a.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setAccountId(a.id);
+                      }
+                    }}
                   >
                     <div className="fund-account-choice-header">
                       <PaymentLogo provider={a.provider} size="sm" />
@@ -130,8 +160,34 @@ export default function ContributeTab() {
                     <div className="fund-account-choice-sub">
                       {a.accountName ? `${a.provider} · ${a.accountName}` : a.provider}
                     </div>
-                    <div className="fund-account-choice-number">{a.accountNumber}</div>
-                  </button>
+                    <div className="fund-account-number-row">
+                      <span className="fund-account-choice-number">{a.accountNumber}</span>
+                      {a.accountNumber && (
+                        <button
+                          type="button"
+                          className={`fund-account-copy-btn ${copiedId === a.id ? "copied" : ""}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setAccountId(a.id);
+                            handleCopy(a.id, a.accountNumber);
+                          }}
+                          title="Copy account number"
+                        >
+                          {copiedId === a.id ? (
+                            <>
+                              <Check size={12} strokeWidth={2.5} />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy size={12} strokeWidth={2.2} />
+                              <span>Copy</span>
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>

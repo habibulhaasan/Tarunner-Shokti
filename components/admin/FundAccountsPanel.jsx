@@ -139,8 +139,7 @@ export default function FundAccountsPanel() {
               <div className="fund-account-grid">
                 <div className="field">
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-                    <label style={{ margin: 0 }}>Payment method / Provider / Bank</label>
-                    <PaymentLogo provider={a.provider || selectValue} size="sm" />
+                    <label style={{ margin: 0 }}>Payment method</label>
                   </div>
                   <select
                     value={selectValue}
