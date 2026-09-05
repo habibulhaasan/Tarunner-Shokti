@@ -139,10 +139,8 @@ export default function LandingPage() {
                   <div style={{ width: "36px", height: "36px", background: "#eff6ff", borderRadius: "8px", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                     <Bell size={20} />
                   </div>
-                  <div>
-                    <span className="section-subtitle" style={{ display: "block", fontSize: "11.5px", lineHeight: "1.2" }}>বিজ্ঞপ্তি ও স্মারক</span>
-                    <h3 style={{ margin: 0, fontSize: "18px", color: "#0f172a" }}>সাম্প্রতিক নোটিশ</h3>
-                  </div>
+                  <h3 style={{ margin: 0, fontSize: "18px", color: "#0f172a" }}>সাম্প্রতিক নোটিশ</h3>
+                  <h3 style={{ margin: 0, padding: 0, fontSize: "18px", lineHeight: "1.2", color: "#0f172a" }}>সাম্প্রতিক নোটিশ</h3>
                 </div>
                 <span style={{ fontSize: "12px", color: "#2563eb", background: "#eff6ff", fontWeight: "600", padding: "3px 10px", borderRadius: "20px", border: "1px solid #bfdbfe" }}>
                   {recentMemos.length > 0 ? "নতুন বিজ্ঞপ্তি" : "বিজ্ঞপ্তি"}
@@ -182,24 +180,27 @@ export default function LandingPage() {
               )}
             </div>
 
-            <div style={{ marginTop: "16px", paddingTop: "14px", borderTop: "1px solid #f1f5f9", textAlign: "right" }}>
-              <Link href="/notices" className="btn btn-secondary-slate" style={{ display: "inline-flex", padding: "8px 14px", fontSize: "13px", textDecoration: "none" }}>
+            <div style={{ marginTop: "16px", paddingTop: "14px", borderTop: "1px solid #f1f5f9", textAlign: "center" }}>
+              <Link href="/notices" className="btn btn-secondary-slate" style={{ width: "100%", justifyContent: "center", display: "inline-flex", padding: "8px 14px", fontSize: "13px", textDecoration: "none" }}>
                 সকল নোটিশ দেখুন <ArrowRight size={15} style={{ marginLeft: "4px" }} />
               </Link>
             </div>
           </div>
 
-          {/* Right Column: Leadership Showcase (আমাদের নেতৃত্ব) */}
+          {/* Right Column: Leadership Showcase */}
           <div className="landing-spotlight-card landing-leaders-spotlight-card">
             <div>
-              <div style={{ marginBottom: "16px", borderBottom: "1px solid #f1f5f9", paddingBottom: "10px", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-                <div>
-                  <span className="section-subtitle" style={{ display: "block", fontSize: "11.5px", lineHeight: "1.2", marginBottom: "2px" }}>আমাদের নেতৃত্ব</span>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <div style={{ width: "36px", height: "36px", background: "#eff6ff", borderRadius: "8px", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <Users size={20} />
+                  </div>
                   <h3 style={{ margin: 0, fontSize: "18px", color: "#0f172a" }}>
+                  <h3 style={{ margin: 0, padding: 0, fontSize: "18px", lineHeight: "1.2", color: "#0f172a" }}>
                     কেন্দ্রীয় কার্যনির্বাহী সংসদ
                   </h3>
                 </div>
-                <span style={{ fontSize: "11.5px", color: "#64748b", fontWeight: "600", background: "#f8fafc", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "6px" }}>
+                <span style={{ fontSize: "11.5px", color: "#64748b", fontWeight: "600", background: "#f8fafc", border: "1px solid #e2e8f0", padding: "3px 10px", borderRadius: "20px" }}>
                   ২০২৬-২০২৯
                 </span>
               </div>
