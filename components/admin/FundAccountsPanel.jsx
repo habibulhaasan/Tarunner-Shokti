@@ -160,12 +160,12 @@ export default function FundAccountsPanel() {
                             "Nagad (Personal)",
                             "Rocket (Personal)",
                             "Cellfin (Personal)",
-                            "Bank Account",
+                            "Bank",
                           ].includes(a.label) ||
                           a.label.endsWith("(Personal)");
 
                         const newLabel = isDefaultLabel
-                          ? (val === "Bank" ? "Bank Account" : `${val} (Personal)`)
+                          ? (val === "Bank" ? "Bank+Branch" : `${val} (Personal)`)
                           : a.label;
 
                         updateAccount(a.id, {
@@ -180,17 +180,7 @@ export default function FundAccountsPanel() {
                     <option value="Rocket">Rocket (রকেট)</option>
                     <option value="Cellfin">Cellfin (সেলফিন)</option>
                     <option value="Bank">Bank (ব্যাংক ট্রান্সফার)</option>
-                    <option value="Other Bank">Other Bank (নির্দিষ্ট ব্যাংক)</option>
                   </select>
-                  {isOtherBank && (
-                    <input
-                      type="text"
-                      placeholder="e.g. Islami Bank, DBBL, City Bank"
-                      value={a.provider && a.provider !== "Other Bank" ? a.provider : ""}
-                      onChange={(e) => updateField(a.id, "provider", e.target.value)}
-                      style={{ marginTop: 6 }}
-                    />
-                  )}
                 </div>
                 <div className="field">
                   <label>Label</label>
