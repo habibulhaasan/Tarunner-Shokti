@@ -15,7 +15,7 @@ function avatarFor(profile) {
 const ADVISORY_COUNCIL = [
   {
     id: "advisor-1",
-    name: "আমেনা বেগম",
+    name: "জনাবা আমেনা বেগম",
     role: "উপদেষ্টা",
     committee: "কেন্দ্রীয় কার্যনির্বাহী কমিটি",
     organization: "তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ",
@@ -23,7 +23,7 @@ const ADVISORY_COUNCIL = [
   },
   {
     id: "advisor-2",
-    name: "মোহাম্মদ তারেকুজ্জামান",
+    name: "জনাব মোহাম্মদ তারেকুজ্জামান",
     role: "উপদেষ্টা",
     committee: "কেন্দ্রীয় কার্যনির্বাহী কমিটি",
     organization: "তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ",
@@ -31,7 +31,7 @@ const ADVISORY_COUNCIL = [
   },
   {
     id: "advisor-3",
-    name: "মোহাম্মদ মাযহারুল ইসলাম",
+    name: "জনাব মোহাম্মদ মাযহারুল ইসলাম",
     role: "উপদেষ্টা",
     committee: "কেন্দ্রীয় কার্যনির্বাহী কমিটি",
     organization: "তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ",
