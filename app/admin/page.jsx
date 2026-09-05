@@ -27,7 +27,7 @@ const ADMIN_VIEWS = [
   { key: "members", label: "Members", icon: Users },
   { key: "settings", label: "Directory settings", icon: Settings },
   { key: "notifications", label: "Notifications", icon: Bell },
-  { key: "donations", label: "Donations", icon: HeartHandshake },
+  { key: "donations", label: "Finance", icon: HeartHandshake },
   { key: "committee", label: "Committee", icon: Landmark },
   { key: "memos", label: "Memos", icon: FileText },
   { key: "events", label: "Events", icon: Calendar },

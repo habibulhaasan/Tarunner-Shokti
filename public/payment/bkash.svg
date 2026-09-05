@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" width="120" height="40">
+  <!-- Background rounded card -->
+  <rect width="120" height="40" rx="8" fill="#E2136E"/>
+  
+  <!-- bKash Origami Bird -->
+  <g transform="translate(10, 6) scale(0.68)">
+    <!-- Main body & wings polygons -->
+    <polygon points="12,18 24,6 30,19" fill="#FFFFFF" opacity="0.95"/>
+    <polygon points="24,6 36,2 30,19" fill="#FCE4EC"/>
+    <polygon points="30,19 46,14 38,24" fill="#FFFFFF"/>
+    <polygon points="38,24 48,22 41,29" fill="#FCE4EC"/>
+    <polygon points="30,19 38,24 28,34" fill="#F8BBD0"/>
+    <polygon points="12,18 30,19 28,34" fill="#FFFFFF"/>
+    <polygon points="2,16 12,18 8,28" fill="#FCE4EC"/>
+    <polygon points="12,18 28,34 16,33" fill="#F8BBD0"/>
+    <polygon points="38,24 41,29 33,37" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Text "bKash" -->
+  <text x="50" y="26" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="18" font-weight="800" fill="#FFFFFF" letter-spacing="-0.5">bKash</text>
+</svg>
+

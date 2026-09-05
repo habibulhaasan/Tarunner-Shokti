@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Award } from "lucide-react";
+import PaymentLogo from "../common/PaymentLogo";
 import { useAuth } from "../../context/AuthContext";
 import { useFundSettings, useMyContributions, useFundBalance, submitContribution } from "../../lib/fundContributions";
 import { useExpenses } from "../../lib/fundExpenses";
@@ -119,8 +120,16 @@ export default function ContributeTab() {
                     className={`fund-account-choice ${accountId === a.id ? "active" : ""}`}
                     onClick={() => setAccountId(a.id)}
                   >
+                    <div className="fund-account-choice-header">
+                      <PaymentLogo provider={a.provider} size="sm" />
+                      {accountId === a.id && (
+                        <span className="fund-account-badge-active">✓ Selected</span>
+                      )}
+                    </div>
                     <div className="fund-account-choice-label">{a.label}</div>
-                    <div className="fund-account-choice-sub">{a.provider} · {a.accountName}</div>
+                    <div className="fund-account-choice-sub">
+                      {a.accountName ? `${a.provider} · ${a.accountName}` : a.provider}
+                    </div>
                     <div className="fund-account-choice-number">{a.accountNumber}</div>
                   </button>
                 ))}

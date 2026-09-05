@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" width="120" height="40">
+  <defs>
+    <linearGradient id="nagadBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F96522"/>
+      <stop offset="50%" stop-color="#ED1C24"/>
+      <stop offset="100%" stop-color="#C3131B"/>
+    </linearGradient>
+    <linearGradient id="nagadSwirl" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFF200"/>
+      <stop offset="100%" stop-color="#FFFFFF"/>
+    </linearGradient>
+  </defs>
+  <!-- Background rounded card -->
+  <rect width="120" height="40" rx="8" fill="url(#nagadBg)"/>
+  
+  <!-- Nagad dynamic swirling ribbon emblem -->
+  <g transform="translate(11, 7)">
+    <!-- Outer swirl -->
+    <path d="M13,2 C20,2 25,7.2 25,13.5 C25,18 22,21.5 17.5,23 C12.5,24.5 7.5,22 4.5,18 C1.5,14 2,8.5 6,5 C8.5,2.8 11.5,2 13,2 Z" fill="none" stroke="url(#nagadSwirl)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Inner dynamic swirl ribbon -->
+    <path d="M13,6 C17.2,6 20.5,9.2 20.5,13.2 C20.5,16.2 18.2,18.5 15.2,18.5 C12.2,18.5 10,16.2 10.5,13.5 C11,11 13.5,9.8 15.5,11.2" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
+    <!-- Center spark -->
+    <circle cx="14" cy="13.5" r="1.8" fill="#FFF200"/>
+  </g>
+
+  <!-- Text "Nagad" -->
+  <text x="45" y="26" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="18" font-weight="800" fill="#FFFFFF" letter-spacing="-0.3">Nagad</text>
+</svg>
+

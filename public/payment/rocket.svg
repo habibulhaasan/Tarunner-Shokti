@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" width="120" height="40">
+  <defs>
+    <linearGradient id="rocketBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9C27B0"/>
+      <stop offset="60%" stop-color="#7B1FA2"/>
+      <stop offset="100%" stop-color="#5B0E7C"/>
+    </linearGradient>
+  </defs>
+  <!-- Background rounded card -->
+  <rect width="120" height="40" rx="8" fill="url(#rocketBg)"/>
+  
+  <!-- Rocket Icon -->
+  <g transform="translate(10, 6)">
+    <!-- Exhaust trail lines -->
+    <path d="M4,24 L8,20" stroke="#FFCC00" stroke-width="2" stroke-linecap="round"/>
+    <path d="M2,28 L6,24" stroke="#FF5722" stroke-width="2" stroke-linecap="round"/>
+    <path d="M8,28 L10,26" stroke="#4CAF50" stroke-width="1.8" stroke-linecap="round"/>
+    
+    <!-- Rocket Body (rotated ~45 deg) -->
+    <g transform="translate(14, 14) rotate(-45)">
+      <!-- Left fin -->
+      <path d="M-6,7 L-10,13 L-3,10 Z" fill="#F06292"/>
+      <!-- Right fin -->
+      <path d="M6,7 L10,13 L3,10 Z" fill="#00BCD4"/>
+      <!-- Main fuselage -->
+      <path d="M0,-12 C-5,-6 -5,6 -4,10 L4,10 C5,6 5,-6 0,-12 Z" fill="#FFFFFF"/>
+      <!-- Cockpit porthole window -->
+      <circle cx="0" cy="-2" r="2.4" fill="#7B1FA2"/>
+      <!-- Nose cone highlight -->
+      <path d="M0,-12 C-2,-8 2,-8 0,-12 Z" fill="#E1BEE7"/>
+      <!-- Flame thruster -->
+      <polygon points="-2,10 0,15 2,10" fill="#FFEB3B"/>
+      <polygon points="-1,10 0,13 1,10" fill="#FF5722"/>
+    </g>
+  </g>
+
+  <!-- Text "Rocket" -->
+  <text x="44" y="26" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="18" font-weight="800" fill="#FFFFFF" letter-spacing="-0.3">Rocket</text>
+</svg>
+
