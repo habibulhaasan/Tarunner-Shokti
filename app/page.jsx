@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -49,8 +49,10 @@ export default function LandingPage() {
   const { items: memos, ready: memosReady } = useVisibleMemos();
 
   // Find the top two roles: সভাপতি and মহাসচিব
+  // Find key leadership roles: সভাপতি, মহাসচিব, and সাংগঠনিক সম্পাদক
   const president = members.find(m => m.committeeRole?.title === "সভাপতি");
   const secretary = members.find(m => m.committeeRole?.title === "মহাসচিব");
+  const organizingSecretary = members.find(m => m.committeeRole?.title === "সাংগঠনিক সম্পাদক");
   
   // Get the most recent notice
   const recentNotice = memos && memos.length > 0 ? memos[0] : null;
@@ -100,6 +102,23 @@ export default function LandingPage() {
         <p className="landing-hero-sub">
           দেশজুড়ে ফার্মাসিস্টদের পেশাগত মর্যাদা, কল্যাণ ও ঐক্যের প্ল্যাটফর্ম।
         </p>
+      {/* Hero & Key Leadership Showcase Grid */}
+      <div className="landing-top-wrap animate-fade-in">
+        <div className="landing-top-grid">
+          {/* Hero Section (Left Column) */}
+          <section className="landing-hero">
+            <div className="landing-hero-badge">
+              <Sparkles size={14} />
+              <span>তরুণ ফার্মাসিস্টদের ঐক্যবদ্ধ প্ল্যাটফর্ম</span>
+            </div>
+            <h1 className="landing-hero-title">
+              তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ
+              <br />
+              <span className="hero-highlight">অরাজনৈতিক ও তরুণ পেশাজীবি সংগঠন</span>
+            </h1>
+            <p className="landing-hero-sub">
+              দেশজুড়ে ফার্মাসিস্টদের পেশাগত মর্যাদা, কল্যাণ ও ঐক্যের প্ল্যাটফর্ম।
+            </p>
 
         <div className="landing-hero-actions">
           <Link href="/register" className="btn btn-primary-blue">
@@ -109,6 +128,14 @@ export default function LandingPage() {
             আমাদের কথা
           </Link>
         </div>
+            <div className="landing-hero-actions">
+              <Link href="/register" className="btn btn-primary-blue">
+                সদস্য হোন <ArrowRight size={17} />
+              </Link>
+              <Link href="/about-us" className="btn btn-secondary-slate">
+                আমাদের কথা
+              </Link>
+            </div>
 
         {/* Android App Download Button */}
         <div className="landing-hero-app-download">
@@ -118,6 +145,20 @@ export default function LandingPage() {
               <div className="download-badge">
                 <Download size={10} strokeWidth={3} />
               </div>
+            {/* Android App Download Button */}
+            <div className="landing-hero-app-download">
+              <a href="/TarunnerShokti.apk" download className="app-download-btn">
+                <div className="app-download-icon">
+                  <Smartphone size={22} />
+                  <div className="download-badge">
+                    <Download size={10} strokeWidth={3} />
+                  </div>
+                </div>
+                <div className="app-download-text">
+                  <span>অ্যান্ড্রয়েড অ্যাপ</span>
+                  <strong>ডাউনলোড করুন</strong>
+                </div>
+              </a>
             </div>
             <div className="app-download-text">
               <span>অ্যান্ড্রয়েড অ্যাপ</span>
@@ -126,6 +167,7 @@ export default function LandingPage() {
           </a>
         </div>
       </section>
+          </section>
 
       {/* Leadership / Key Committee Showcase */}
       <section className="landing-features" style={{ paddingBottom: "30px" }}>
@@ -141,6 +183,53 @@ export default function LandingPage() {
               ) : (
                 <Users size={36} />
               )}
+          {/* Leadership / Key Committee Showcase (Right Column) */}
+          <section className="landing-features landing-features-column">
+            <div className="landing-leaders-box">
+              <div className="landing-leaders-header">
+                <span className="section-subtitle">আমাদের নেতৃত্ব</span>
+                <h2 className="landing-section-title" style={{ fontSize: "19px", marginTop: "4px", textAlign: "left" }}>
+                  কেন্দ্রীয় কার্যনির্বাহী সংসদ <span style={{ fontSize: "13.5px", color: "#64748b", fontWeight: "500" }}>(২০২৬-২০২৯)</span>
+                </h2>
+              </div>
+
+              <div className="landing-leaders-column-list">
+                {[
+                  { role: "সভাপতি", person: president },
+                  { role: "মহাসচিব", person: secretary },
+                  { role: "সাংগঠনিক সম্পাদক", person: organizingSecretary },
+                ].map(({ role, person }) => (
+                  <div key={role} className="landing-leader-row-card">
+                    <div className="landing-leader-avatar-wrap">
+                      {person ? (
+                        <img
+                          src={avatarFor(person)}
+                          alt={role}
+                          className="landing-leader-avatar-img"
+                        />
+                      ) : (
+                        <Users size={24} color="#2563eb" />
+                      )}
+                    </div>
+                    <div className="landing-leader-info">
+                      <span className="landing-leader-role-badge">{role}</span>
+                      <h3 className="landing-leader-name">
+                        {committeeReady ? (person?.nameBn || person?.name || "-") : "লোড হচ্ছে..."}
+                      </h3>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ marginTop: "16px", textAlign: "center" }}>
+                <Link
+                  href="/committee"
+                  className="btn btn-secondary-slate"
+                  style={{ width: "100%", justifyContent: "center", fontSize: "14px", padding: "10px 16px" }}
+                >
+                  পূর্ণাঙ্গ কমিটি দেখুন <ChevronRight size={16} style={{ marginLeft: "4px" }} />
+                </Link>
+              </div>
             </div>
             <h3 style={{ fontSize: "18px", marginBottom: "4px", color: "#0f172a" }}>
               {committeeReady ? (president?.nameBn || president?.name || "-") : "লোড হচ্ছে..."}
@@ -160,6 +249,7 @@ export default function LandingPage() {
             </h3>
             <p style={{ color: "#2563eb", fontWeight: "700", fontSize: "15px", margin: 0 }}>মহাসচিব</p>
           </div>
+          </section>
         </div>
         <div style={{ textAlign: "center" }}>
           <Link href="/committee" className="btn btn-secondary-slate">
@@ -167,6 +257,7 @@ export default function LandingPage() {
           </Link>
         </div>
       </section>
+      </div>
 
       {/* Recent Notice Section */}
       <section className="landing-features" style={{ paddingTop: "20px", paddingBottom: "50px" }}>
