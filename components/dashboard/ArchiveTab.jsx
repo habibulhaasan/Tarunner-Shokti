@@ -9,71 +9,135 @@ import {
   Sparkles,
   Clock,
   ShieldCheck,
-  FileSpreadsheet,
+  Award,
+  BookOpen,
   Layers,
   Info,
-  CheckCircle2,
+  Scale,
+  Building2,
+  FileCheck,
 } from "lucide-react";
 
-// Preview / initial structure for future document archive data
+// Categorization specifically tailored for professional Pharmacists in Bangladesh
 const ARCHIVE_CATEGORIES = [
   { key: "all", label: "সকল ফাইল" },
-  { key: "constitution", label: "গঠনতন্ত্র ও নীতিমালা" },
-  { key: "forms", label: "ফরম ও আবেদনপত্র" },
-  { key: "reports", label: "প্রতিবেদন ও প্রকাশনা" },
-  { key: "memos", label: "স্মারক ও সার্কুলার" },
+  { key: "grade10", label: "১০ম গ্রেড সংক্রান্ত নথি" },
+  { key: "circulars", label: "নিয়োগ ও অফিসিয়াল সার্কুলার" },
+  { key: "memoranda", label: "স্মারকপত্র ও প্রজ্ঞাপন (Memoranda)" },
+  { key: "regulatory", label: "ফার্মেসী কাউন্সিল ও ডিজিডিএ" },
+  { key: "forms", label: "আবেদনপত্র ও সাংগঠনিক ফরম" },
 ];
 
-const PREVIEW_FILES = [
+const PHARMACIST_ARCHIVE_FILES = [
   {
-    id: "f1",
-    title: "তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ — পূর্ণাঙ্গ গঠনতন্ত্র ও কার্যপ্রণালী বিধিমালা",
-    category: "constitution",
-    categoryLabel: "গঠনতন্ত্র ও নীতিমালা",
+    id: "g10-1",
+    title: "১০ম গ্রেড বেতন স্কেল বাস্তবায়ন সংক্রান্ত স্বাস্থ্য ও পরিবার কল্যাণ মন্ত্রণালয়ের সরকারি প্রজ্ঞাপন",
+    category: "grade10",
+    categoryLabel: "১০ম গ্রেড সংক্রান্ত নথি",
     format: "PDF",
-    size: "২.৪ মেগাবাইট",
+    size: "১.৮ মেগাবাইট",
     updatedAt: "২০২৬",
-    description: "সংগঠনের লক্ষ্য, উদ্দেশ্য, সাংগঠনিক কাঠামো ও সদস্য অধিকার সংক্রান্ত পূর্ণাঙ্গ দলিল।",
+    description: "ডিপ্লোমা ফার্মাসিস্টদের ১০ম গ্রেড পদমর্যাদা ও বেতন স্কেল বাস্তবায়ন সম্পর্কিত স্বাস্থ্য সেবা বিভাগ ও অর্থ বিভাগের সমন্বিত প্রজ্ঞাপন ও আদেশ।",
+    tags: ["১০ম গ্রেড", "স্বাস্থ্য মন্ত্রণালয়", "অর্থ বিভাগ"],
   },
   {
-    id: "f2",
-    title: "সাধারণ সদস্যপদ আবেদন ও হালনাগাদ ফরম",
-    category: "forms",
-    categoryLabel: "ফরম ও আবেদনপত্র",
+    id: "g10-2",
+    title: "ফার্মাসিস্ট ১০ম গ্রেড পদমর্যাদা ও বেতন স্কেল সংক্রান্ত মহামান্য হাইকোর্টের রিট পিটিশন আদেশ ও রায়",
+    category: "grade10",
+    categoryLabel: "১০ম গ্রেড সংক্রান্ত নথি",
+    format: "PDF",
+    size: "৩.২ মেগাবাইট",
+    updatedAt: "২০২৬",
+    description: "ডিপ্লোমা ফার্মাসিস্টদের ১০ম গ্রেড প্রাপ্তি ও সমঅধিকার নিশ্চিতকরণে মহামান্য হাইকোর্ট ও সুপ্রিম কোর্টের ঐতিহাসিক রায় ও দিকনির্দেশনা।",
+    tags: ["১০ম গ্রেড", "আদালতের রায়", "আইনি দলিল"],
+  },
+  {
+    id: "circ-1",
+    title: "স্বাস্থ্য অধিদপ্তর (DGHS) ফার্মাসিস্ট (১০ম গ্রেড) সরাসরি নিয়োগ সার্কুলার ও পূর্ণাঙ্গ পরীক্ষার সিলেবাস",
+    category: "circulars",
+    categoryLabel: "নিয়োগ ও অফিসিয়াল সার্কুলার",
+    format: "PDF",
+    size: "১.৪ মেগাবাইট",
+    updatedAt: "২০২৬",
+    description: "স্বাস্থ্য অধিদপ্তরের আওতাধীন সরকারি হাসপাতাল ও স্বাস্থ্য কমপ্লেক্সে ফার্মাসিস্ট নিয়োগ বিজ্ঞপ্তি, শিক্ষাগত যোগ্যতা ও লিখিত পরীক্ষার নির্দেশিকা।",
+    tags: ["নিয়োগ সার্কুলার", "ডিজিএইচএস", "১০ম গ্রেড"],
+  },
+  {
+    id: "circ-2",
+    title: "পরিবার পরিকল্পনা অধিদপ্তর (DGFP) ফার্মাসিস্ট নিয়োগ সার্কুলার ও আবেদন নির্দেশিকা",
+    category: "circulars",
+    categoryLabel: "নিয়োগ ও অফিসিয়াল সার্কুলার",
+    format: "PDF",
+    size: "১.১ মেগাবাইট",
+    updatedAt: "২০২৬",
+    description: "পরিবার পরিকল্পনা অধিদপ্তরের বিভিন্ন ইউনিট ও মা ও শিশু কল্যাণ কেন্দ্রে ফার্মাসিস্ট পদে সরাসরি নিয়োগ বিজ্ঞপ্তি ও অনলাইন আবেদন সহায়িকা।",
+    tags: ["নিয়োগ সার্কুলার", "ডিজিএফপি"],
+  },
+  {
+    id: "memo-1",
+    title: "ডিপ্লোমা ফার্মাসিস্টদের পদবী ও কর্মপরিধি নির্ধারণ সংক্রান্ত আন্তঃমন্ত্রণালয় কমিটির অফিস স্মারক (Memorandum)",
+    category: "memoranda",
+    categoryLabel: "স্মারকপত্র ও প্রজ্ঞাপন (Memoranda)",
+    format: "PDF",
+    size: "২.১ মেগাবাইট",
+    updatedAt: "২০২৬",
+    description: "স্বাস্থ্যসেবা ব্যবস্থায় ফার্মাসিস্টদের পদবী সংস্কার ও সুনির্দিষ্ট দায়িত্ব বণ্টন বিষয়ে গঠিত আন্তঃমন্ত্রণালয় কমিটির মূল অফিস স্মারক ও সুপারিশপত্র।",
+    tags: ["স্মারকপত্র", "Memorandum", "আন্তঃমন্ত্রণালয়"],
+  },
+  {
+    id: "memo-2",
+    title: "হাসপাতাল ফার্মাসিস্টদের কর্মঘণ্টা, পদোন্নতি ও জ্যেষ্ঠতা নির্ধারণ সংক্রান্ত স্বাস্থ্য সেবা বিভাগের প্রজ্ঞাপন",
+    category: "memoranda",
+    categoryLabel: "স্মারকপত্র ও প্রজ্ঞাপন (Memoranda)",
+    format: "PDF",
+    size: "১.৫ মেগাবাইট",
+    updatedAt: "২০২৬",
+    description: "হাসপাতাল ও বিশেষায়িত স্বাস্থ্য প্রতিষ্ঠানে কর্মরত ফার্মাসিস্টদের পদোন্নতির যোগ্যতা ও চাকরির ধারাবাহিকতা রক্ষার সরকারি স্মারক।",
+    tags: ["স্মারকপত্র", "পদোন্নতি বিধিমালা"],
+  },
+  {
+    id: "reg-1",
+    title: "বাংলাদেশ ফার্মেসী কাউন্সিল (PCB) প্রফেশনাল রেজিস্ট্রেশন সনদ গ্রহণ ও নবায়ন নির্দেশিকা",
+    category: "regulatory",
+    categoryLabel: "ফার্মেসী কাউন্সিল ও ডিজিডিএ",
     format: "PDF",
     size: "৮৫০ কিলোবাইট",
     updatedAt: "২০২৬",
-    description: "নতুন সদস্য নিবন্ধনের অফলাইন ফরম ও প্রয়োজনীয় নথির তালিকা।",
+    description: "ডিপ্লোমা ইন ফার্মেসি সম্পন্নকারীদের কাউন্সিল সনদ নিবন্ধন, লাইসেন্স নবায়ন এবং ফি জমা সংক্রান্ত প্রাতিষ্ঠানিক নির্দেশিকা ও ফরম।",
+    tags: ["ফার্মেসী কাউন্সিল", "রেজিস্ট্রেশন", "পেশাগত সনদ"],
   },
   {
-    id: "f3",
-    title: "সদস্য কল্যাণ তহবিল ও চিকিৎসা সহায়তা নির্দেশিকা",
-    category: "constitution",
-    categoryLabel: "গঠনতন্ত্র ও নীতিমালা",
+    id: "reg-2",
+    title: "ওষুধ প্রশাসন অধিদপ্তর (DGDA) হাসপাতাল ফার্মেসি পরিচালনা ও ড্রাগ মনিটরিং জাতীয় গাইডলাইন",
+    category: "regulatory",
+    categoryLabel: "ফার্মেসী কাউন্সিল ও ডিজিডিএ",
     format: "PDF",
-    size: "১.২ মেগাবাইট",
+    size: "৪.২ মেগাবাইট",
     updatedAt: "২০২৬",
-    description: "জরুরি চিকিৎসা ও সদস্যদের আপদকালীন সহায়তার জন্য নির্ধারিত নীতিমালা।",
+    description: "হাসপাতালে ওষুধের নিরাপদ সংরক্ষণ, অ্যান্টিবায়োটিক ব্যবহার মনিটরিং এবং কোল্ড-চেইন ব্যবস্থাপনায় ফার্মাসিস্টদের পালনীয় জাতীয় নীতিমালা।",
+    tags: ["ডিজিডিএ", "হাসপাতাল ফার্মেসি", "ওষুধ প্রশাসন"],
   },
   {
-    id: "f4",
-    title: "স্বেচ্ছায় রক্তদান ক্যাম্পেইন পরিচালনা গাইডলাইন ও ফরম",
+    id: "form-1",
+    title: "তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ — সদস্যপদ আবেদন ও তথ্য হালনাগাদ ফরম",
     category: "forms",
-    categoryLabel: "ফরম ও আবেদনপত্র",
+    categoryLabel: "আবেদনপত্র ও সাংগঠনিক ফরম",
     format: "PDF",
-    size: "৯৫৪ কিলোবাইট",
+    size: "৬২০ কিলোবাইট",
     updatedAt: "২০২৬",
-    description: "জেলা ও বিভাগীয় পর্যায়ে রক্তদান কর্মসূচি আয়োজনের অফিসিয়াল গাইডলাইন।",
+    description: "সংগঠনের সাধারণ ও আজীবন সদস্যপদ গ্রহণ, জেলাভিত্তিক কমিটি অন্তর্ভুক্তি এবং তথ্য হালনাগাদের জন্য অফিশিয়াল ফরম।",
+    tags: ["সদস্য ফরম", "সাংগঠনিক"],
   },
   {
-    id: "f5",
-    title: "বার্ষিক সাংগঠনিক প্রতিবেদন ও অডিট রিপোর্ট (সারাংশ)",
-    category: "reports",
-    categoryLabel: "প্রতিবেদন ও প্রকাশনা",
+    id: "form-2",
+    title: "ফার্মাসিস্ট পেশাগত অধিকার ও আইনি সহায়তা তহবিল আবেদন ফরম",
+    category: "forms",
+    categoryLabel: "আবেদনপত্র ও সাংগঠনিক ফরম",
     format: "PDF",
-    size: "৩.১ মেগাবাইট",
-    updatedAt: "২০২৫-২৬",
-    description: "সংগঠনের সামগ্রিক কার্যক্রম, আর্থিক বিবরণী ও সামাজিক উদ্যোগের বার্ষিক সংকলন।",
+    size: "৫৪০ কিলোবাইট",
+    updatedAt: "২০২৬",
+    description: "চাকরি সংক্রান্ত জটিলতা, প্রশাসনিক অবিচার বা আইনি সহায়তার প্রয়োজনে সংগঠনের কেন্দ্রীয় সেলে আবেদনের নির্ধারিত ফরম।",
+    tags: ["আইনি সহায়তা", "কল্যাণ তহবিল"],
   },
 ];
 
@@ -81,69 +145,72 @@ export default function ArchiveTab() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredFiles = PREVIEW_FILES.filter((file) => {
+  const filteredFiles = PHARMACIST_ARCHIVE_FILES.filter((file) => {
     const matchesCategory = selectedCategory === "all" || file.category === selectedCategory;
+    const q = searchTerm.trim().toLowerCase();
     const matchesSearch =
-      !searchTerm.trim() ||
-      file.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      file.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      file.categoryLabel.toLowerCase().includes(searchTerm.toLowerCase());
+      !q ||
+      file.title.toLowerCase().includes(q) ||
+      file.description.toLowerCase().includes(q) ||
+      file.categoryLabel.toLowerCase().includes(q) ||
+      (file.tags && file.tags.some((t) => t.toLowerCase().includes(q)));
     return matchesCategory && matchesSearch;
   });
 
   return (
     <div className="archive-tab-shell animate-fade-in" style={{ paddingBottom: 40 }}>
-      {/* Header */}
+      {/* Page Header */}
       <div style={{ marginBottom: 24 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
           <div
             style={{
-              width: 40,
-              height: 40,
-              borderRadius: 10,
-              background: "#eff6ff",
-              color: "#2563eb",
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              background: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)",
+              color: "#1d4ed8",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
+              boxShadow: "0 2px 6px rgba(37, 99, 235, 0.1)",
             }}
           >
-            <FolderArchive size={22} />
+            <FolderArchive size={24} />
           </div>
           <div>
-            <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: "var(--forest, #0f172a)" }}>
-              ফাইল ও ডকুমেন্ট আর্কাইভ
+            <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: "var(--forest, #0f172a)", letterSpacing: "-0.3px" }}>
+              ফার্মাসিস্ট গুরুত্বপূর্ণ ফাইল ও ডকুমেন্ট আর্কাইভ
             </h1>
             <p className="step-sub" style={{ margin: 0, marginTop: 2, fontSize: 13.5 }}>
-              সংগঠনের সকল প্রাতিষ্ঠানিক নথি, ফরম, নীতিমালা ও প্রকাশনার কেন্দ্রীয় সংগ্রহশালা।
+              ১০ম গ্রেড সংক্রান্ত গেজেট ও প্রজ্ঞাপন, সরকারি নিয়োগ সার্কুলার, স্মারকপত্র (Memoranda) ও নীতিমালার কেন্দ্রীয় সংগ্রহশালা।
             </p>
           </div>
         </div>
       </div>
 
-      {/* Prominent Coming Soon Banner */}
+      {/* Prominent Coming Soon Banner with Specific Pharmacist Focus */}
       <div
         className="archive-coming-soon-banner"
         style={{
-          background: "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f766e 100%)",
+          background: "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0d9488 100%)",
           color: "#ffffff",
           borderRadius: 16,
           padding: "24px 28px",
           position: "relative",
           overflow: "hidden",
-          boxShadow: "0 10px 25px -5px rgba(15, 23, 42, 0.15)",
+          boxShadow: "0 12px 28px -6px rgba(15, 23, 42, 0.2)",
           marginBottom: 28,
         }}
       >
         <div
           style={{
             position: "absolute",
-            top: -20,
-            right: -20,
-            width: 140,
-            height: 140,
-            background: "radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, rgba(255,255,255,0) 70%)",
+            top: -24,
+            right: -24,
+            width: 160,
+            height: 160,
+            background: "radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, rgba(255,255,255,0) 70%)",
             borderRadius: "50%",
             pointerEvents: "none",
           }}
@@ -152,8 +219,8 @@ export default function ArchiveTab() {
         <div style={{ display: "flex", alignItems: "flex-start", gap: 16, position: "relative", zIndex: 1 }}>
           <div
             style={{
-              width: 48,
-              height: 48,
+              width: 50,
+              height: 50,
               borderRadius: 12,
               background: "rgba(255, 255, 255, 0.12)",
               backdropFilter: "blur(8px)",
@@ -164,7 +231,7 @@ export default function ArchiveTab() {
               flexShrink: 0,
             }}
           >
-            <Clock size={26} />
+            <Clock size={28} />
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 6 }}>
@@ -174,7 +241,7 @@ export default function ArchiveTab() {
                   color: "#000000",
                   fontWeight: 800,
                   fontSize: 12,
-                  padding: "3px 10px",
+                  padding: "3px 11px",
                   borderRadius: 20,
                   letterSpacing: "0.2px",
                   display: "inline-flex",
@@ -186,16 +253,33 @@ export default function ArchiveTab() {
                 শীঘ্রই আসছে • Coming Soon
               </span>
               <span style={{ fontSize: 13, color: "#94a3b8" }}>
-                ডকুমেন্ট আর্কাইভ প্রস্তুতকরণ চলছে
+                নথি যাচাইকরণ ও ডাটাবেজ প্রস্তুতকরণ চলছে
               </span>
             </div>
-            <h2 style={{ fontSize: 19, fontWeight: 700, margin: "0 0 6px 0", color: "#f8fafc" }}>
-              প্রাতিষ্ঠানিক নথি ও ডাউনলোড সেন্টার
+            <h2 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 6px 0", color: "#f8fafc" }}>
+              ডিপ্লোমা ফার্মাসিস্টদের অধিকার ও পেশাগত নথির ডিজিটাল আর্কাইভ
             </h2>
-            <p style={{ margin: 0, fontSize: 13.5, color: "#cbd5e1", lineHeight: 1.55, maxWidth: 720 }}>
-              এই সেকশনটিতে সংগঠনের অনুমোদিত গঠনতন্ত্র, প্রকাশনা, সদস্য ফরম এবং নোটিশসমূহ আপলোড করা হচ্ছে।
-              শীঘ্রই সকল সদস্য ও শুভানুধ্যায়ী এখান থেকে সরাসরি সকল প্রয়োজনীয় ফাইল ব্রাউজ ও ১-ক্লিকে ডাউনলোড করতে পারবেন।
+            <p style={{ margin: "0 0 12px 0", fontSize: 13.5, color: "#cbd5e1", lineHeight: 1.6, maxWidth: 780 }}>
+              এখানে ফার্মাসিস্টদের বহুল প্রতীক্ষিত <strong>১০ম গ্রেড পদমর্যাদা ও বেতন স্কেল সংক্রান্ত সরকারি গেজেট ও প্রজ্ঞাপন</strong>,
+              আদালতের ঐতিহাসিক রায় ও রিট আদেশ, স্বাস্থ্য অধিদপ্তর ও পরিবার পরিকল্পনা অধিদপ্তরের <strong>নিয়োগ সার্কুলার</strong>,
+              মন্ত্রণালয়ের <strong>অফিস স্মারকপত্র (Memoranda)</strong> এবং ফার্মেসী কাউন্সিলের সকল গুরুত্বপূর্ণ ফাইল এক ছাদের নিচে সংরক্ষিত থাকবে।
             </p>
+
+            {/* Feature Pills */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+              <span style={{ fontSize: 12, background: "rgba(255,255,255,0.14)", padding: "3px 10px", borderRadius: 6, display: "inline-flex", alignItems: "center", gap: 5 }}>
+                <Scale size={13} style={{ color: "#38bdf8" }} /> ১০ম গ্রেড গেজেট ও রিট
+              </span>
+              <span style={{ fontSize: 12, background: "rgba(255,255,255,0.14)", padding: "3px 10px", borderRadius: 6, display: "inline-flex", alignItems: "center", gap: 5 }}>
+                <FileText size={13} style={{ color: "#38bdf8" }} /> সরকারি নিয়োগ সার্কুলার
+              </span>
+              <span style={{ fontSize: 12, background: "rgba(255,255,255,0.14)", padding: "3px 10px", borderRadius: 6, display: "inline-flex", alignItems: "center", gap: 5 }}>
+                <Building2 size={13} style={{ color: "#38bdf8" }} /> মন্ত্রণালয় স্মারক (Memoranda)
+              </span>
+              <span style={{ fontSize: 12, background: "rgba(255,255,255,0.14)", padding: "3px 10px", borderRadius: 6, display: "inline-flex", alignItems: "center", gap: 5 }}>
+                <Download size={13} style={{ color: "#38bdf8" }} /> ১-ক্লিকে ফ্রি ডাউনলোড
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -222,7 +306,7 @@ export default function ArchiveTab() {
                 borderRadius: 20,
                 fontSize: 13,
                 fontWeight: selectedCategory === cat.key ? 700 : 500,
-                border: "1px solid",
+                border: "1.5px solid",
                 borderColor: selectedCategory === cat.key ? "var(--coral, #2563eb)" : "var(--border, #e2e8f0)",
                 background: selectedCategory === cat.key ? "#eff6ff" : "var(--white, #ffffff)",
                 color: selectedCategory === cat.key ? "#1d4ed8" : "#475569",
@@ -235,7 +319,7 @@ export default function ArchiveTab() {
           ))}
         </div>
 
-        <div style={{ position: "relative", minWidth: 240, flex: "1 1 240px", maxWidth: 360 }}>
+        <div style={{ position: "relative", minWidth: 260, flex: "1 1 260px", maxWidth: 380 }}>
           <Search
             size={16}
             style={{
@@ -248,7 +332,7 @@ export default function ArchiveTab() {
           />
           <input
             type="text"
-            placeholder="ফাইলের নাম বা বিষয় দিয়ে খুঁজুন..."
+            placeholder="১০ম গ্রেড, সার্কুলার বা স্মারক দিয়ে খুঁজুন..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{
@@ -315,14 +399,14 @@ export default function ArchiveTab() {
                 >
                   {file.title}
                 </h3>
-                <p style={{ margin: "0 0 6px 0", fontSize: 12.5, color: "#64748b", lineHeight: 1.4 }}>
+                <p style={{ margin: "0 0 6px 0", fontSize: 12.5, color: "#64748b", lineHeight: 1.45 }}>
                   {file.description}
                 </p>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 11.5, color: "#94a3b8" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11.5, color: "#94a3b8", flexWrap: "wrap" }}>
                   <span
                     style={{
                       background: "#f1f5f9",
-                      color: "#475569",
+                      color: "#334155",
                       padding: "2px 8px",
                       borderRadius: 4,
                       fontWeight: 600,
@@ -332,7 +416,17 @@ export default function ArchiveTab() {
                   </span>
                   <span>আকার: {file.size}</span>
                   <span>•</span>
-                  <span>সংস্করণ: {file.updatedAt}</span>
+                  <span>নথি বছর: {file.updatedAt}</span>
+                  {file.tags && file.tags.length > 0 && (
+                    <>
+                      <span>•</span>
+                      {file.tags.map((tag) => (
+                        <span key={tag} style={{ background: "#eff6ff", color: "#2563eb", padding: "1px 6px", borderRadius: 4 }}>
+                          #{tag}
+                        </span>
+                      ))}
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -355,7 +449,7 @@ export default function ArchiveTab() {
                   cursor: "not-allowed",
                   borderRadius: 8,
                 }}
-                title="ফাইল আপলোড সম্পন্ন হলে শীঘ্রই ডাউনলোড করা যাবে"
+                title="ফাইল আপলোড ও ডাটাবেজ লিংক সম্পন্ন হলে শীঘ্রই ডাউনলোড সক্রিয় হবে"
               >
                 <Download size={14} />
                 ডাউনলোড (শীঘ্রই)
@@ -367,7 +461,7 @@ export default function ArchiveTab() {
         {filteredFiles.length === 0 && (
           <div
             style={{
-              padding: 32,
+              padding: 36,
               textAlign: "center",
               background: "#ffffff",
               borderRadius: 12,
@@ -375,12 +469,12 @@ export default function ArchiveTab() {
               color: "#64748b",
             }}
           >
-            কোনো ফাইল পাওয়া যায়নি। অন্য কিওয়ার্ড দিয়ে চেষ্টা করুন।
+            কোনো নথি পাওয়া যায়নি। অন্য কিওয়ার্ড বা ক্যাটাগরি দিয়ে খুঁজুন।
           </div>
         )}
       </div>
 
-      {/* Future Information Note */}
+      {/* Official Help Notice */}
       <div
         style={{
           marginTop: 24,
@@ -395,12 +489,11 @@ export default function ArchiveTab() {
           color: "#64748b",
         }}
       >
-        <Info size={16} style={{ color: "#3b82f6", flexShrink: 0 }} />
+        <Info size={16} style={{ color: "#0284c7", flexShrink: 0 }} />
         <span>
-          প্রশাসনিক বা প্রাতিষ্ঠানিক কোনো নির্দিষ্ট নথির জরুরি প্রয়োজনে কেন্দ্রীয় কার্যনির্বাহী পরিষদের সাথে যোগাযোগ করুন।
+          ১০ম গ্রেড বাস্তবায়ন সংক্রান্ত যেকোনো নতুন গেজেট, আদালতের রিট আদেশ বা অফিসিয়াল স্মারক যুক্ত করার পরামর্শ দিতে কেন্দ্রীয় কার্যনির্বাহী পরিষদের সাথে যোগাযোগ করুন।
         </span>
       </div>
     </div>
   );
 }
-
