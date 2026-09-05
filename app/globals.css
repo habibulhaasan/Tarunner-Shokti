@@ -4131,7 +4131,7 @@ select:disabled {
 
 .landing-notice-row-left {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   min-width: 0;
   flex: 1;
@@ -4148,21 +4148,23 @@ select:disabled {
   border-radius: 6px;
   white-space: nowrap;
   flex-shrink: 0;
+  margin-top: 1px;
 }
 
 .landing-notice-row-title {
   font-size: 14px;
   font-weight: 600;
   color: #0f172a;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.45;
+  white-space: normal;
+  word-break: break-word;
   flex: 1;
 }
 
 .landing-notice-view-btn {
   display: inline-flex;
   align-items: center;
+  align-self: center;
   gap: 4px;
   background: #ffffff;
   border: 1px solid #cbd5e1;
@@ -4263,6 +4265,16 @@ select:disabled {
   .landing-spotlight-grid {
     grid-template-columns: 1fr;
     gap: 20px;
+  }
+  .landing-spotlight-card {
+    padding: 20px 16px;
+  }
+  .landing-notice-row {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+  .landing-notice-row-title {
+    font-size: 13.5px;
   }
 }
 
