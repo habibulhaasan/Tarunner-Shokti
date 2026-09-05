@@ -48,14 +48,13 @@ export default function LandingPage() {
   const { members, ready: committeeReady } = usePublicCommitteeMembers();
   const { items: memos, ready: memosReady } = useVisibleMemos();
 
-  // Find the top two roles: সভাপতি and মহাসচিব
   // Find key leadership roles: সভাপতি, মহাসচিব, and সাংগঠনিক সম্পাদক
   const president = members.find(m => m.committeeRole?.title === "সভাপতি");
   const secretary = members.find(m => m.committeeRole?.title === "মহাসচিব");
   const organizingSecretary = members.find(m => m.committeeRole?.title === "সাংগঠনিক সম্পাদক");
   
-  // Get the most recent notice
-  const recentNotice = memos && memos.length > 0 ? memos[0] : null;
+  // Get recent notices (up to 3 for list view)
+  const recentMemos = (memos || []).slice(0, 3);
 
   return (
     <div className="landing-shell">
@@ -88,7 +87,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero Section (Individual) */}
       <section className="landing-hero animate-fade-in">
         <div className="landing-hero-badge">
           <Sparkles size={14} />
@@ -102,23 +101,6 @@ export default function LandingPage() {
         <p className="landing-hero-sub">
           দেশজুড়ে ফার্মাসিস্টদের পেশাগত মর্যাদা, কল্যাণ ও ঐক্যের প্ল্যাটফর্ম।
         </p>
-      {/* Hero & Key Leadership Showcase Grid */}
-      <div className="landing-top-wrap animate-fade-in">
-        <div className="landing-top-grid">
-          {/* Hero Section (Left Column) */}
-          <section className="landing-hero">
-            <div className="landing-hero-badge">
-              <Sparkles size={14} />
-              <span>তরুণ ফার্মাসিস্টদের ঐক্যবদ্ধ প্ল্যাটফর্ম</span>
-            </div>
-            <h1 className="landing-hero-title">
-              তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ
-              <br />
-              <span className="hero-highlight">অরাজনৈতিক ও তরুণ পেশাজীবি সংগঠন</span>
-            </h1>
-            <p className="landing-hero-sub">
-              দেশজুড়ে ফার্মাসিস্টদের পেশাগত মর্যাদা, কল্যাণ ও ঐক্যের প্ল্যাটফর্ম।
-            </p>
 
         <div className="landing-hero-actions">
           <Link href="/register" className="btn btn-primary-blue">
@@ -128,14 +110,6 @@ export default function LandingPage() {
             আমাদের কথা
           </Link>
         </div>
-            <div className="landing-hero-actions">
-              <Link href="/register" className="btn btn-primary-blue">
-                সদস্য হোন <ArrowRight size={17} />
-              </Link>
-              <Link href="/about-us" className="btn btn-secondary-slate">
-                আমাদের কথা
-              </Link>
-            </div>
 
         {/* Android App Download Button */}
         <div className="landing-hero-app-download">
@@ -145,20 +119,6 @@ export default function LandingPage() {
               <div className="download-badge">
                 <Download size={10} strokeWidth={3} />
               </div>
-            {/* Android App Download Button */}
-            <div className="landing-hero-app-download">
-              <a href="/TarunnerShokti.apk" download className="app-download-btn">
-                <div className="app-download-icon">
-                  <Smartphone size={22} />
-                  <div className="download-badge">
-                    <Download size={10} strokeWidth={3} />
-                  </div>
-                </div>
-                <div className="app-download-text">
-                  <span>অ্যান্ড্রয়েড অ্যাপ</span>
-                  <strong>ডাউনলোড করুন</strong>
-                </div>
-              </a>
             </div>
             <div className="app-download-text">
               <span>অ্যান্ড্রয়েড অ্যাপ</span>
@@ -167,30 +127,81 @@ export default function LandingPage() {
           </a>
         </div>
       </section>
-          </section>
 
-      {/* Leadership / Key Committee Showcase */}
-      <section className="landing-features" style={{ paddingBottom: "30px" }}>
-        <div className="section-header-center" style={{ marginBottom: "28px" }}>
-          <span className="section-subtitle">আমাদের নেতৃত্ব</span>
-          <h2 className="landing-section-title">কেন্দ্রীয় কার্যনির্বাহী সংসদ (২০২৬-২০২৯)</h2>
-        </div>
-        <div className="landing-features-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", maxWidth: "760px", margin: "0 auto 28px" }}>
-          <div className="landing-feature-card" style={{ textAlign: "center", padding: "32px 24px" }}>
-            <div style={{ width: "80px", height: "80px", margin: "0 auto 16px", borderRadius: "50%", background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", color: "#2563eb", border: "2px solid #bfdbfe", overflow: "hidden", position: "relative" }}>
-              {president ? (
-                <img src={avatarFor(president)} alt="সভাপতি" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      {/* One Row, Double Column: সাম্প্রতিক নোটিশ (Left ~65%) & আমাদের নেতৃত্ব (Right ~35%) */}
+      <section className="landing-features landing-spotlight-section">
+        <div className="landing-spotlight-grid">
+          {/* Left Column: Recent Notice (সাম্প্রতিক নোটিশ - List View) */}
+          <div className="landing-spotlight-card landing-notice-spotlight-card">
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <div style={{ width: "36px", height: "36px", background: "#eff6ff", borderRadius: "8px", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <Bell size={20} />
+                  </div>
+                  <div>
+                    <span className="section-subtitle" style={{ display: "block", fontSize: "11.5px", lineHeight: "1.2" }}>বিজ্ঞপ্তি ও স্মারক</span>
+                    <h3 style={{ margin: 0, fontSize: "18px", color: "#0f172a" }}>সাম্প্রতিক নোটিশ</h3>
+                  </div>
+                </div>
+                <span style={{ fontSize: "12px", color: "#2563eb", background: "#eff6ff", fontWeight: "600", padding: "3px 10px", borderRadius: "20px", border: "1px solid #bfdbfe" }}>
+                  {recentMemos.length > 0 ? "নতুন বিজ্ঞপ্তি" : "বিজ্ঞপ্তি"}
+                </span>
+              </div>
+
+              {!memosReady ? (
+                <p style={{ color: "#64748b", fontSize: "14.5px", textAlign: "center", padding: "28px 0" }}>নোটিশ লোড হচ্ছে...</p>
+              ) : recentMemos.length > 0 ? (
+                <div className="landing-notice-list">
+                  {recentMemos.map((memo) => (
+                    <div key={memo.id} className="landing-notice-row">
+                      <div className="landing-notice-row-left">
+                        <span className="landing-notice-topic-badge">
+                          {memo.topic || "বিজ্ঞপ্তি"}
+                        </span>
+                        <span className="landing-notice-row-title" title={memo.title}>
+                          {memo.title}
+                        </span>
+                      </div>
+                      <Link
+                        href={`/memo/${memo.id}`}
+                        className="landing-notice-view-btn"
+                        title="নোটিশটি বিস্তারিত দেখুন"
+                      >
+                        দেখুন <ChevronRight size={13} />
+                      </Link>
+                    </div>
+                  ))}
+                </div>
               ) : (
-                <Users size={36} />
+                <div style={{ textAlign: "center", padding: "28px 0" }}>
+                  <p style={{ color: "#64748b", fontSize: "14px", margin: 0 }}>
+                    এখনও কোনো স্মারক প্রকাশ করা হয়নি।
+                  </p>
+                </div>
               )}
-          {/* Leadership / Key Committee Showcase (Right Column) */}
-          <section className="landing-features landing-features-column">
-            <div className="landing-leaders-box">
-              <div className="landing-leaders-header">
-                <span className="section-subtitle">আমাদের নেতৃত্ব</span>
-                <h2 className="landing-section-title" style={{ fontSize: "19px", marginTop: "4px", textAlign: "left" }}>
-                  কেন্দ্রীয় কার্যনির্বাহী সংসদ <span style={{ fontSize: "13.5px", color: "#64748b", fontWeight: "500" }}>(২০২৬-২০২৯)</span>
-                </h2>
+            </div>
+
+            <div style={{ marginTop: "16px", paddingTop: "14px", borderTop: "1px solid #f1f5f9", textAlign: "right" }}>
+              <Link href="/notices" className="btn btn-secondary-slate" style={{ display: "inline-flex", padding: "8px 14px", fontSize: "13px", textDecoration: "none" }}>
+                সকল নোটিশ দেখুন <ArrowRight size={15} style={{ marginLeft: "4px" }} />
+              </Link>
+            </div>
+          </div>
+
+          {/* Right Column: Leadership Showcase (আমাদের নেতৃত্ব) */}
+          <div className="landing-spotlight-card landing-leaders-spotlight-card">
+            <div>
+              <div style={{ marginBottom: "16px", borderBottom: "1px solid #f1f5f9", paddingBottom: "10px", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                <div>
+                  <span className="section-subtitle" style={{ display: "block", fontSize: "11.5px", lineHeight: "1.2", marginBottom: "2px" }}>আমাদের নেতৃত্ব</span>
+                  <h3 style={{ margin: 0, fontSize: "18px", color: "#0f172a" }}>
+                    কেন্দ্রীয় কার্যনির্বাহী সংসদ
+                  </h3>
+                </div>
+                <span style={{ fontSize: "11.5px", color: "#64748b", fontWeight: "600", background: "#f8fafc", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "6px" }}>
+                  ২০২৬-২০২৯
+                </span>
               </div>
 
               <div className="landing-leaders-column-list">
@@ -208,106 +219,30 @@ export default function LandingPage() {
                           className="landing-leader-avatar-img"
                         />
                       ) : (
-                        <Users size={24} color="#2563eb" />
+                        <Users size={22} color="#2563eb" />
                       )}
                     </div>
                     <div className="landing-leader-info">
                       <span className="landing-leader-role-badge">{role}</span>
-                      <h3 className="landing-leader-name">
+                      <h4 className="landing-leader-name">
                         {committeeReady ? (person?.nameBn || person?.name || "-") : "লোড হচ্ছে..."}
-                      </h3>
+                      </h4>
                     </div>
                   </div>
                 ))}
               </div>
+            </div>
 
-              <div style={{ marginTop: "16px", textAlign: "center" }}>
-                <Link
-                  href="/committee"
-                  className="btn btn-secondary-slate"
-                  style={{ width: "100%", justifyContent: "center", fontSize: "14px", padding: "10px 16px" }}
-                >
-                  পূর্ণাঙ্গ কমিটি দেখুন <ChevronRight size={16} style={{ marginLeft: "4px" }} />
-                </Link>
-              </div>
+            <div style={{ marginTop: "16px", paddingTop: "14px", borderTop: "1px solid #f1f5f9", textAlign: "center" }}>
+              <Link
+                href="/committee"
+                className="btn btn-secondary-slate"
+                style={{ width: "100%", justifyContent: "center", fontSize: "13px", padding: "8px 14px" }}
+              >
+                পূর্ণাঙ্গ কমিটি দেখুন <ChevronRight size={15} style={{ marginLeft: "4px" }} />
+              </Link>
             </div>
-            <h3 style={{ fontSize: "18px", marginBottom: "4px", color: "#0f172a" }}>
-              {committeeReady ? (president?.nameBn || president?.name || "-") : "লোড হচ্ছে..."}
-            </h3>
-            <p style={{ color: "#2563eb", fontWeight: "700", fontSize: "15px", margin: 0 }}>সভাপতি</p>
           </div>
-          <div className="landing-feature-card" style={{ textAlign: "center", padding: "32px 24px" }}>
-            <div style={{ width: "80px", height: "80px", margin: "0 auto 16px", borderRadius: "50%", background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", color: "#2563eb", border: "2px solid #bfdbfe", overflow: "hidden", position: "relative" }}>
-               {secretary ? (
-                <img src={avatarFor(secretary)} alt="মহাসচিব" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              ) : (
-                <Users size={36} />
-              )}
-            </div>
-            <h3 style={{ fontSize: "18px", marginBottom: "4px", color: "#0f172a" }}>
-              {committeeReady ? (secretary?.nameBn || secretary?.name || "-") : "লোড হচ্ছে..."}
-            </h3>
-            <p style={{ color: "#2563eb", fontWeight: "700", fontSize: "15px", margin: 0 }}>মহাসচিব</p>
-          </div>
-          </section>
-        </div>
-        <div style={{ textAlign: "center" }}>
-          <Link href="/committee" className="btn btn-secondary-slate">
-            পূর্ণাঙ্গ কমিটি দেখুন <ChevronRight size={17} style={{ marginLeft: "4px" }} />
-          </Link>
-        </div>
-      </section>
-      </div>
-
-      {/* Recent Notice Section */}
-      <section className="landing-features" style={{ paddingTop: "20px", paddingBottom: "50px" }}>
-        <div className="landing-feature-card" style={{ maxWidth: "860px", margin: "0 auto", padding: "32px", borderLeft: "5px solid #2563eb" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px", flexWrap: "wrap", gap: "12px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <div style={{ width: "36px", height: "36px", background: "#eff6ff", borderRadius: "8px", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <Bell size={20} />
-              </div>
-              <h3 style={{ margin: 0, fontSize: "19px", color: "#0f172a" }}>সাম্প্রতিক নোটিশ</h3>
-            </div>
-            <span style={{ fontSize: "13px", color: "#2563eb", background: "#eff6ff", fontWeight: "600", padding: "4px 12px", borderRadius: "20px", border: "1px solid #bfdbfe" }}>
-              {recentNotice ? "নতুন বিজ্ঞপ্তি" : "বিজ্ঞপ্তি"}
-            </span>
-          </div>
-          
-          {!memosReady ? (
-            <p style={{ color: "#64748b", fontSize: "15px", textAlign: "center", padding: "20px 0" }}>নোটিশ লোড হচ্ছে...</p>
-          ) : recentNotice ? (
-             <div style={{ marginBottom: "24px" }}>
-                <div style={{ fontSize: "13px", color: "#64748b", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <FileText size={14} />
-                  <span>{recentNotice.memoNo}</span>
-                  <span>•</span>
-                  <span>{fmtDate(recentNotice.date)}</span>
-                </div>
-                <h4 style={{ fontSize: "17px", color: "#0f172a", marginBottom: "10px", fontWeight: "700" }}>
-                  {recentNotice.title}
-                </h4>
-                {recentNotice.content && (
-                  <p style={{ color: "#475569", fontSize: "14.5px", lineHeight: "1.7", marginBottom: "20px", display: "-webkit-box", WebkitLineClamp: "3", WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                    {recentNotice.content}
-                  </p>
-                )}
-                <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                  <Link href={`/memo/${recentNotice.id}`} className="btn-primary-blue" style={{ display: "inline-flex", padding: "9px 18px", fontSize: "14px", textDecoration: "none" }}>
-                    নোটিশটি বিস্তারিত পড়ুন <ChevronRight size={16} style={{ marginLeft: "4px" }} />
-                  </Link>
-                  <Link href="/notices" className="btn-secondary-slate" style={{ display: "inline-flex", padding: "9px 18px", fontSize: "14px", textDecoration: "none" }}>
-                    সকল নোটিশ <ArrowRight size={16} style={{ marginLeft: "6px" }} />
-                  </Link>
-                </div>
-             </div>
-          ) : (
-            <div style={{ textAlign: "center", padding: "20px 0" }}>
-              <p style={{ color: "#475569", fontSize: "14.5px", marginBottom: "20px" }}>
-                এখনও কোনো স্মারক প্রকাশ করা হয়নি।
-              </p>
-            </div>
-          )}
         </div>
       </section>
 
