@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Landmark } from "lucide-react";
+import { Landmark, Award } from "lucide-react";
 import { defaultAvatarFor } from "../../lib/photoUtils";
 import { usePublicCommitteeMembers } from "../../lib/committee";
 
@@ -11,6 +11,33 @@ function avatarFor(profile) {
     ? profile.photo.base64
     : defaultAvatarFor(profile.gender);
 }
+
+const ADVISORY_COUNCIL = [
+  {
+    id: "advisor-1",
+    name: "আমেনা বেগম",
+    role: "উপদেষ্টা",
+    committee: "কেন্দ্রীয় কার্যনির্বাহী কমিটি",
+    organization: "তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ",
+    gender: "female",
+  },
+  {
+    id: "advisor-2",
+    name: "মোহাম্মদ তারেকুজ্জামান",
+    role: "উপদেষ্টা",
+    committee: "কেন্দ্রীয় কার্যনির্বাহী কমিটি",
+    organization: "তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ",
+    gender: "male",
+  },
+  {
+    id: "advisor-3",
+    name: "মোহাম্মদ মাযহারুল ইসলাম",
+    role: "উপদেষ্টা",
+    committee: "কেন্দ্রীয় কার্যনির্বাহী কমিটি",
+    organization: "তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদ",
+    gender: "male",
+  },
+];
 
 export default function CommitteePage() {
   const { members, ready: membersReady } = usePublicCommitteeMembers();
@@ -46,6 +73,46 @@ export default function CommitteePage() {
       </nav>
 
       <section className="landing-features" style={{ minHeight: "60vh" }}>
+        {/* উপদেষ্টা পরিষদ */}
+        <div style={{ marginBottom: "48px" }}>
+          <h2 className="landing-section-title">
+            <Award size={22} style={{ verticalAlign: "-4px", marginRight: 8 }} />
+            উপদেষ্টা পরিষদ
+          </h2>
+          <div className="directory-grid" style={{ marginTop: 24 }}>
+            {ADVISORY_COUNCIL.map((m) => {
+              const matchedMember = members.find((p) => p.name === m.name || p.nameBn === m.name);
+              const avatarSrc = matchedMember ? avatarFor(matchedMember) : defaultAvatarFor(m.gender);
+              return (
+                <div key={m.id} className="directory-card" style={{ borderTop: "4px solid #2563eb" }}>
+                  <div className="directory-card-top" style={{ marginBottom: 0, alignItems: "flex-start" }}>
+                    <img
+                      src={avatarSrc}
+                      alt={m.name}
+                      width={48}
+                      height={48}
+                      style={{ borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid #eff6ff" }}
+                    />
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div className="directory-card-name" style={{ fontSize: "16px", marginBottom: "4px" }}>
+                        {m.name}
+                      </div>
+                      <span className="committee-role-badge" style={{ background: "#eff6ff", color: "#2563eb", borderColor: "#bfdbfe" }}>
+                        {m.role}
+                      </span>
+                      <div style={{ fontSize: "12px", color: "#64748b", marginTop: "6px", lineHeight: "1.4" }}>
+                        <div style={{ fontWeight: "500", color: "#475569" }}>{m.committee}</div>
+                        <div>{m.organization}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* পরিচালনা পরিষদ */}
         <h2 className="landing-section-title">
           <Landmark size={22} style={{ verticalAlign: "-4px", marginRight: 8 }} />
           পরিচালনা পরিষদ
