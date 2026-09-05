@@ -25,13 +25,13 @@ import { defaultAvatarFor } from "../../lib/photoUtils";
 
 const ADMIN_VIEWS = [
   { key: "members", label: "Members", icon: Users },
-  { key: "settings", label: "Directory settings", icon: Settings },
   { key: "notifications", label: "Notifications", icon: Bell },
-  { key: "donations", label: "Finance", icon: HeartHandshake },
-  { key: "committee", label: "Committee", icon: Landmark },
   { key: "memos", label: "Memos", icon: FileText },
   { key: "events", label: "Events", icon: Calendar },
+  { key: "donations", label: "Finance", icon: HeartHandshake },
   { key: "tabs", label: "Tab visibility", icon: Eye },
+  { key: "settings", label: "Directory settings", icon: Settings },
+    { key: "committee", label: "Committee", icon: Landmark },
 ];
 
 const PAGE_SIZE = 10;
