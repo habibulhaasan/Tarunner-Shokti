@@ -13,6 +13,7 @@ import FundReviewPanel from "../../components/admin/FundReviewPanel";
 import FundExpensesPanel from "../../components/admin/FundExpensesPanel";
 import FundLedgerPanel from "../../components/admin/FundLedgerPanel";
 import FeedbackReviewPanel from "../../components/admin/FeedbackReviewPanel";
+import PublicFeedbackReviewPanel from "../../components/admin/PublicFeedbackReviewPanel";
 import CommitteeRolesPanel from "../../components/admin/CommitteeRolesPanel";
 import MemosPanel from "../../components/admin/MemosPanel";
 import EventsPanel from "../../components/admin/EventsPanel";
@@ -63,7 +64,7 @@ export default function AdminPage() {
   const [page, setPage] = useState(1);
   const [view, setView] = useState(() => getDefaultAdminView(userDoc?.role));
   const [fundView, setFundView] = useState("review"); // "review" | "expenses" | "ledger" | "accounts"
-  const [notifyView, setNotifyView] = useState("compose"); // "compose" | "feedback"
+  const [notifyView, setNotifyView] = useState("compose"); // "compose" | "feedback" | "public-feedback"
 
   useEffect(() => {
     if (!canAccessAdminView(userDoc?.role, view)) setView(getDefaultAdminView(userDoc?.role));
@@ -214,9 +215,20 @@ export default function AdminPage() {
                   </button>
                   <button type="button" className={`pill ${notifyView === "feedback" ? "active" : ""}`} onClick={() => setNotifyView("feedback")}>
                     Feedback
+                    Member Feedback
+                  </button>
+                  <button type="button" className={`pill ${notifyView === "public-feedback" ? "active" : ""}`} onClick={() => setNotifyView("public-feedback")}>
+                    Public Feedback
                   </button>
                 </div>
                 {notifyView === "compose" ? <AdminNotificationsPanel /> : <FeedbackReviewPanel />}
+                {notifyView === "compose" ? (
+                  <AdminNotificationsPanel />
+                ) : notifyView === "public-feedback" ? (
+                  <PublicFeedbackReviewPanel />
+                ) : (
+                  <FeedbackReviewPanel />
+                )}
               </div>
             ) : (
               <div className={`admin-columns ${selectedUid ? "showing-detail" : ""}`}>

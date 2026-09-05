@@ -96,6 +96,31 @@ async function run() {
     console.error('FAIL: non-admin status change test threw', e);
   }
 
+  // 9) publicFeedback: unauthenticated visitor can submit
+  try {
+    let pubId;
+    await assertSucceeds(
+      unauth().collection('publicFeedback').add({
+        name: 'Karim',
+        mobile: '01800000000',
+        message: 'Great organization!',
+        status: 'open',
+      }).then((ref) => { pubId = ref.id; })
+    );
+    console.log('PASS: anonymous visitor can create publicFeedback');
+
+    // 10) anonymous visitor cannot read
+    await assertFails(unauth().collection('publicFeedback').doc(pubId).get());
+    console.log('PASS: anonymous visitor cannot read publicFeedback');
+
+    // 11) admin can read and review
+    await assertSucceeds(admin.collection('publicFeedback').doc(pubId).get());
+    await assertSucceeds(admin.collection('publicFeedback').doc(pubId).update({ status: 'reviewed', adminNote: 'noted' }));
+    console.log('PASS: admin can read and review publicFeedback');
+  } catch (e) {
+    console.error('FAIL: publicFeedback test threw', e);
+  }
+
   // Clean up
   await testEnv.cleanup();
   console.log('Tests complete.');

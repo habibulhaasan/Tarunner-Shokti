@@ -1,14 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
   Users, Target, Eye, Rocket, MapPin, Mail, Phone,
   ArrowRight, Smartphone, Download, Sparkles, Bell, ChevronRight, FileText,
-  Globe, Calendar
+  Globe, Calendar, MessageSquare, Send, CheckCircle
 } from "lucide-react";
 import { usePublicCommitteeMembers } from "../lib/committee";
 import { useVisibleMemos } from "../lib/memos";
+import { submitPublicFeedback } from "../lib/feedback";
 import { defaultAvatarFor } from "../lib/photoUtils";
 
 function avatarFor(profile) {
@@ -70,6 +72,54 @@ export default function LandingPage() {
   // Get recent notices (up to 3 for list view)
   const recentMemos = (memos || []).slice(0, 3);
 
+  // Public feedback form state
+  const [feedbackForm, setFeedbackForm] = useState({
+    name: "",
+    mobile: "",
+    email: "",
+    address: "",
+    message: "",
+  });
+  const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+  const [feedbackError, setFeedbackError] = useState("");
+
+  const handleFeedbackSubmit = async (e) => {
+    e.preventDefault();
+    setFeedbackError("");
+
+    if (!feedbackForm.name.trim()) {
+      setFeedbackError("অনুগ্রহ করে আপনার পূর্ণ নাম লিখুন।");
+      return;
+    }
+    if (!feedbackForm.mobile.trim()) {
+      setFeedbackError("অনুগ্রহ করে আপনার মোবাইল নম্বর লিখুন।");
+      return;
+    }
+    if (!feedbackForm.message.trim()) {
+      setFeedbackError("অনুগ্রহ করে আপনার মতামত বা বার্তা লিখুন।");
+      return;
+    }
+
+    setFeedbackSubmitting(true);
+    try {
+      await submitPublicFeedback(feedbackForm);
+      setFeedbackSubmitted(true);
+      setFeedbackForm({
+        name: "",
+        mobile: "",
+        email: "",
+        address: "",
+        message: "",
+      });
+    } catch (err) {
+      console.error("Failed to submit public feedback:", err);
+      setFeedbackError("মতামত জমা দিতে সমস্যা হয়েছে। অনুগ্রহ করে পুনরায় চেষ্টা করুন।");
+    } finally {
+      setFeedbackSubmitting(false);
+    }
+  };
+
   return (
     <div className="landing-shell">
       {/* Navigation Header */}
@@ -95,6 +145,7 @@ export default function LandingPage() {
           <Link href="/committee" className="landing-nav-link">কমিটি</Link>
           <Link href="/notices" className="landing-nav-link">নোটিশ</Link>
           <Link href="/constitution" className="landing-nav-link">গঠনতন্ত্র</Link>
+          <a href="#feedback" className="landing-nav-link">মতামত</a>
           <a href="#contact" className="landing-nav-link">যোগাযোগ</a>
           <Link href="/login" className="landing-nav-link">লগ ইন</Link>
           <Link href="/register" className="btn landing-nav-cta">রেজিস্টার</Link>
@@ -301,6 +352,132 @@ export default function LandingPage() {
             <Link href="/login" className="btn btn-secondary-slate" style={{ background: "", color: "#ffffff", borderColor: "#334155" }}>
               সদস্য লগ ইন
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Public Feedback Section */}
+      <section id="feedback" className="landing-feedback-section">
+        <div className="landing-feedback-container">
+          <div className="section-header-center" style={{ marginBottom: "28px" }}>
+            <span className="section-subtitle">আপনার মূল্যবান মতামত</span>
+            <h2 className="landing-section-title" style={{ marginTop: "4px" }}>
+              <MessageSquare size={22} style={{ verticalAlign: "-4px", marginRight: 8, color: "#2563eb" }} />
+              মতামত ও পরামর্শ
+            </h2>
+            <p className="landing-lead" style={{ maxWidth: 640, margin: "8px auto 0", fontSize: "14.5px", color: "#475569" }}>
+              তারুণ্যের শক্তি ফার্মাসিস্ট পরিষদের কার্যক্রমকে আরো সমৃদ্ধ করতে আপনার যেকোনো গঠনমূলক মতামত, পরামর্শ বা জিজ্ঞাসা আমাদের জানান।
+            </p>
+          </div>
+
+          <div className="landing-feedback-card">
+            {feedbackSubmitted ? (
+              <div className="landing-feedback-success">
+                <div className="feedback-success-icon">
+                  <CheckCircle size={44} color="#16a34a" />
+                </div>
+                <h3>আপনার মতামত সফলভাবে গৃহীত হয়েছে!</h3>
+                <p>
+                  আমাদের সংগঠনকে এগিয়ে নিতে আপনার মূল্যবান মতামত ও পরামর্শ প্রদানের জন্য আন্তরিক ধন্যবাদ।
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setFeedbackSubmitted(false)}
+                  className="btn btn-secondary-slate"
+                  style={{ marginTop: "18px" }}
+                >
+                  আরেকটি মতামত জমা দিন
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleFeedbackSubmit} className="landing-feedback-form">
+                {feedbackError && (
+                  <div className="landing-feedback-error">
+                    {feedbackError}
+                  </div>
+                )}
+
+                <div className="landing-feedback-row">
+                  <div className="landing-feedback-field">
+                    <label>
+                      নাম <span style={{ color: "#ef4444" }}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="আপনার নাম লিখুন"
+                      value={feedbackForm.name}
+                      onChange={(e) => setFeedbackForm({ ...feedbackForm, name: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div className="landing-feedback-field">
+                    <label>
+                      মোবাইল নম্বর <span style={{ color: "#ef4444" }}>*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      placeholder="যেমন: ০১৭১১XXXXXX"
+                      value={feedbackForm.mobile}
+                      onChange={(e) => setFeedbackForm({ ...feedbackForm, mobile: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="landing-feedback-row">
+                  <div className="landing-feedback-field">
+                    <label>ইমেইল (ঐচ্ছিক)</label>
+                    <input
+                      type="email"
+                      placeholder="example@mail.com"
+                      value={feedbackForm.email}
+                      onChange={(e) => setFeedbackForm({ ...feedbackForm, email: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="landing-feedback-field">
+                    <label>ঠিকানা (ঐচ্ছিক)</label>
+                    <input
+                      type="text"
+                      placeholder="বর্তমান ঠিকানা বা জেলা"
+                      value={feedbackForm.address}
+                      onChange={(e) => setFeedbackForm({ ...feedbackForm, address: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="landing-feedback-field">
+                  <label>
+                    মতামত বা বার্তা <span style={{ color: "#ef4444" }}>*</span>
+                  </label>
+                  <textarea
+                    rows={4}
+                    placeholder="আপনার মূল্যবান মতামত বা পরামর্শ এখানে লিখুন..."
+                    value={feedbackForm.message}
+                    onChange={(e) => setFeedbackForm({ ...feedbackForm, message: e.target.value })}
+                    required
+                  />
+                </div>
+
+                <div style={{ textAlign: "right", marginTop: "6px" }}>
+                  <button
+                    type="submit"
+                    className="btn btn-primary-blue"
+                    disabled={feedbackSubmitting}
+                    style={{ minWidth: "160px", justifyContent: "center" }}
+                  >
+                    {feedbackSubmitting ? (
+                      "জমা হচ্ছে..."
+                    ) : (
+                      <>
+                        মতামত পাঠান <Send size={15} style={{ marginLeft: 6 }} />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       </section>

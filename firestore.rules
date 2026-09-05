@@ -254,6 +254,23 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // Public visitor -> admin feedback from landing page. Anyone can submit (create).
+    // Read, update, and delete are restricted to admins (and office_secretary).
+    match /publicFeedback/{id} {
+      allow read: if isAdmin() || hasRole('office_secretary');
+
+      allow create: if request.resource.data.name is string &&
+        request.resource.data.mobile is string &&
+        request.resource.data.message is string &&
+        request.resource.data.status == "open";
+
+      allow update: if (isAdmin() || hasRole('office_secretary')) &&
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['status', 'adminNote', 'reviewedAt', 'reviewedBy']);
+
+      allow delete: if isAdmin();
+    }
+
     // Official memos (স্মারক নং). Admin-authored; members can only read the
     // ones an admin has published (visible == true).
     match /memos/{id} {

@@ -4508,6 +4508,121 @@ select:disabled {
   flex-wrap: wrap;
 }
 
+/* Public Feedback Section */
+.landing-feedback-section {
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  padding: 64px 24px;
+}
+
+.landing-feedback-container {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.landing-feedback-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 32px 36px;
+  box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.06);
+}
+
+@media (max-width: 640px) {
+  .landing-feedback-card {
+    padding: 24px 18px;
+  }
+}
+
+.landing-feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.landing-feedback-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+@media (max-width: 640px) {
+  .landing-feedback-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.landing-feedback-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.landing-feedback-field label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.landing-feedback-field input,
+.landing-feedback-field textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #0f172a;
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  font-family: inherit;
+}
+
+.landing-feedback-field input:focus,
+.landing-feedback-field textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.landing-feedback-field textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.landing-feedback-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13.5px;
+}
+
+.landing-feedback-success {
+  text-align: center;
+  padding: 24px 12px;
+}
+
+.landing-feedback-success .feedback-success-icon {
+  margin-bottom: 12px;
+}
+
+.landing-feedback-success h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 8px;
+  padding: 0;
+}
+
+.landing-feedback-success p {
+  color: #475569;
+  font-size: 14.5px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
 /* Contact Section */
 .landing-contact-section {
   background: #ffffff;
