@@ -161,6 +161,7 @@ export default function AdminPage() {
             </button>
           ))}
         </div>
+        
 
         {view === "settings" ? (
           <div className="admin-settings-view">
@@ -210,25 +211,32 @@ export default function AdminPage() {
             {view === "notifications" ? (
               <div className="admin-settings-view">
                 <div className="pill-group" style={{ marginBottom: 18 }}>
-                  <button type="button" className={`pill ${notifyView === "compose" ? "active" : ""}`} onClick={() => setNotifyView("compose")}>
+                  <button
+                    type="button"
+                    className={`pill ${notifyView === "compose" ? "active" : ""}`}
+                    onClick={() => setNotifyView("compose")}
+                  >
                     Compose
                   </button>
-                  <button type="button" className={`pill ${notifyView === "feedback" ? "active" : ""}`} onClick={() => setNotifyView("feedback")}>
-                    Feedback
+                  <button
+                    type="button"
+                    className={`pill ${notifyView === "feedback" ? "active" : ""}`}
+                    onClick={() => setNotifyView("feedback")}
+                  >
                     Member Feedback
                   </button>
-                  <button type="button" className={`pill ${notifyView === "public-feedback" ? "active" : ""}`} onClick={() => setNotifyView("public-feedback")}>
+                  <button
+                    type="button"
+                    className={`pill ${notifyView === "public-feedback" ? "active" : ""}`}
+                    onClick={() => setNotifyView("public-feedback")}
+                  >
                     Public Feedback
                   </button>
                 </div>
-                {notifyView === "compose" ? <AdminNotificationsPanel /> : <FeedbackReviewPanel />}
-                {notifyView === "compose" ? (
-                  <AdminNotificationsPanel />
-                ) : notifyView === "public-feedback" ? (
-                  <PublicFeedbackReviewPanel />
-                ) : (
-                  <FeedbackReviewPanel />
-                )}
+
+                {notifyView === "compose" && <AdminNotificationsPanel />}
+                {notifyView === "feedback" && <FeedbackReviewPanel />}
+                {notifyView === "public-feedback" && <PublicFeedbackReviewPanel />}
               </div>
             ) : (
               <div className={`admin-columns ${selectedUid ? "showing-detail" : ""}`}>
