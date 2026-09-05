@@ -5,7 +5,7 @@ import Image from "next/image";
 import {
   Users, Target, Eye, Rocket, MapPin, Mail, Phone,
   ArrowRight, Smartphone, Download, Sparkles, Bell, ChevronRight, FileText,
-  Globe
+  Globe, Calendar
 } from "lucide-react";
 import { usePublicCommitteeMembers } from "../lib/committee";
 import { useVisibleMemos } from "../lib/memos";
@@ -19,10 +19,24 @@ function avatarFor(profile) {
 }
 
 function fmtDate(d) {
+  if (!d) return "";
   try {
-    return new Date(d).toLocaleDateString(undefined, { dateStyle: "medium" });
+    let date;
+    if (typeof d === "string" && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
+      const [y, m, day] = d.split("-").map(Number);
+      date = new Date(y, m - 1, day);
+    } else if (typeof d === "object" && d?.toDate) {
+      date = d.toDate();
+    } else {
+      date = new Date(d);
+    }
+    if (isNaN(date.getTime())) return String(d);
+    const dd = String(date.getDate()).padStart(2, "0");
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const yyyy = date.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
   } catch {
-    return d;
+    return String(d || "");
   }
 }
 
@@ -139,7 +153,6 @@ export default function LandingPage() {
                   <div style={{ width: "36px", height: "36px", background: "#eff6ff", borderRadius: "8px", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                     <Bell size={20} />
                   </div>
-                  <h3 style={{ margin: 0, fontSize: "18px", color: "#0f172a" }}>সাম্প্রতিক নোটিশ</h3>
                   <h3 style={{ margin: 0, padding: 0, fontSize: "18px", lineHeight: "1.2", color: "#0f172a" }}>সাম্প্রতিক নোটিশ</h3>
                 </div>
                 <span style={{ fontSize: "12px", color: "#2563eb", background: "#eff6ff", fontWeight: "600", padding: "3px 10px", borderRadius: "20px", border: "1px solid #bfdbfe" }}>
@@ -151,25 +164,38 @@ export default function LandingPage() {
                 <p style={{ color: "#64748b", fontSize: "14.5px", textAlign: "center", padding: "28px 0" }}>নোটিশ লোড হচ্ছে...</p>
               ) : recentMemos.length > 0 ? (
                 <div className="landing-notice-list">
-                  {recentMemos.map((memo) => (
-                    <div key={memo.id} className="landing-notice-row">
-                      <div className="landing-notice-row-left">
-                        <span className="landing-notice-topic-badge">
-                          {memo.topic || "বিজ্ঞপ্তি"}
-                        </span>
-                        <span className="landing-notice-row-title" title={memo.title}>
-                          {memo.title}
-                        </span>
+                  {recentMemos.map((memo) => {
+                    const noticeDate = fmtDate(memo.date || memo.createdAt);
+                    return (
+                      <div key={memo.id} className="landing-notice-row">
+                        <div className="landing-notice-badge-wrap">
+                          <span className="landing-notice-topic-badge">
+                            {memo.topic || "বিজ্ঞপ্তি"}
+                          </span>
+                        </div>
+                        <div className="landing-notice-title-wrap">
+                          <span className="landing-notice-row-title" title={memo.title}>
+                            {memo.title}
+                          </span>
+                        </div>
+                        <div className="landing-notice-meta-wrap">
+                          {noticeDate && (
+                            <span className="landing-notice-date" title={`প্রকাশের তারিখ: ${noticeDate}`}>
+                              <Calendar size={12.5} style={{ flexShrink: 0, color: "#2563eb" }} />
+                              <span>{noticeDate}</span>
+                            </span>
+                          )}
+                          <Link
+                            href={`/memo/${memo.id}`}
+                            className="landing-notice-view-btn"
+                            title="নোটিশটি বিস্তারিত দেখুন"
+                          >
+                            দেখুন <ChevronRight size={13} />
+                          </Link>
+                        </div>
                       </div>
-                      <Link
-                        href={`/memo/${memo.id}`}
-                        className="landing-notice-view-btn"
-                        title="নোটিশটি বিস্তারিত দেখুন"
-                      >
-                        দেখুন <ChevronRight size={13} />
-                      </Link>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <div style={{ textAlign: "center", padding: "28px 0" }}>
@@ -195,7 +221,6 @@ export default function LandingPage() {
                   <div style={{ width: "36px", height: "36px", background: "#eff6ff", borderRadius: "8px", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                     <Users size={20} />
                   </div>
-                  <h3 style={{ margin: 0, fontSize: "18px", color: "#0f172a" }}>
                   <h3 style={{ margin: 0, padding: 0, fontSize: "18px", lineHeight: "1.2", color: "#0f172a" }}>
                     কেন্দ্রীয় কার্যনির্বাহী সংসদ
                   </h3>
