@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
@@ -17,6 +17,7 @@ function isOpenPath(pathname) {
     pathname === "/committee" ||
     pathname === "/notices" ||
     pathname === "/constitution" ||
+    pathname === "/archive" ||
     pathname.startsWith("/memo/")
   );
 }
@@ -69,7 +70,13 @@ export default function RouteGuard({ children }) {
   }
 
   const isGateway = AUTH_GATEWAY_PATHS.includes(pathname);
-  const isPublicPage = pathname === "/" || pathname === "/about-us" || pathname === "/committee" || pathname === "/notices" || pathname === "/constitution";
+  const isPublicPage =
+    pathname === "/" ||
+    pathname === "/about-us" ||
+    pathname === "/committee" ||
+    pathname === "/notices" ||
+    pathname === "/constitution" ||
+    pathname === "/archive";
 
   const showShell =
     !!user &&

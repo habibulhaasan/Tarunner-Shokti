@@ -12,6 +12,7 @@ import ContributeTab from "../../components/dashboard/ContributeTab";
 import CommitteeTab from "../../components/dashboard/CommitteeTab";
 import MemosTab from "../../components/dashboard/MemosTab";
 import EventsTab from "../../components/dashboard/EventsTab";
+import ArchiveTab from "../../components/dashboard/ArchiveTab";
 
 const TAB_COMPONENTS = {
   dashboard: DashboardOverviewTab,
@@ -25,6 +26,7 @@ const TAB_COMPONENTS = {
   committee: CommitteeTab,
   memos: MemosTab,
   events: EventsTab,
+  archive: ArchiveTab,
 };
 
 export default function DashboardPage() {

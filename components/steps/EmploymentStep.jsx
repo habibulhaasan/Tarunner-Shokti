@@ -115,7 +115,7 @@ export default function EmploymentStep({ data, setData }) {
               </select>
               <p className="helper-text">
                 <button type="button" className="link-button" onClick={toggleInstituteManualEntry}>
-                  Can't find your institute? Enter it manually.
+                  খুজে পাচ্ছেন না? ম্যানুয়ালি বাংলায় ইনপুট করুন.
                 </button>
               </p>
             </>
@@ -130,7 +130,7 @@ export default function EmploymentStep({ data, setData }) {
               />
               <p className="helper-text">
                 <button type="button" className="link-button" onClick={toggleInstituteManualEntry}>
-                  Pick from the list instead
+                  তালিকা থেকে নির্বাচন করুন
                 </button>
               </p>
             </>
@@ -234,7 +234,7 @@ export default function EmploymentStep({ data, setData }) {
                       <p className="helper-text">
                         Narrow by division/district/upazila above if the list is long.{" "}
                         <button type="button" className="link-button" onClick={toggleManualEntry}>
-                          Can't find your office? Enter it manually.
+                          খুজে পাচ্ছেন না? ম্যানুয়ালি বাংলায় ইনপুট করুন.
                         </button>
                       </p>
                     </div>
@@ -250,7 +250,7 @@ export default function EmploymentStep({ data, setData }) {
                       />
                       <p className="helper-text">
                         <button type="button" className="link-button" onClick={toggleManualEntry}>
-                          Pick from the list instead
+                          তালিকা থেকে নির্বাচন করুন
                         </button>
                       </p>
                     </div>

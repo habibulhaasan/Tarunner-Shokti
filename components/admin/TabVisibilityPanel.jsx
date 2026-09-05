@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { User, Droplet, Users, Landmark, FileText, Calendar, Bell, Star, Info } from "lucide-react";
+import { User, Droplet, Users, Landmark, FileText, Calendar, Bell, Star, Info, FolderArchive } from "lucide-react";
 import { useTabVisibility, saveHiddenTabs } from "../../lib/tabVisibility";
 
 // Mirrors AppShell.jsx's DASHBOARD_TABS — "profile" is deliberately excluded
@@ -15,6 +15,7 @@ const TOGGLEABLE_TABS = [
   { key: "committee", label: "Committee", icon: Landmark },
   { key: "memos", label: "Memos", icon: FileText },
   { key: "events", label: "Events", icon: Calendar },
+  { key: "archive", label: "File Archive", icon: FolderArchive },
   { key: "notifications", label: "Notifications", icon: Bell },
   { key: "favorites", label: "Favorites", icon: Star },
   { key: "about", label: "About", icon: Info },

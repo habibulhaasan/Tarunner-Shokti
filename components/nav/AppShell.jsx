@@ -3,7 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { signOut } from "firebase/auth";
-import { User, Droplet, Users, Star, Shield, Bell, Info, HeartHandshake, Landmark, FileText, Calendar, LayoutDashboard } from "lucide-react";
+import { User, Droplet, Users, Star, Shield, Bell, Info, HeartHandshake, Landmark, FileText, Calendar, LayoutDashboard, FolderArchive } from "lucide-react";
 import { auth } from "../../lib/firebase";
 import { clearSessionCookie } from "../../lib/sessionCookie";
 import { useAuth } from "../../context/AuthContext";
@@ -26,6 +26,7 @@ const DASHBOARD_TABS = [
   { key: "committee", label: "Committee", icon: Landmark },
   { key: "memos", label: "Memos", icon: FileText },
   { key: "events", label: "Events", icon: Calendar },
+  { key: "archive", label: "File Archive", icon: FolderArchive },
   { key: "notifications", label: "Notifications", icon: Bell },
   { key: "favorites", label: "Favorites", icon: Star },
   { key: "about", label: "About", icon: Info },
